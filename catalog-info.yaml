@@ -1,0 +1,13 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: blueprint-tests
+  description: Repository for E2E test of blueprint features
+  tags:
+  - typescript
+  - playwright
+spec:
+  type: service
+  lifecycle: experimental
+  owner: ocean
+  system: continuous-integration
