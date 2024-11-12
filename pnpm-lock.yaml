@@ -21,8 +21,8 @@ importers:
         specifier: 9.1.0
         version: 9.1.0(eslint@9.9.0)
       eslint-plugin-playwright:
-        specifier: 1.6.2
-        version: 1.6.2(eslint@9.9.0)
+        specifier: 2.0.1
+        version: 2.0.1(eslint@9.9.0)
       prettier:
         specifier: 3.3.3
         version: 3.3.3
@@ -157,15 +157,11 @@ packages:
     peerDependencies:
       eslint: '>=7.0.0'
 
-  eslint-plugin-playwright@1.6.2:
-    resolution: {integrity: sha512-mraN4Em3b5jLt01q7qWPyLg0Q5v3KAWfJSlEWwldyUXoa7DSPrBR4k6B6LROLqipsG8ndkwWMdjl1Ffdh15tag==}
+  eslint-plugin-playwright@2.0.1:
+    resolution: {integrity: sha512-f4a73xgCOK5Ug/5dtC82BVvND62lLqlMqgGkZn42teyvk6ccSyybHZXRHkpE7vKZSCjV57bnbR+3ucwItOhXlA==}
     engines: {node: '>=16.6.0'}
     peerDependencies:
       eslint: '>=8.40.0'
-      eslint-plugin-jest: '>=25'
-    peerDependenciesMeta:
-      eslint-plugin-jest:
-        optional: true
 
   eslint-scope@8.0.2:
     resolution: {integrity: sha512-6E4xmrTw5wtxnLA5wYL3WDfhZ/1bUBGOXV0zQvVRDOtrR8D0p6W7fs3JweNYhwRYeGvd/1CKX2se0/2s7Q/nJA==}
@@ -551,7 +547,7 @@ snapshots:
     dependencies:
       eslint: 9.9.0
 
-  eslint-plugin-playwright@1.6.2(eslint@9.9.0):
+  eslint-plugin-playwright@2.0.1(eslint@9.9.0):
     dependencies:
       eslint: 9.9.0
       globals: 13.24.0
