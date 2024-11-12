@@ -9,7 +9,7 @@ jobs:
     timeout-minutes: 60
     runs-on: jamf-ubuntu-latest
     container:
-      image: mcr.microsoft.com/playwright:v1.45.0-jammy
+      image: mcr.microsoft.com/playwright:v1.48.2
     steps:
     - name: Git clone the repository
       uses: actions/checkout@v4

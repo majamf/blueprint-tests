@@ -17,7 +17,7 @@
 	},
 	"private": true,
 	"devDependencies": {
-		"@playwright/test": "1.45.3",
+		"@playwright/test": "1.48.2",
 		"@types/node": "22.7.5",
 		"eslint": "9.14.0",
 		"eslint-config-prettier": "9.1.0",
