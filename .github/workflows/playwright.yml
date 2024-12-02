@@ -9,7 +9,7 @@ jobs:
     timeout-minutes: 60
     runs-on: jamf-ubuntu-latest
     container:
-      image: mcr.microsoft.com/playwright:v1.48.2
+      image: mcr.microsoft.com/playwright:v1.49.0
     steps:
     - name: Git clone the repository
       uses: actions/checkout@v4
@@ -25,7 +25,7 @@ jobs:
       uses: actions/setup-node@v4
       with:
         cache: 'pnpm'
-        node-version: 20
+        node-version: 22
     - name: Install dependencies
       run: pnpm install --frozen-lockfile
       shell: bash
