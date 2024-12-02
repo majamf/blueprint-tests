@@ -55,5 +55,29 @@ jobs:
         shell: bash
         run: |
           pnpm format:check
-        
+  type-check:
+    runs-on: [self-hosted, jamf-ubuntu-latest]
+    name: Type check
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Setup pnpm
+      uses: pnpm/action-setup@v4
+
+    - name: Install Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: 20
+        cache: 'pnpm'
+
+    - name: Install dependencies
+      shell: bash
+      run: |
+        pnpm install --frozen-lockfile
+
+    - name: Check types
+      shell: bash
+      run: |
+        pnpm tsc:check   
 
