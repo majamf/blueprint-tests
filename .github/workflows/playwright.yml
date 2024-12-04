@@ -4,6 +4,12 @@ on:
     branches: [ main ]
   pull_request:
     branches: [ main ]
+  workflow_dispatch:
+    inputs:
+      filter:
+          description: 'Filter selecting which tests to run'
+          required: true
+          type: string
 jobs:
   test:
     timeout-minutes: 60
@@ -30,7 +36,7 @@ jobs:
       run: pnpm install --frozen-lockfile
       shell: bash
     - name: Run Playwright tests
-      run: HOME=/root pnpm exec playwright test
+      run: HOME=/root pnpm exec playwright test ${{ github.event.inputs.filter && format('-g {0}', github.event.inputs.filter) || '' }}
     - uses: actions/upload-artifact@v4
       if: always()
       with:
