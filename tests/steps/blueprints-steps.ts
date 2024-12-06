@@ -323,7 +323,7 @@ export default class BlueprintsSteps {
 
 	async adminDragsAndDropsComponent(componentTitle: string) {
 		// https://github.com/microsoft/playwright/issues/13855
-		const subjectSelector = '[data-rbd-draggable-id="' + builderComponentMap[componentTitle] + '"]';
+		const subjectSelector = '[data-fragment-identifier="' + builderComponentMap[componentTitle] + '"]';
 		const targetSelector = '[data-testid="step-0"]';
 		const subjectElement = this.page.locator(subjectSelector);
 		const targetElement = this.page.locator(targetSelector);
@@ -342,22 +342,15 @@ export default class BlueprintsSteps {
 		if (!targetElementBound) {
 			throw new Error(`Bounding box for element "${targetElementBound}" is null.`);
 		}
-		await this.page.mouse.move(subjectElementBound.x, subjectElementBound.y, { steps: 10 });
 
-		await this.page.dispatchEvent(subjectSelector, 'mousedown', {
-			button: 0,
-			force: true,
-		});
+		await subjectElement.hover();
+		await this.page.mouse.down();
 
-		const x = targetElementBound.x + targetElementBound.width / 2;
-		const y = targetElementBound.y + targetElementBound.height / 2;
+		await this.page.mouse.move(
+			targetElementBound.x + targetElementBound.width / 2,
+			targetElementBound.y + targetElementBound.height / 2
+		);
 
-		await this.page.mouse.move(x, y, { steps: 10 });
-
-		await this.page.dispatchEvent(targetSelector, 'mouseup', {
-			button: 0,
-			force: true,
-		});
-		await this.page.waitForLoadState('load');
+		await this.page.mouse.up();
 	}
 }
