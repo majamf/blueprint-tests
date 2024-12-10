@@ -18,7 +18,7 @@
 	},
 	"private": true,
 	"devDependencies": {
-		"@playwright/test": "1.49.0",
+		"@playwright/test": "1.49.1",
 		"@types/node": "22.10.1",
 		"@types/uuid": "10.0.0",
 		"@typescript-eslint/eslint-plugin": "8.18.0",
