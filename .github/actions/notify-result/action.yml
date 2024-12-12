@@ -1,0 +1,87 @@
+name: Notify Tests results
+description: Notifies Tests results through Slack
+
+inputs:
+  passed:
+    description: Number of skipped tests
+    required: true
+  failed:
+    description: Number of skipped tests
+    required: true
+  skipped:
+    description: Number of skipped tests
+    required: true
+  result:
+    description: The result of tests
+    required: true
+  bg_color:
+    description: The background color of the message
+    required: true
+  slack_token:
+    description: The Slack app token to use
+    required: true
+
+runs:
+  using: composite
+  steps:
+  - shell: sh
+    run: |
+      echo "WORKFLOW_RUN_URL=${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" >> "$GITHUB_ENV"
+  - name: Post to a Slack channel
+    uses: slackapi/slack-github-action@v1.26.0
+    with:
+      channel-id: ocean-tests
+      payload: |
+        {
+          "attachments": [
+            {
+              "color": "${{ inputs.bg_color}}",
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "*Blueprint Tests* has finished"
+                  }
+                },
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "*Result:* ${{ inputs.result}}"
+                  }
+                },
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "*Passed:* ${{ inputs.passed }}"
+                  }
+                },
+                 {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "*Failed:* ${{ inputs.failed }}"
+                  }
+                },
+                 {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "*Skipped:* ${{ inputs.skipped }}"
+                  }
+                },
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "Link to tests: <${{ env.WORKFLOW_RUN_URL }}|Workflow run>"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+    env:
+      SLACK_BOT_TOKEN: ${{ inputs.slack_token }}

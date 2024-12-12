@@ -7,13 +7,13 @@ on:
   workflow_dispatch:
     inputs:
       filter:
-          description: 'Filter selecting which tests to run'
-          required: true
-          type: string
+        description: 'Filter selecting which tests to run'
+        required: true
+        type: string
 jobs:
   test:
     timeout-minutes: 60
-    runs-on: jamf-ubuntu-latest
+    runs-on: [ self-hosted, jamf-ubuntu-latest ]
     container:
       image: mcr.microsoft.com/playwright:v1.49.0
     steps:
@@ -36,10 +36,71 @@ jobs:
       run: pnpm install --frozen-lockfile
       shell: bash
     - name: Run Playwright tests
-      run: HOME=/root pnpm exec playwright test ${{ github.event.inputs.filter && format('-g {0}', github.event.inputs.filter) || '' }}
+      run: |
+        HOME=/root PLAYWRIGHT_JSON_OUTPUT_NAME=results.json pnpm exec playwright test ${{ github.event.inputs.filter && format('-g {0}', github.event.inputs.filter) || '' }} --reporter=json,html
     - uses: actions/upload-artifact@v4
       if: always()
       with:
         name: playwright-report
         path: playwright-report/
         retention-days: 30
+    - uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: results.json
+        path: results.json
+        retention-days: 30
+
+  extract-results:
+    name: Extract test result numbers
+    runs-on: [ self-hosted, jamf-ubuntu-latest ]
+    needs: [ test ]
+    outputs:
+      passed: ${{ steps.extract.outputs.PASSED }}
+      failed: ${{ steps.extract.outputs.FAILED }}
+      skipped: ${{ steps.extract.outputs.SKIPPED }}
+    steps:
+    - uses: actions/download-artifact@v4
+      with:
+        name: results.json
+    - id: extract
+      name: Extract Playwright Test Results
+      run: |
+        PASSED=$(jq -r '.stats.expected' results.json)
+        FAILED=$(jq -r '.stats.unexpected' results.json)
+        SKIPPED=$(jq -r '.stats.skipped' results.json)
+        echo "PASSED=$PASSED" >> $GITHUB_OUTPUT
+        echo "FAILED=$FAILED" >> $GITHUB_OUTPUT
+        echo "SKIPPED=$SKIPPED" >> $GITHUB_OUTPUT
+
+  notify-success:
+    name: Notify Tests Success
+    runs-on: [ self-hosted, jamf-ubuntu-latest ]
+    needs: [ test, extract-results ]
+    if: ${{ success() && github.event_name == 'workflow_dispatch' && needs.extract-results.outputs.passed > 0 }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/notify-result
+        with:
+          passed: ${{ needs.extract-results.outputs.passed }}
+          failed: ${{ needs.extract-results.outputs.failed }}
+          skipped: ${{ needs.extract-results.outputs.skipped }}
+          result: 'PASSED'
+          bg_color: '#36a64f'
+          slack_token: ${{ secrets.GH_SLACK_TOKEN }}
+
+  notify-failure:
+    name: Notify Tests Failure
+    runs-on: [ self-hosted, jamf-ubuntu-latest ]
+    needs: [ test, extract-results  ]
+    if: ${{ (failure() || needs.extract-results.outputs.passed == 0) && github.event_name == 'workflow_dispatch' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/notify-result
+        with:
+          passed: ${{ needs.extract-results.outputs.passed }}
+          failed: ${{ needs.extract-results.outputs.failed }}
+          skipped: ${{ needs.extract-results.outputs.skipped }}
+          result: 'FAILED'
+          bg_color: '#FF0000'
+          slack_token: ${{ secrets.GH_SLACK_TOKEN }}
