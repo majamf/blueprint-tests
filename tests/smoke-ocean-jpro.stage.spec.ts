@@ -13,8 +13,7 @@ test.beforeEach(async () => {
 	}
 });
 
-// eslint-disable-next-line playwright/no-skipped-test
-test.skip('Blueprints list is loaded', { tag: '@stage' }, async ({ page }) => {
+test('Blueprints list is loaded in Jamf Pro', { tag: '@stage' }, async ({ page }) => {
 	test.setTimeout(60_000);
 	const jproLoginSteps = new JProLoginSteps(page);
 	const blueprintsSteps = new BlueprintsSteps(page);
@@ -27,8 +26,7 @@ test.skip('Blueprints list is loaded', { tag: '@stage' }, async ({ page }) => {
 	await blueprintsSteps.thereIsAtLeastOneCard();
 });
 
-// eslint-disable-next-line playwright/no-skipped-test
-test.skip('Blueprint can be added via templates and removed', { tag: '@stage' }, async ({ page }) => {
+test('Blueprint can be added via templates and removed in Jamf Pro', { tag: '@stage' }, async ({ page }) => {
 	test.setTimeout(100_000);
 
 	const jproLoginSteps = new JProLoginSteps(page);
@@ -65,8 +63,7 @@ test.skip('Blueprint can be added via templates and removed', { tag: '@stage' },
 	await blueprintsSteps.thereIsNoBlueprintWithName('Passcode_' + id);
 });
 
-// eslint-disable-next-line playwright/no-skipped-test
-test.skip('Blueprint can be added via builder and removed', { tag: '@stage' }, async ({ page }) => {
+test('Blueprint can be added via builder and removed in Jamf Pro', { tag: '@stage' }, async ({ page }) => {
 	test.setTimeout(100_000);
 	const jproLoginSteps = new JProLoginSteps(page);
 	const blueprintsSteps = new BlueprintsSteps(page);

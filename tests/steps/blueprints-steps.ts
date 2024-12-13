@@ -36,8 +36,8 @@ export default class BlueprintsSteps {
 
 	private async waitForBlueprintsToLoad(url: string) {
 		await this.page.waitForURL(url);
-		await this.page.waitForLoadState('load');
 		await this.waitForBlueprintsResponse();
+		await this.page.waitForLoadState('load');
 	}
 
 	private waitForBlueprintsResponse() {
@@ -183,7 +183,7 @@ export default class BlueprintsSteps {
 	}
 
 	async diskManagementDrawerIsOpen() {
-		const formLocator = this.page.locator('#blueprints-builder-com\\.jamf\\.ddm\\.disk-management-configuration');
+		const formLocator = this.page.locator("[id*='builder-com.jamf.ddm.disk-management-configuration']");
 
 		await this.drawerWithHeadingIsOpen('Disk Management');
 		await expect(formLocator).toBeVisible();
@@ -294,7 +294,7 @@ export default class BlueprintsSteps {
 	async adminDeletesBlueprint() {
 		const dropdown = this.page.locator(blueprintDropdownLocator);
 		const deleteButton = dropdown.getByText('Delete');
-		const deleteButtonInModal = this.page.getByRole('button', { name: 'Delete', exact: true });
+		const confirmDeleteButton = this.page.getByTestId('confirm-delete-button');
 
 		await dropdown.focus();
 		await dropdown.click();
@@ -304,7 +304,7 @@ export default class BlueprintsSteps {
 
 		await this.areYouSureModalIsOpen();
 
-		await deleteButtonInModal.click();
+		await confirmDeleteButton.click();
 		await this.waitForBlueprintsToLoad('**/blueprints');
 	}
 
@@ -331,6 +331,9 @@ export default class BlueprintsSteps {
 		await targetElement.scrollIntoViewIfNeeded();
 		await subjectElement.scrollIntoViewIfNeeded();
 
+		await subjectElement.hover();
+		await this.page.mouse.down();
+
 		const subjectElementBound = await subjectElement.boundingBox();
 
 		if (!subjectElementBound) {
@@ -342,9 +345,6 @@ export default class BlueprintsSteps {
 		if (!targetElementBound) {
 			throw new Error(`Bounding box for element "${targetElementBound}" is null.`);
 		}
-
-		await subjectElement.hover();
-		await this.page.mouse.down();
 
 		await this.page.mouse.move(
 			targetElementBound.x + targetElementBound.width / 2,

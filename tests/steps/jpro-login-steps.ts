@@ -15,8 +15,8 @@ export default class JProLoginSteps {
 	}
 
 	public async loginToJamfPro(baseUrl: string) {
-		assertString(process.env.USER_MAIL, 'USER_MAIL');
-		assertString(process.env.USER_PASSWORD, 'USER_PASSWORD');
+		assertString(process.env.JAMF_ACCOUNT_STAGE_USER_MAIL, 'JAMF_ACCOUNT_STAGE_USER_MAIL');
+		assertString(process.env.JAMF_ACCOUNT_STAGE_USER_PASSWORD, 'JAMF_ACCOUNT_STAGE_USER_PASSWORD');
 
 		const emailInput = this.page.getByLabel('Email');
 		const continueButton = this.page.getByRole('button', { name: 'Continue' });
@@ -28,9 +28,9 @@ export default class JProLoginSteps {
 		await this.page.goto(baseUrl);
 		await this.page.waitForLoadState('load');
 
-		await emailInput.fill(process.env.USER_MAIL);
+		await emailInput.fill(process.env.JAMF_ACCOUNT_STAGE_USER_MAIL);
 		await continueButton.click();
-		await passwordInput.fill(process.env.USER_PASSWORD);
+		await passwordInput.fill(process.env.JAMF_ACCOUNT_STAGE_USER_PASSWORD);
 		await loginButton.click();
 		await continueToJProButton.click();
 		await this.page.waitForLoadState('load');
