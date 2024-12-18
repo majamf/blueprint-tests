@@ -1,5 +1,6 @@
 import { defineConfig, devices } from '@playwright/test';
 import 'dotenv/config';
+import type { ReportPortalConfig } from '@reportportal/agent-js-playwright/build/models';
 
 /**
  * Read environment variables from file.
@@ -12,6 +13,15 @@ import 'dotenv/config';
  * See https://playwright.dev/docs/test-configuration.
  */
 
+const RPconfig: ReportPortalConfig = {
+	apiKey: process.env.RP_API_KEY!,
+	endpoint: process.env.RP_URL ?? 'https://reportportal.oss.wandera.net/api/v1',
+	project: process.env.RP_PROJECT ?? 'jamf_platform',
+	launch: 'blueprint-test',
+	description: 'Playwright blueprint-tests',
+	includeTestSteps: true,
+};
+
 export default defineConfig({
 	testDir: './tests',
 	/* Run tests in files in parallel */
@@ -23,14 +33,26 @@ export default defineConfig({
 	/* Opt out of parallel tests on CI. */
 	workers: process.env.CI ? 15 : undefined,
 	/* Reporter to use. See https://playwright.dev/docs/test-reporters */
-	reporter: 'html',
+	reporter: [
+		['html', { open: 'never' }],
+		[process.env.CI ? 'dot' : 'list'],
+		...(process.env.CI
+			? ([
+					['@reportportal/agent-js-playwright', RPconfig],
+					['json', { outputFile: process.env.PLAYWRIGHT_JSON_OUTPUT_NAME ?? 'result/result.json' }],
+				] as const)
+			: []),
+		...(process.env.GITHUB_ACTIONS ? ([['github']] as const) : []),
+	],
 	/* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
 	use: {
 		/* Base URL to use in actions like `await page.goto('/')`. */
 		// baseURL: 'http://127.0.0.1:3000',
 
 		/* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
-		trace: 'on-first-retry',
+		trace: 'on',
+		screenshot: 'on',
+		video: 'on-first-retry',
 	},
 
 	/* Configure projects for major browsers */
