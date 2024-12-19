@@ -69,7 +69,6 @@ test('Blueprint can be added via builder and removed', { tag: '@sbox' }, async (
 	await blueprintSteps.adminDragsAndDropsComponent('Disk management');
 	await blueprintSteps.adminOpensConfigurationOfComponent();
 
-
 	await blueprintSteps.diskManagementDrawerIsOpen();
 	await blueprintSteps.adminClicksOnExternalStorageCheckbox();
 	await blueprintSteps.adminSavesConfigurationOfComponent();
