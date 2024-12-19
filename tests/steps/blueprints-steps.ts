@@ -49,6 +49,15 @@ export default class BlueprintsSteps {
 		);
 	}
 
+	private waitForBlueprintsUpdateResponse() {
+		return this.page.waitForResponse(
+			(response) =>
+				response.url().includes('/blueprints/management/v1/blueprints') &&
+				response.status() === 204 &&
+				response.request().method() === 'PATCH'
+		);
+	}
+
 	public async pageWithHeadingIsOpen(heading: string) {
 		await this.page.waitForLoadState('load');
 
@@ -144,9 +153,15 @@ export default class BlueprintsSteps {
 		const cards = this.page.locator(blueprintCardLocator);
 		const blueprintWithName = cards.filter({ hasText: name });
 
-		await expect(blueprintWithName).toHaveCount(1);
+		await expect(blueprintWithName).toHaveCount(1, { timeout: 10000 });
 	}
 
+	async thereIsBlueprintWithDescription(description: string) {
+		const cards = this.page.locator(blueprintCardLocator);
+		const blueprintWithDescription = cards.filter({ hasText: description });
+
+		await expect(blueprintWithDescription).toHaveCount(1);
+	}
 	async thereIsNoBlueprintWithName(name: string) {
 		const cards = this.page.locator(blueprintCardLocator);
 		const cardWithName = cards.filter({ hasText: name });
@@ -197,6 +212,9 @@ export default class BlueprintsSteps {
 		const createBlueprintButton = this.page.getByRole('button', { name: 'Create blueprint' });
 
 		await createBlueprintButton.click();
+
+		await this.waitForBlueprintsUpdateResponse();
+		await expect(this.page.locator(blueprintDrawerLocator)).toBeHidden()
 	}
 
 	async adminOpensBlueprintWithName(name: string) {
@@ -212,6 +230,7 @@ export default class BlueprintsSteps {
 
 	async adminsOpensBlueprintsRoute() {
 		await this.navigateToRoute('blueprints');
+		await this.waitForBlueprintsResponse();
 	}
 
 	async adminOpensTemplateWithName(templateTitle: string) {
@@ -241,10 +260,44 @@ export default class BlueprintsSteps {
 		await firstGroup.click();
 	}
 
+	async adminSelectsCertainGroupInScope(index: number) {
+		const certainGroup = this.page.locator(blueprintCheckboxLocator).nth(index);
+
+		await certainGroup.click();
+	}
+
 	async adminSelectsFirstGroupInScopeModal() {
 		const firstGroup = this.page.locator(blueprintCheckboxLocator).nth(0).locator('span').first();
 
 		await firstGroup.click();
+	}
+
+	async adminSelectsCertainGroupInScopeModal(index: number) {
+		const certainGroup = this.page.locator(blueprintCheckboxLocator).nth(index).locator('span').first();
+
+		await certainGroup.click();
+	}
+
+	async selectedScopeIsChecked (index: number) {
+		const isChecked = await this.page
+			.locator(blueprintCheckboxLocator)
+			.nth(index)
+			.locator('span')
+			.first()
+			.isChecked();
+
+		expect(isChecked).toBeTruthy()
+	}
+
+	async selectedDiskManagementIsChecked (name: string) {
+		const isChecked = await this.page
+			.locator(blueprintCheckboxLocator)
+			.filter({ hasText: name})
+			.locator('span')
+			.first()
+			.isChecked();
+
+		expect(isChecked).toBeTruthy()
 	}
 
 	async adminSelectsPasswordToBeRequired() {
@@ -257,6 +310,16 @@ export default class BlueprintsSteps {
 		const externalStorageCheckbox = this.page
 			.locator(blueprintCheckboxLocator)
 			.filter({ hasText: 'External storage' })
+			.locator('label div')
+			.first();
+
+		await externalStorageCheckbox.click();
+	}
+
+	async adminClicksOnNetworkStorageCheckbox() {
+		const externalStorageCheckbox = this.page
+			.locator(blueprintCheckboxLocator)
+			.filter({ hasText: 'Network storage' })
 			.locator('label div')
 			.first();
 
@@ -282,6 +345,20 @@ export default class BlueprintsSteps {
 			.locator('visible=true');
 
 		await saveButton.click();
+
+		await this.waitForBlueprintsUpdateResponse();
+		await expect(this.page.locator(blueprintDrawerLocator)).toBeHidden()
+	}
+
+	async adminSavesMetadata() {
+		const saveButton = this.page
+			.locator(blueprintDrawerLocator)
+			.getByRole('button', { name: 'Save' });
+
+		await saveButton.click();
+
+		await this.waitForBlueprintsUpdateResponse();
+		await expect(this.page.locator(blueprintDrawerLocator)).toBeHidden();
 	}
 
 	async adminsSavesBlueprint() {
@@ -289,6 +366,16 @@ export default class BlueprintsSteps {
 
 		await saveButton.click();
 		await this.waitForBlueprintsToLoad('**/blueprints/*');
+	}
+
+	async adminsClicksOnCancelButton() {
+		const cancelButton = this.page
+			.locator(blueprintDrawerLocator)
+			.getByRole('button', { name: 'Cancel' });
+
+		await cancelButton.click();
+
+		await expect(this.page.locator(blueprintDrawerLocator)).toBeHidden();
 	}
 
 	async adminDeletesBlueprint() {
@@ -319,6 +406,10 @@ export default class BlueprintsSteps {
 		const saveButton = this.page.getByTestId('save-component-button');
 
 		await saveButton.click();
+
+		await this.waitForBlueprintsUpdateResponse();
+
+		await expect(this.page.locator(blueprintDrawerLocator)).toBeHidden()
 	}
 
 	async adminDragsAndDropsComponent(componentTitle: string) {
@@ -352,5 +443,22 @@ export default class BlueprintsSteps {
 		);
 
 		await this.page.mouse.up();
+	}
+
+	async adminEditsDetailsOfBlueprint(name: string, description: string) {
+		const dropdown = this.page.locator(blueprintDropdownLocator);
+		const editButton = dropdown.getByText('Edit details');
+
+		await dropdown.focus();
+		await dropdown.click();
+
+		await editButton.focus();
+		await editButton.click();
+
+		await this.adminFillsNameOfBlueprint(name);
+		await this.adminFillsDescriptionOfBlueprint(description);
+		await this.adminSavesMetadata();
+
+		await this.waitForBlueprintsUpdateResponse();
 	}
 }
