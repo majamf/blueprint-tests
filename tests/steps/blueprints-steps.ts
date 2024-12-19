@@ -213,7 +213,7 @@ export default class BlueprintsSteps {
 
 		await createBlueprintButton.click();
 
-		await this.waitForBlueprintsUpdateResponse();
+		await this.waitForBlueprintsResponse();
 		await expect(this.page.locator(blueprintDrawerLocator)).toBeHidden()
 	}
 
