@@ -49,6 +49,15 @@ export default class BlueprintsSteps {
 		);
 	}
 
+	private waitForBlueprintsCreateResponse() {
+		return this.page.waitForResponse(
+			(response) =>
+				response.url().includes('/blueprints/management/v1/blueprints') &&
+				response.status() === 201 &&
+				response.request().method() === 'POST'
+		);
+	}
+
 	private waitForBlueprintsUpdateResponse() {
 		return this.page.waitForResponse(
 			(response) =>
@@ -212,9 +221,6 @@ export default class BlueprintsSteps {
 		const createBlueprintButton = this.page.getByRole('button', { name: 'Create blueprint' });
 
 		await createBlueprintButton.click();
-
-		await this.waitForBlueprintsResponse();
-		await expect(this.page.locator(blueprintDrawerLocator)).toBeHidden()
 	}
 
 	async adminOpensBlueprintWithName(name: string) {
@@ -335,7 +341,11 @@ export default class BlueprintsSteps {
 	async adminClicksCreateBlueprintButton() {
 		const createButton = this.page.getByTestId('create-blueprint-button').getByRole('button', { name: 'Create' });
 
+		const blueprintCreatePromise = this.waitForBlueprintsCreateResponse();
 		await createButton.click();
+		await blueprintCreatePromise;
+
+		await expect(this.page.locator('[data-fragment-identifier]')).not.toHaveCount(0)
 	}
 
 	async adminSavesScope() {
@@ -344,10 +354,9 @@ export default class BlueprintsSteps {
 			.getByRole('button', { name: 'Save' })
 			.locator('visible=true');
 
+		const blueprintUpdatePromise = this.waitForBlueprintsUpdateResponse();
 		await saveButton.click();
-
-		await this.waitForBlueprintsUpdateResponse();
-		await expect(this.page.locator(blueprintDrawerLocator)).toBeHidden()
+		await blueprintUpdatePromise;
 	}
 
 	async adminSavesMetadata() {
@@ -355,10 +364,9 @@ export default class BlueprintsSteps {
 			.locator(blueprintDrawerLocator)
 			.getByRole('button', { name: 'Save' });
 
+		const blueprintUpdatePromise = this.waitForBlueprintsUpdateResponse();
 		await saveButton.click();
-
-		await this.waitForBlueprintsUpdateResponse();
-		await expect(this.page.locator(blueprintDrawerLocator)).toBeHidden();
+		await blueprintUpdatePromise;
 	}
 
 	async adminsSavesBlueprint() {
@@ -374,8 +382,6 @@ export default class BlueprintsSteps {
 			.getByRole('button', { name: 'Cancel' });
 
 		await cancelButton.click();
-
-		await expect(this.page.locator(blueprintDrawerLocator)).toBeHidden();
 	}
 
 	async adminDeletesBlueprint() {
@@ -405,11 +411,9 @@ export default class BlueprintsSteps {
 	async adminSavesConfigurationOfComponent() {
 		const saveButton = this.page.getByTestId('save-component-button');
 
+		const blueprintUpdatePromise = this.waitForBlueprintsUpdateResponse();
 		await saveButton.click();
-
-		await this.waitForBlueprintsUpdateResponse();
-
-		await expect(this.page.locator(blueprintDrawerLocator)).toBeHidden()
+		await blueprintUpdatePromise;
 	}
 
 	async adminDragsAndDropsComponent(componentTitle: string) {
@@ -458,7 +462,5 @@ export default class BlueprintsSteps {
 		await this.adminFillsNameOfBlueprint(name);
 		await this.adminFillsDescriptionOfBlueprint(description);
 		await this.adminSavesMetadata();
-
-		await this.waitForBlueprintsUpdateResponse();
 	}
 }

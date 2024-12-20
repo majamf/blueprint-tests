@@ -142,6 +142,7 @@ test('Scope of blueprint can be updated (created via builder)', { tag: '@sbox' }
 	await blueprintSteps.adminOpensScopeDrawer();
 	await blueprintSteps.scopingDrawerIsOpen();
 	await blueprintSteps.selectedScopeIsChecked(1);
+	await blueprintSteps.adminsClicksOnCancelButton();
 
 	await blueprintSteps.adminDeletesBlueprint();
 });
