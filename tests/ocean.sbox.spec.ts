@@ -182,25 +182,26 @@ test('Configuration of component can be updated', { tag: '@sbox' }, async ({ pag
 	await blueprintSteps.adminDeletesBlueprint();
 });
 
-// test('Components of blueprint can be updated', { tag: '@sbox' }, async ({ page }) => {
-// 	test.setTimeout(100_000);
-//
-// 	const sboxSteps = new SboxSetupSteps(page);
-// 	const blueprintSteps = new BlueprintsSteps(page);
-//
-// 	await sboxSteps.sboxIsSetUp(baseUrl, clusterUrl);
-//
-// 	await blueprintSteps.adminOpensBlueprintBuilder();
-//
-// 	await blueprintSteps.newBlueprintModalIsOpen();
-// 	await blueprintSteps.adminFillsNameOfBlueprint('Disk_' + id);
-// 	await blueprintSteps.adminFillsDescriptionOfBlueprint('Some description');
-// 	await blueprintSteps.adminClicksCreateBlueprintButton();
-//
-// 	await blueprintSteps.adminDragsAndDropsComponent('Disk management');
-// 	await blueprintSteps.adminOpensConfigurationOfComponent();
-//
-//
-//
-// 	await blueprintSteps.adminDeletesBlueprint();
-// });
+test('Components of blueprint can be updated', { tag: '@sbox' }, async ({ page }) => {
+	test.setTimeout(100_000);
+
+	const sboxSteps = new SboxSetupSteps(page);
+	const blueprintSteps = new BlueprintsSteps(page);
+
+	await sboxSteps.sboxIsSetUp(baseUrl, clusterUrl);
+
+	await blueprintSteps.adminOpensBlueprintBuilder();
+
+	await blueprintSteps.newBlueprintModalIsOpen();
+	await blueprintSteps.adminFillsNameOfBlueprint('Disk_' + id);
+	await blueprintSteps.adminFillsDescriptionOfBlueprint('Some description');
+	await blueprintSteps.adminClicksCreateBlueprintButton();
+
+	await blueprintSteps.adminDragsAndDropsComponent('Disk management');
+	await blueprintSteps.adminsOpensBlueprintsRoute();
+	await blueprintSteps.adminOpensBlueprintWithName('Disk_' + id);
+	await blueprintSteps.adminDragsAndDropsComponent('Passcode Policy')
+	await blueprintSteps.adminDeletesComponent('Disk management');
+
+	await blueprintSteps.adminDeletesBlueprint();
+});
