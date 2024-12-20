@@ -454,21 +454,14 @@ export default class BlueprintsSteps {
 
 	async adminDeletesComponent (componentTitle: string) {
 
-		// const componentName = '[data-fragment-identifier="' + builderComponentMap[componentTitle] + '"]';
 		const declarationGroup = this.page.locator('[data-testid="step-0"]')
+
 		const componentInDeclarationGroup = declarationGroup.locator(blueprintCardLocator).filter({ hasText: componentTitle })
 		await componentInDeclarationGroup.hover();
+
 		const deleteButton = componentInDeclarationGroup.locator('[data-testid="delete-component-button"]')
 		await deleteButton.focus();
 		await deleteButton.click();
-
-		// const componentInDeclarationGroup = declarationGroup.locator(componentName);
-		//
-		// await componentInDeclarationGroup.hover();
-		//
-		// const deleteButton = componentInDeclarationGroup.locator('[data-testid="delete-component-button"]')
-		// await deleteButton.focus();
-		// await deleteButton.click();
 
 		const blueprintUpdatePromise = this.waitForBlueprintsUpdateResponse();
 		await blueprintUpdatePromise;
