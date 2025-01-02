@@ -7,9 +7,9 @@ on:
   workflow_dispatch:
     inputs:
       filter:
-          description: 'Filter selecting which tests to run'
-          required: true
-          type: string
+        description: 'Filter selecting which tests to run'
+        type: string
+
 env:
   JAMF_ACCOUNT_STAGE_USER_MAIL: ${{secrets.JAMF_ACCOUNT_STAGE_USER_MAIL}}
   JAMF_ACCOUNT_STAGE_USER_PASSWORD: ${{secrets.JAMF_ACCOUNT_STAGE_USER_PASSWORD}}
