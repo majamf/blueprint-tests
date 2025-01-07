@@ -19,10 +19,10 @@
 	"private": true,
 	"devDependencies": {
 		"@playwright/test": "1.49.1",
-		"@types/node": "22.10.2",
+		"@types/node": "22.10.5",
 		"@types/uuid": "10.0.0",
-		"@typescript-eslint/eslint-plugin": "8.18.1",
-		"@typescript-eslint/parser": "8.18.1",
+		"@typescript-eslint/eslint-plugin": "8.19.1",
+		"@typescript-eslint/parser": "8.19.1",
 		"eslint": "9.17.0",
 		"eslint-config-prettier": "9.1.0",
 		"eslint-plugin-playwright": "2.1.0",
@@ -31,6 +31,6 @@
 	},
 	"dependencies": {
 		"dotenv": "^16.4.7",
-		"uuid": "^11.0.3"
+		"uuid": "^11.0.4"
 	}
 }
