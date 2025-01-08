@@ -243,12 +243,6 @@ export default class BlueprintsSteps {
 	}
 
 	async verifyExpectedTemplates(templateTitle: string) {
-		// for (const [key] of Object.entries(templatesComponentMap)) {
-		// 	const keyLocator = this.page.locator(`h5:has-text("${key}")`);
-		// 	const keyVisible = await keyLocator.isVisible();
-		//
-		//	expect(keyVisible).toBeTruthy();
-		// }
 		const expectedTemplateLocator = this.page.locator(`h5:has-text("${templateTitle}")`);
 		const expectedTemplateVisible = await expectedTemplateLocator.isVisible();
 
