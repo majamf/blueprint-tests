@@ -112,7 +112,6 @@ test('Name and description of blueprint can be updated', { tag: '@sbox' }, async
 	await blueprintSteps.adminOpensBlueprintWithName('Name updated');
 	await blueprintSteps.adminDeletesBlueprint();
 	await blueprintSteps.thereIsNoBlueprintWithName('Name updated');
-
 });
 
 test('Scope of blueprint can be updated (created via builder)', { tag: '@sbox' }, async ({ page }) => {
@@ -131,7 +130,7 @@ test('Scope of blueprint can be updated (created via builder)', { tag: '@sbox' }
 	await blueprintSteps.adminClicksCreateBlueprintButton();
 
 	await blueprintSteps.adminOpensScopeDrawer();
-	await blueprintSteps.scopingDrawerIsOpen()
+	await blueprintSteps.scopingDrawerIsOpen();
 	await blueprintSteps.adminSelectsFirstGroupInScopeModal();
 	await blueprintSteps.adminSavesScope();
 
@@ -200,7 +199,7 @@ test('Components of blueprint can be updated', { tag: '@sbox' }, async ({ page }
 	await blueprintSteps.adminDragsAndDropsComponent('Disk management');
 	await blueprintSteps.adminsOpensBlueprintsRoute();
 	await blueprintSteps.adminOpensBlueprintWithName('Disk_' + id);
-	await blueprintSteps.adminDragsAndDropsComponent('Passcode Policy')
+	await blueprintSteps.adminDragsAndDropsComponent('Passcode Policy');
 	await blueprintSteps.adminDeletesComponent('Disk management');
 
 	await blueprintSteps.adminDeletesBlueprint();
