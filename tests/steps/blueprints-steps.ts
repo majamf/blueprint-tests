@@ -6,6 +6,7 @@ type componentsMap = {
 
 const templatesComponentMap: componentsMap = {
 	'Secure your devices': 'com.jamf.secure-devices',
+	'Update software to latest version': 'com.jamf.sw-update',
 	'Apply custom configuration': 'com.jamf.freeform-declarations',
 	'Set passcode policies': 'com.jamf.passcode-settings',
 	'Install disk management settings': 'com.jamf.disk-management',
@@ -68,7 +69,9 @@ export default class BlueprintsSteps {
 	}
 
 	public async pageWithHeadingIsOpen(heading: string) {
-		await this.page.waitForLoadState('load');
+		// await this.page.waitForLoadState('load');
+		//not ideal as the following method checks blueprints, and we choose heading in parameters (not always blueprints)
+		await this.waitForBlueprintsResponse();
 
 		const headingLocator = this.page.getByRole('heading', { name: heading });
 		await expect(headingLocator).toBeVisible();
@@ -239,6 +242,19 @@ export default class BlueprintsSteps {
 		await this.waitForBlueprintsResponse();
 	}
 
+	async verifyExpectedTemplates(templateTitle: string) {
+		// for (const [key] of Object.entries(templatesComponentMap)) {
+		// 	const keyLocator = this.page.locator(`h5:has-text("${key}")`);
+		// 	const keyVisible = await keyLocator.isVisible();
+		//
+		//	expect(keyVisible).toBeTruthy();
+		// }
+		const expectedTemplateLocator = this.page.locator(`h5:has-text("${templateTitle}")`);
+		const expectedTemplateVisible = await expectedTemplateLocator.isVisible();
+
+		expect(expectedTemplateVisible).toBeTruthy();
+	}
+
 	async adminOpensTemplateWithName(templateTitle: string) {
 		const templateLink = this.page.locator('a[href*="' + templatesComponentMap[templateTitle] + '"]');
 		const url = '**/new-blueprint?template=' + templatesComponentMap[templateTitle];
@@ -293,6 +309,17 @@ export default class BlueprintsSteps {
 			.isChecked();
 
 		expect(isChecked).toBeTruthy()
+	}
+
+	async adminSearchesForGroupInScope(group: string) {
+		const searchInput = this.page.locator('input[placeholder="Search"]');
+
+		await searchInput.fill(group);
+
+		const groupLocator = this.page.locator(`[wa-component="nebula--checkbox"]:has-text("${group}")`);
+		await groupLocator.waitFor();
+		await expect(groupLocator).toBeVisible();
+		await expect(groupLocator).toHaveText(group);
 	}
 
 	async selectedDiskManagementIsChecked (name: string) {
