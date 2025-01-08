@@ -294,15 +294,10 @@ export default class BlueprintsSteps {
 		await certainGroup.click();
 	}
 
-	async selectedScopeIsChecked (index: number) {
-		const isChecked = await this.page
-			.locator(blueprintCheckboxLocator)
-			.nth(index)
-			.locator('span')
-			.first()
-			.isChecked();
+	async selectedScopeIsChecked(index: number) {
+		const isChecked = await this.page.locator(blueprintCheckboxLocator).nth(index).locator('span').first().isChecked();
 
-		expect(isChecked).toBeTruthy()
+		expect(isChecked).toBeTruthy();
 	}
 
 	async adminSearchesForGroupInScope(group: string) {
@@ -316,15 +311,15 @@ export default class BlueprintsSteps {
 		await expect(groupLocator).toHaveText(group);
 	}
 
-	async selectedDiskManagementIsChecked (name: string) {
+	async selectedDiskManagementIsChecked(name: string) {
 		const isChecked = await this.page
 			.locator(blueprintCheckboxLocator)
-			.filter({ hasText: name})
+			.filter({ hasText: name })
 			.locator('span')
 			.first()
 			.isChecked();
 
-		expect(isChecked).toBeTruthy()
+		expect(isChecked).toBeTruthy();
 	}
 
 	async adminSelectsPasswordToBeRequired() {
@@ -366,7 +361,7 @@ export default class BlueprintsSteps {
 		await createButton.click();
 		await blueprintCreatePromise;
 
-		await expect(this.page.locator('[data-fragment-identifier]')).not.toHaveCount(0)
+		await expect(this.page.locator('[data-fragment-identifier]')).not.toHaveCount(0);
 	}
 
 	async adminSavesScope() {
@@ -381,9 +376,7 @@ export default class BlueprintsSteps {
 	}
 
 	async adminSavesMetadata() {
-		const saveButton = this.page
-			.locator(blueprintDrawerLocator)
-			.getByRole('button', { name: 'Save' });
+		const saveButton = this.page.locator(blueprintDrawerLocator).getByRole('button', { name: 'Save' });
 
 		const blueprintUpdatePromise = this.waitForBlueprintsUpdateResponse();
 		await saveButton.click();
@@ -398,9 +391,7 @@ export default class BlueprintsSteps {
 	}
 
 	async adminsClicksOnCancelButton() {
-		const cancelButton = this.page
-			.locator(blueprintDrawerLocator)
-			.getByRole('button', { name: 'Cancel' });
+		const cancelButton = this.page.locator(blueprintDrawerLocator).getByRole('button', { name: 'Cancel' });
 
 		await cancelButton.click();
 	}
@@ -473,14 +464,15 @@ export default class BlueprintsSteps {
 		await blueprintUpdatePromise;
 	}
 
-	async adminDeletesComponent (componentTitle: string) {
+	async adminDeletesComponent(componentTitle: string) {
+		const declarationGroup = this.page.locator('[data-testid="step-0"]');
 
-		const declarationGroup = this.page.locator('[data-testid="step-0"]')
-
-		const componentInDeclarationGroup = declarationGroup.locator(blueprintCardLocator).filter({ hasText: componentTitle })
+		const componentInDeclarationGroup = declarationGroup
+			.locator(blueprintCardLocator)
+			.filter({ hasText: componentTitle });
 		await componentInDeclarationGroup.hover();
 
-		const deleteButton = componentInDeclarationGroup.locator('[data-testid="delete-component-button"]')
+		const deleteButton = componentInDeclarationGroup.locator('[data-testid="delete-component-button"]');
 		await deleteButton.focus();
 		await deleteButton.click();
 
