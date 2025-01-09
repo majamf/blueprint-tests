@@ -116,7 +116,9 @@ export default class BlueprintsSteps {
 	}
 
 	async adminOpensScopeDrawer() {
-		const scopeCardLink = this.page.locator(blueprintCardLocator, { has: this.page.locator(`h5:has-text("Scope")`) }).getByRole('link');
+		const scopeCardLink = this.page
+			.locator(blueprintCardLocator, { has: this.page.locator(`h5:has-text("Scope")`) })
+			.getByRole('link');
 
 		await scopeCardLink.click();
 	}
