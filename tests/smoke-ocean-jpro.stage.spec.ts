@@ -3,7 +3,8 @@ import { v4 as uuidv4 } from 'uuid';
 import JProLoginSteps from './steps/jpro-login-steps';
 import BlueprintsSteps from './steps/blueprints-steps';
 
-const baseUrl = 'https://forqhqdg.pyro.jamf.build';
+// const baseUrl = 'https://forqhqdg.pyro.jamf.build';
+const baseUrl = 'https://wlrsdqbq.pyro.jamf.build';
 const id = uuidv4();
 
 test.beforeEach(async () => {
@@ -136,7 +137,7 @@ test('Searching in scope works', { tag: '@stage' }, async ({ page }) => {
 
 	await blueprintsSteps.newBlueprintModalIsOpen();
 
-	await blueprintsSteps.adminFillsNameOfBlueprint('Test searching in scope');
+	await blueprintsSteps.adminFillsNameOfBlueprint('Search_test' + id);
 	await blueprintsSteps.adminClicksCreateBlueprintButton();
 
 	await blueprintsSteps.adminOpensScopeDrawer();
@@ -147,5 +148,5 @@ test('Searching in scope works', { tag: '@stage' }, async ({ page }) => {
 	await blueprintsSteps.adminsClicksOnCancelButton();
 
 	await blueprintsSteps.adminDeletesBlueprint();
-	await blueprintsSteps.thereIsNoBlueprintWithName('Test searching in scope');
+	await blueprintsSteps.thereIsNoBlueprintWithName('Search_test' + id);
 });

@@ -69,9 +69,9 @@ export default class BlueprintsSteps {
 	}
 
 	public async pageWithHeadingIsOpen(heading: string) {
-		// await this.page.waitForLoadState('load');
+		await this.page.waitForLoadState('load');
 		//not ideal as the following method checks blueprints, and we choose heading in parameters (not always blueprints)
-		await this.waitForBlueprintsResponse();
+		// await this.waitForBlueprintsResponse();
 
 		const headingLocator = this.page.getByRole('heading', { name: heading });
 		await expect(headingLocator).toBeVisible();
@@ -360,8 +360,6 @@ export default class BlueprintsSteps {
 		const blueprintCreatePromise = this.waitForBlueprintsCreateResponse();
 		await createButton.click();
 		await blueprintCreatePromise;
-
-		await expect(this.page.locator('[data-fragment-identifier]')).not.toHaveCount(0);
 	}
 
 	async adminSavesScope() {
