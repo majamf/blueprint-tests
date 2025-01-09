@@ -1,4 +1,5 @@
 import { expect, type Page } from '@playwright/test';
+import { Step } from './utils';
 
 type componentsMap = {
 	[templateTitle: string]: string;
@@ -68,6 +69,7 @@ export default class BlueprintsSteps {
 		);
 	}
 
+	@Step('Page with heading "$0" is opened')
 	public async pageWithHeadingIsOpen(heading: string) {
 		await this.page.waitForLoadState('load');
 
@@ -75,6 +77,7 @@ export default class BlueprintsSteps {
 		await expect(headingLocator).toBeVisible();
 	}
 
+	@Step('Modal with heading "$0" is open')
 	async modalWithHeadingIsOpen(heading: string) {
 		const modal = this.page.getByRole('heading', { name: heading });
 
@@ -83,17 +86,20 @@ export default class BlueprintsSteps {
 		await expect(modal).toBeInViewport();
 	}
 
+	@Step('Drawer with heading "$0" is open')
 	async drawerWithHeadingIsOpen(heading: string) {
 		await this.page.waitForLoadState('load');
 		await expect(this.page.locator(blueprintDrawerLocator).getByRole('heading', { name: heading })).toBeInViewport();
 	}
 
+	@Step('Modal with test id "$0" is open')
 	async modalWithTestIdIsOpen(testId: string) {
 		const modal = this.page.getByTestId(testId);
 		await modal.focus();
 		await expect(modal).toBeInViewport();
 	}
 
+	@Step('Admin navigates to route "$0"')
 	async navigateToRoute(route: string) {
 		const url = this.baseUrl(this.page.url()) + '/' + route;
 
@@ -102,6 +108,7 @@ export default class BlueprintsSteps {
 		await this.page.waitForLoadState('load');
 	}
 
+	@Step('Admin clicks on radio button with value "$0"')
 	async clicksOnRadioButtonWithValue(value: string) {
 		const blueprintRadioLocator = '*[wa-component="nebula--radio"][value="/' + value + '"]';
 		const blueprintRadio = this.page.locator(blueprintRadioLocator);
@@ -115,6 +122,7 @@ export default class BlueprintsSteps {
 		return `${url.protocol}//${url.host}`;
 	}
 
+	@Step('Admin opens scope drawer')
 	async adminOpensScopeDrawer() {
 		const scopeCardLink = this.page
 			.locator(blueprintCardLocator, { has: this.page.locator(`h5:has-text("Scope")`) })
@@ -123,6 +131,7 @@ export default class BlueprintsSteps {
 		await scopeCardLink.click();
 	}
 
+	@Step('Admin goes back to blueprints list via breadcrumbs in Jamf Pro')
 	async adminGoesBackToBlueprintsListViaBreadCrumbsInJPro() {
 		const breadCrumbsLink = this.page.locator('#main').getByRole('link', { name: 'Blueprints' });
 
@@ -135,6 +144,7 @@ export default class BlueprintsSteps {
 		await blueprintGetPromise;
 	}
 
+	@Step('Admin goes back to blueprints list via breadcrumbs')
 	async adminGoesBackToBlueprintsListViaBreadCrumbs() {
 		const breadCrumbLink = this.page.getByRole('link', { name: 'Blueprints' });
 
@@ -147,6 +157,7 @@ export default class BlueprintsSteps {
 		await blueprintGetPromise;
 	}
 
+	@Step('Admin opens blueprints via Jamf Pro navigation')
 	async adminOpensBlueprintsViaJamfProNavigation() {
 		const blueprintsNavigation = this.page.locator('jamf-nav-side-container').getByText('Blueprints');
 
@@ -157,11 +168,13 @@ export default class BlueprintsSteps {
 		await blueprintGetPromise;
 	}
 
+	@Step('Admin clicks on quick start')
 	async adminsClicksOnQuickStart() {
 		await this.clicksOnRadioButtonWithValue('templates');
 		await this.page.waitForURL('**/blueprints/templates');
 	}
 
+	@Step('Admin opens blueprints via url "$0"')
 	async adminOpensBlueprintsViaUrl(baseUrl: string) {
 		const url = baseUrl + '/blueprints';
 
@@ -174,12 +187,14 @@ export default class BlueprintsSteps {
 		await blueprintGetPromise;
 	}
 
+	@Step('Admin waits for blueprints to load')
 	async thereIsAtLeastOneCard() {
 		const cards = this.page.locator(blueprintCardLocator);
 
 		await expect(cards.nth(0)).toBeVisible();
 	}
 
+	@Step('There is blueprint with name "$0"')
 	async thereIsBlueprintWithName(name: string) {
 		const cards = this.page.locator(blueprintCardLocator);
 		const blueprintWithName = cards.filter({ hasText: name });
@@ -187,12 +202,15 @@ export default class BlueprintsSteps {
 		await expect(blueprintWithName).toHaveCount(1, { timeout: 10000 });
 	}
 
+	@Step('There is blueprint with description "$0"')
 	async thereIsBlueprintWithDescription(description: string) {
 		const cards = this.page.locator(blueprintCardLocator);
 		const blueprintWithDescription = cards.filter({ hasText: description });
 
 		await expect(blueprintWithDescription).toHaveCount(1);
 	}
+
+	@Step('There is no blueprint with name "$0"')
 	async thereIsNoBlueprintWithName(name: string) {
 		const cards = this.page.locator(blueprintCardLocator);
 		const cardWithName = cards.filter({ hasText: name });
@@ -200,34 +218,42 @@ export default class BlueprintsSteps {
 		await expect(cardWithName).toBeHidden();
 	}
 
+	@Step('Admin waits for scoping modal to appear')
 	async adminWaitsForScopingModalToAppear() {
 		await this.modalWithTestIdIsOpen('scoping-modal');
 	}
 
+	@Step('Blueprints page is opened')
 	async blueprintsPageIsOpen() {
 		await this.pageWithHeadingIsOpen('Blueprints');
 	}
 
+	@Step('Scoping page is opened')
 	async scopingPageIsOpen() {
 		await this.pageWithHeadingIsOpen('Choose a scope');
 	}
 
+	@Step('General page is opened')
 	async generalPageIsOpen() {
 		await this.pageWithHeadingIsOpen('General');
 	}
 
+	@Step('Passcode policy page is opened')
 	async passcodePolicyPageIsOpen() {
 		await this.pageWithHeadingIsOpen('Passcode Policy');
 	}
 
+	@Step('Are you sure modal is open')
 	async areYouSureModalIsOpen() {
 		await this.modalWithHeadingIsOpen('Are you sure?');
 	}
 
+	@Step('New blueprint modal is opened')
 	async newBlueprintModalIsOpen() {
 		await this.modalWithHeadingIsOpen('New blueprint');
 	}
 
+	@Step('Disk management drawer is open')
 	async diskManagementDrawerIsOpen() {
 		const formLocator = this.page.locator("[id*='builder-com.jamf.ddm.disk-management-configuration']");
 
@@ -235,16 +261,19 @@ export default class BlueprintsSteps {
 		await expect(formLocator).toBeVisible();
 	}
 
+	@Step('Scope drawer is open')
 	async scopingDrawerIsOpen() {
 		await this.drawerWithHeadingIsOpen('Scope');
 	}
 
+	@Step('Admin opens blueprint builder')
 	async adminOpensBlueprintBuilder() {
 		const createBlueprintButton = this.page.getByRole('button', { name: 'Create blueprint' });
 
 		await createBlueprintButton.click();
 	}
 
+	@Step('Admin opens blueprint with name "$0"')
 	async adminOpensBlueprintWithName(name: string) {
 		const cards = this.page.locator(blueprintCardLocator);
 		const blueprintCardLink = cards.filter({ hasText: name }).getByRole('link');
@@ -252,10 +281,12 @@ export default class BlueprintsSteps {
 		await blueprintCardLink.click();
 	}
 
+	@Step('Admin navigates to templates')
 	async adminsOpensTemplatesRoute() {
 		await this.navigateToRoute('templates');
 	}
 
+	@Step('Admin navigates to blueprints')
 	async adminsOpensBlueprintsRoute() {
 		const blueprintGetPromise = this.waitForBlueprintsResponse();
 
@@ -264,12 +295,14 @@ export default class BlueprintsSteps {
 		await blueprintGetPromise;
 	}
 
+	@Step('Template with name "$0" is visible')
 	async verifyExpectedTemplates(templateTitle: string) {
 		const expectedTemplateLocator = this.page.locator(`h5:has-text("${templateTitle}")`);
 
 		await expect(expectedTemplateLocator).toBeVisible();
 	}
 
+	@Step('Admin opens template with name "$0"')
 	async adminOpensTemplateWithName(templateTitle: string) {
 		const templateLink = this.page.locator('a[href*="' + templatesComponentMap[templateTitle] + '"]');
 		const url = '**/new-blueprint?template=' + templatesComponentMap[templateTitle];
@@ -279,46 +312,54 @@ export default class BlueprintsSteps {
 		await this.page.waitForLoadState('load');
 	}
 
+	@Step('Admin fills name of blueprint')
 	async adminFillsNameOfBlueprint(name: string) {
 		const nameInput = this.page.locator('input[name="name"]');
 
 		await nameInput.fill(name);
 	}
 
+	@Step('Admin fills description of blueprint')
 	async adminFillsDescriptionOfBlueprint(description: string) {
 		const descriptionInput = this.page.locator('textarea[name="description"], input[name="description"]');
 
 		await descriptionInput.fill(description);
 	}
 
+	@Step('Admin selects first group in scope')
 	async adminSelectsFirstGroupInScope() {
 		const firstGroup = this.page.locator(blueprintCheckboxLocator).nth(0);
 
 		await firstGroup.click();
 	}
 
+	@Step('Admin selects certain group in scope')
 	async adminSelectsCertainGroupInScope(index: number) {
 		const certainGroup = this.page.locator(blueprintCheckboxLocator).nth(index);
 
 		await certainGroup.click();
 	}
 
+	@Step('Admin selects first group in scope modal')
 	async adminSelectsFirstGroupInScopeModal() {
 		const firstGroup = this.page.locator(blueprintCheckboxLocator).nth(0).locator('span').first();
 
 		await firstGroup.click();
 	}
 
+	@Step('Admin selects group in scope modal at index "$0"')
 	async adminSelectsCertainGroupInScopeModal(index: number) {
 		const certainGroup = this.page.locator(blueprintCheckboxLocator).nth(index).locator('span').first();
 
 		await certainGroup.click();
 	}
 
+	@Step('Selected scope is checked at index "$0"')
 	async selectedScopeIsChecked(index: number) {
 		await expect(this.page.locator(blueprintCheckboxLocator).nth(index).locator('span').first()).toBeChecked();
 	}
 
+	@Step('Admin searches for group with name "$0" in scope')
 	async adminSearchesForGroupInScope(group: string) {
 		const searchInput = this.page.locator('input[placeholder="Search"]');
 
@@ -330,18 +371,21 @@ export default class BlueprintsSteps {
 		await expect(groupLocator).toHaveText(group);
 	}
 
+	@Step('Disk management option with name "$0" is checked')
 	async selectedDiskManagementIsChecked(name: string) {
 		await expect(
 			this.page.locator(blueprintCheckboxLocator).filter({ hasText: name }).locator('span').first()
 		).toBeChecked();
 	}
 
+	@Step('Admin selects password to be required')
 	async adminSelectsPasswordToBeRequired() {
 		const passwordCheckbox = this.page.getByText('Require passcode on device').locator('label');
 
 		await passwordCheckbox.click();
 	}
 
+	@Step('Admin clicks on external storage checkbox')
 	async adminClicksOnExternalStorageCheckbox() {
 		const externalStorageCheckbox = this.page
 			.locator(blueprintCheckboxLocator)
@@ -352,6 +396,7 @@ export default class BlueprintsSteps {
 		await externalStorageCheckbox.click();
 	}
 
+	@Step('Admin clicks on network storage checkbox')
 	async adminClicksOnNetworkStorageCheckbox() {
 		const externalStorageCheckbox = this.page
 			.locator(blueprintCheckboxLocator)
@@ -362,12 +407,14 @@ export default class BlueprintsSteps {
 		await externalStorageCheckbox.click();
 	}
 
+	@Step('Admin clicks next button')
 	async adminClicksNextButton() {
 		const nextButton = this.page.getByRole('button', { name: 'Next' });
 
 		await nextButton.click();
 	}
 
+	@Step('Admin clicks create blueprint button')
 	async adminClicksCreateBlueprintButton() {
 		const createButton = this.page.getByTestId('create-blueprint-button').getByRole('button', { name: 'Create' });
 
@@ -376,6 +423,7 @@ export default class BlueprintsSteps {
 		await blueprintCreatePromise;
 	}
 
+	@Step('Admin saves scope')
 	async adminSavesScope() {
 		const saveButton = this.page
 			.locator(blueprintDrawerLocator)
@@ -387,6 +435,7 @@ export default class BlueprintsSteps {
 		await blueprintUpdatePromise;
 	}
 
+	@Step('Admin saves metadata')
 	async adminSavesMetadata() {
 		const saveButton = this.page.locator(blueprintDrawerLocator).getByRole('button', { name: 'Save' });
 
@@ -395,6 +444,7 @@ export default class BlueprintsSteps {
 		await blueprintUpdatePromise;
 	}
 
+	@Step('Admin saves blueprint')
 	async adminsSavesBlueprint() {
 		const saveButton = this.page.locator(blueprintButtonLocator).locator('*[type="submit"]');
 
@@ -407,12 +457,14 @@ export default class BlueprintsSteps {
 		await blueprintGetPromise;
 	}
 
+	@Step('Admin clicks on cancel button')
 	async adminsClicksOnCancelButton() {
 		const cancelButton = this.page.locator(blueprintDrawerLocator).getByRole('button', { name: 'Cancel' });
 
 		await cancelButton.click();
 	}
 
+	@Step('Admin deletes blueprint')
 	async adminDeletesBlueprint() {
 		const dropdown = this.page.locator(blueprintDropdownLocator);
 		const deleteButton = dropdown.getByText('Delete');
@@ -435,6 +487,7 @@ export default class BlueprintsSteps {
 		await blueprintGetPromise;
 	}
 
+	@Step('Admin opens configuration of component')
 	async adminOpensConfigurationOfComponent() {
 		const configureButton = this.page.getByTestId('configure-component-button');
 
@@ -442,6 +495,7 @@ export default class BlueprintsSteps {
 		await configureButton.click();
 	}
 
+	@Step('Admin saves configuration of component')
 	async adminSavesConfigurationOfComponent() {
 		const saveButton = this.page.getByTestId('save-component-button');
 
@@ -450,6 +504,7 @@ export default class BlueprintsSteps {
 		await blueprintUpdatePromise;
 	}
 
+	@Step('Admin drags and drops component "$0"')
 	async adminDragsAndDropsComponent(componentTitle: string) {
 		// https://github.com/microsoft/playwright/issues/13855
 		const subjectSelector = '[data-fragment-identifier="' + builderComponentMap[componentTitle] + '"]';
@@ -487,6 +542,7 @@ export default class BlueprintsSteps {
 		await blueprintUpdatePromise;
 	}
 
+	@Step('Admin deletes component with title "$0"')
 	async adminDeletesComponent(componentTitle: string) {
 		const declarationGroup = this.page.locator('[data-testid="step-0"]');
 
@@ -505,6 +561,7 @@ export default class BlueprintsSteps {
 		await blueprintUpdatePromise;
 	}
 
+	@Step('Admin edits details of blueprint with new name "$0" and description "$1"')
 	async adminEditsDetailsOfBlueprint(name: string, description: string) {
 		const dropdown = this.page.locator(blueprintDropdownLocator);
 		const editButton = dropdown.getByText('Edit details');

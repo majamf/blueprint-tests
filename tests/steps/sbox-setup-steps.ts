@@ -1,5 +1,6 @@
 import UtilsSteps from './utils-steps';
 import type { Page } from '@playwright/test';
+import { Step } from './utils';
 
 export default class SboxSetupSteps {
 	private utilsSteps: UtilsSteps;
@@ -7,6 +8,7 @@ export default class SboxSetupSteps {
 		this.utilsSteps = new UtilsSteps(page);
 	}
 
+	@Step('Set up SBOX with mFE URL "$0" and cluster URL "$1"')
 	public async sboxIsSetUp(mFEUrl: string, clusterUrl: string) {
 		const baseUrl = mFEUrl + '/?clusterUrl=' + clusterUrl;
 		const tenantId = 'blueprint-test-tenantId';
