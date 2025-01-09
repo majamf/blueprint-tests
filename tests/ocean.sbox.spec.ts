@@ -101,17 +101,17 @@ test('Name and description of blueprint can be updated', { tag: '@sbox' }, async
 	await blueprintSteps.newBlueprintModalIsOpen();
 
 	await blueprintSteps.adminFillsNameOfBlueprint('Disk_' + id);
-	await blueprintSteps.adminFillsDescriptionOfBlueprint('Some description 2');
+	await blueprintSteps.adminFillsDescriptionOfBlueprint('Some description');
 	await blueprintSteps.adminClicksCreateBlueprintButton();
 
-	await blueprintSteps.adminEditsDetailsOfBlueprint('Name updated', 'Description updated');
+	await blueprintSteps.adminEditsDetailsOfBlueprint('Name updated' + id, 'Description updated' + id);
 	await blueprintSteps.adminsOpensBlueprintsRoute();
-	await blueprintSteps.thereIsBlueprintWithName('Name updated');
-	await blueprintSteps.thereIsBlueprintWithDescription('Description updated');
+	await blueprintSteps.thereIsBlueprintWithName('Name updated' + id);
+	await blueprintSteps.thereIsBlueprintWithDescription('Description updated' + id);
 
-	await blueprintSteps.adminOpensBlueprintWithName('Name updated');
+	await blueprintSteps.adminOpensBlueprintWithName('Name updated' + id);
 	await blueprintSteps.adminDeletesBlueprint();
-	await blueprintSteps.thereIsNoBlueprintWithName('Name updated');
+	await blueprintSteps.thereIsNoBlueprintWithName('Name updated' + id);
 });
 
 test('Scope of blueprint can be updated (created via builder)', { tag: '@sbox' }, async ({ page }) => {
@@ -125,6 +125,7 @@ test('Scope of blueprint can be updated (created via builder)', { tag: '@sbox' }
 	await blueprintSteps.adminOpensBlueprintBuilder();
 
 	await blueprintSteps.newBlueprintModalIsOpen();
+
 	await blueprintSteps.adminFillsNameOfBlueprint('Disk_' + id);
 	await blueprintSteps.adminFillsDescriptionOfBlueprint('Some description');
 	await blueprintSteps.adminClicksCreateBlueprintButton();
@@ -157,6 +158,7 @@ test('Configuration of component can be updated', { tag: '@sbox' }, async ({ pag
 	await blueprintSteps.adminOpensBlueprintBuilder();
 
 	await blueprintSteps.newBlueprintModalIsOpen();
+
 	await blueprintSteps.adminFillsNameOfBlueprint('Disk_' + id);
 	await blueprintSteps.adminFillsDescriptionOfBlueprint('Some description');
 	await blueprintSteps.adminClicksCreateBlueprintButton();
