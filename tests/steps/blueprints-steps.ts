@@ -74,7 +74,7 @@ export default class BlueprintsSteps {
 		await this.page.waitForLoadState('load');
 
 		const headingLocator = this.page.getByRole('heading', { name: heading });
-		await expect(headingLocator).toBeVisible();
+		await expect(headingLocator).toBeVisible({ timeout: 30_000 });
 	}
 
 	@Step('Modal with heading "$0" is open')

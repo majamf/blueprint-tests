@@ -86,8 +86,6 @@ test('Blueprint can be added via builder and removed', { tag: '@sbox' }, async (
 });
 
 test('Name and description of blueprint can be updated', { tag: '@sbox' }, async ({ page }) => {
-	test.setTimeout(100_000);
-
 	const sboxSteps = new SboxSetupSteps(page);
 	const blueprintSteps = new BlueprintsSteps(page);
 
@@ -112,8 +110,6 @@ test('Name and description of blueprint can be updated', { tag: '@sbox' }, async
 });
 
 test('Scope of blueprint can be updated (created via builder)', { tag: '@sbox' }, async ({ page }) => {
-	test.setTimeout(100_000);
-
 	const sboxSteps = new SboxSetupSteps(page);
 	const blueprintSteps = new BlueprintsSteps(page);
 
@@ -145,8 +141,6 @@ test('Scope of blueprint can be updated (created via builder)', { tag: '@sbox' }
 });
 
 test('Configuration of component can be updated', { tag: '@sbox' }, async ({ page }) => {
-	test.setTimeout(100_000);
-
 	const sboxSteps = new SboxSetupSteps(page);
 	const blueprintSteps = new BlueprintsSteps(page);
 
@@ -181,8 +175,6 @@ test('Configuration of component can be updated', { tag: '@sbox' }, async ({ pag
 });
 
 test('Components of blueprint can be updated', { tag: '@sbox' }, async ({ page }) => {
-	test.setTimeout(100_000);
-
 	const sboxSteps = new SboxSetupSteps(page);
 	const blueprintSteps = new BlueprintsSteps(page);
 
