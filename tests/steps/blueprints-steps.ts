@@ -35,11 +35,11 @@ const blueprintDrawerLocator = '*[wa-component="nebula--drawer"]';
 export default class BlueprintsSteps {
 	constructor(private page: Page) {}
 
-	private async waitForBlueprintsToLoad(url: string) {
-		await this.page.waitForURL(url);
-		await this.waitForBlueprintsResponse();
-		await this.page.waitForLoadState('load');
-	}
+	// private async waitForBlueprintsToLoad(url: string) {
+	// 	await this.page.waitForURL(url);
+	// 	await this.waitForBlueprintsResponse();
+	// 	await this.page.waitForLoadState('load');
+	// }
 
 	private waitForBlueprintsResponse() {
 		return this.page.waitForResponse(
@@ -126,22 +126,35 @@ export default class BlueprintsSteps {
 	async adminGoesBackToBlueprintsListViaBreadCrumbsInJPro() {
 		const breadCrumbsLink = this.page.locator('#main').getByRole('link', { name: 'Blueprints' });
 
+		const blueprintGetPromise = this.waitForBlueprintsResponse();
+
 		await breadCrumbsLink.click();
-		await this.waitForBlueprintsToLoad('**/blueprints');
+
+		await this.page.waitForURL('**/blueprints');
+
+		await blueprintGetPromise;
 	}
 
 	async adminGoesBackToBlueprintsListViaBreadCrumbs() {
 		const breadCrumbLink = this.page.getByRole('link', { name: 'Blueprints' });
 
+		const blueprintGetPromise = this.waitForBlueprintsResponse();
+
 		await breadCrumbLink.click();
-		await this.waitForBlueprintsToLoad('**/blueprints');
+
+		await this.page.waitForURL('**/blueprints');
+
+		await blueprintGetPromise;
 	}
 
 	async adminOpensBlueprintsViaJamfProNavigation() {
 		const blueprintsNavigation = this.page.locator('jamf-nav-side-container').getByText('Blueprints');
 
+		const blueprintGetPromise = this.waitForBlueprintsResponse();
+
 		await blueprintsNavigation.click();
-		await this.waitForBlueprintsResponse();
+
+		await blueprintGetPromise;
 	}
 
 	async adminsClicksOnQuickStart() {
@@ -152,8 +165,13 @@ export default class BlueprintsSteps {
 	async adminOpensBlueprintsViaUrl(baseUrl: string) {
 		const url = baseUrl + '/blueprints';
 
+		const blueprintGetPromise = this.waitForBlueprintsResponse();
+
 		await this.page.goto(url);
-		await this.waitForBlueprintsToLoad('**/blueprints');
+
+		await this.page.waitForURL('**/blueprints');
+
+		await blueprintGetPromise;
 	}
 
 	async thereIsAtLeastOneCard() {
@@ -239,8 +257,11 @@ export default class BlueprintsSteps {
 	}
 
 	async adminsOpensBlueprintsRoute() {
+		const blueprintGetPromise = this.waitForBlueprintsResponse();
+
 		await this.navigateToRoute('blueprints');
-		await this.waitForBlueprintsResponse();
+
+		await blueprintGetPromise;
 	}
 
 	async verifyExpectedTemplates(templateTitle: string) {
@@ -377,8 +398,13 @@ export default class BlueprintsSteps {
 	async adminsSavesBlueprint() {
 		const saveButton = this.page.locator(blueprintButtonLocator).locator('*[type="submit"]');
 
+		const blueprintGetPromise = this.waitForBlueprintsResponse();
+
 		await saveButton.click();
-		await this.waitForBlueprintsToLoad('**/blueprints/*');
+
+		await this.page.waitForURL('**/blueprints/*');
+
+		await blueprintGetPromise;
 	}
 
 	async adminsClicksOnCancelButton() {
@@ -400,8 +426,13 @@ export default class BlueprintsSteps {
 
 		await this.areYouSureModalIsOpen();
 
+		const blueprintGetPromise = this.waitForBlueprintsResponse();
+
 		await confirmDeleteButton.click();
-		await this.waitForBlueprintsToLoad('**/blueprints');
+
+		await this.page.waitForURL('**/blueprints');
+
+		await blueprintGetPromise;
 	}
 
 	async adminOpensConfigurationOfComponent() {
