@@ -66,7 +66,14 @@ export default defineConfig({
 
 		{
 			name: 'firefox',
-			use: { ...devices['Desktop Firefox'] },
+			use: {
+				...devices['Desktop Firefox'],
+				launchOptions: {
+					firefoxUserPrefs: {
+						'network.http.fast-fallback-to-IPv4': false,
+					},
+				},
+			},
 		},
 		// TODO: Fix flakiness of test in webkit https://jamfpdd.atlassian.net/browse/JSC-62590
 		// {
