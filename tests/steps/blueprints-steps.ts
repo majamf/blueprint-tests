@@ -244,9 +244,8 @@ export default class BlueprintsSteps {
 
 	async verifyExpectedTemplates(templateTitle: string) {
 		const expectedTemplateLocator = this.page.locator(`h5:has-text("${templateTitle}")`);
-		const expectedTemplateVisible = await expectedTemplateLocator.isVisible();
 
-		expect(expectedTemplateVisible).toBeTruthy();
+		await expect(expectedTemplateLocator).toBeVisible();
 	}
 
 	async adminOpensTemplateWithName(templateTitle: string) {
@@ -295,9 +294,7 @@ export default class BlueprintsSteps {
 	}
 
 	async selectedScopeIsChecked(index: number) {
-		const isChecked = await this.page.locator(blueprintCheckboxLocator).nth(index).locator('span').first().isChecked();
-
-		expect(isChecked).toBeTruthy();
+		await expect(this.page.locator(blueprintCheckboxLocator).nth(index).locator('span').first()).toBeChecked();
 	}
 
 	async adminSearchesForGroupInScope(group: string) {
@@ -312,14 +309,9 @@ export default class BlueprintsSteps {
 	}
 
 	async selectedDiskManagementIsChecked(name: string) {
-		const isChecked = await this.page
-			.locator(blueprintCheckboxLocator)
-			.filter({ hasText: name })
-			.locator('span')
-			.first()
-			.isChecked();
-
-		expect(isChecked).toBeTruthy();
+		await expect(
+			this.page.locator(blueprintCheckboxLocator).filter({ hasText: name }).locator('span').first()
+		).toBeChecked();
 	}
 
 	async adminSelectsPasswordToBeRequired() {
@@ -472,9 +464,11 @@ export default class BlueprintsSteps {
 
 		const deleteButton = componentInDeclarationGroup.locator('[data-testid="delete-component-button"]');
 		await deleteButton.focus();
-		await deleteButton.click();
 
 		const blueprintUpdatePromise = this.waitForBlueprintsUpdateResponse();
+
+		await deleteButton.click();
+
 		await blueprintUpdatePromise;
 	}
 
