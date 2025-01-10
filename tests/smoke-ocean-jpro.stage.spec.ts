@@ -3,8 +3,8 @@ import { v4 as uuidv4 } from 'uuid';
 import JProLoginSteps from './steps/jpro-login-steps';
 import BlueprintsSteps from './steps/blueprints-steps';
 
-// const baseUrl = 'https://forqhqdg.pyro.jamf.build';
-const baseUrl = 'https://wlrsdqbq.pyro.jamf.build';
+const baseUrl = 'https://forqhqdg.pyro.jamf.build';
+// const baseUrl = 'https://wlrsdqbq.pyro.jamf.build';
 const id = uuidv4();
 
 test.beforeEach(async () => {

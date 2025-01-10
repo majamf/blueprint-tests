@@ -448,9 +448,10 @@ export default class BlueprintsSteps {
 			targetElementBound.y + targetElementBound.height / 2
 		);
 
+		const blueprintUpdatePromise = this.waitForBlueprintsUpdateResponse();
+
 		await this.page.mouse.up();
 
-		const blueprintUpdatePromise = this.waitForBlueprintsUpdateResponse();
 		await blueprintUpdatePromise;
 	}
 
