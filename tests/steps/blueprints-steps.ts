@@ -141,6 +141,7 @@ export default class BlueprintsSteps {
 		const blueprintsNavigation = this.page.locator('jamf-nav-side-container').getByText('Blueprints');
 
 		await blueprintsNavigation.click();
+		await this.waitForBlueprintsResponse();
 	}
 
 	async adminsClicksOnQuickStart() {
