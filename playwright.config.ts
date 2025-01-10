@@ -54,6 +54,8 @@ export default defineConfig({
 		screenshot: 'on',
 		video: 'on-first-retry',
 	},
+	/* Timeout for each test */
+	timeout: 5 * 60 * 1000,
 
 	/* Configure projects for major browsers */
 	projects: [

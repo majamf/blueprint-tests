@@ -17,8 +17,6 @@ test.beforeEach(async () => {
 });
 
 test('Blueprint can be added via templates and removed', { tag: '@sbox' }, async ({ page }) => {
-	test.setTimeout(100_000);
-
 	const sboxSteps = new SboxSetupSteps(page);
 	const blueprintSteps = new BlueprintsSteps(page);
 
@@ -50,7 +48,6 @@ test('Blueprint can be added via templates and removed', { tag: '@sbox' }, async
 });
 
 test('Blueprint can be added via builder and removed', { tag: '@sbox' }, async ({ page }) => {
-	test.setTimeout(100_000);
 	const sboxSteps = new SboxSetupSteps(page);
 	const blueprintSteps = new BlueprintsSteps(page);
 

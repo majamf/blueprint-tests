@@ -15,7 +15,6 @@ test.beforeEach(async () => {
 });
 
 test('Blueprints list is loaded in Jamf Pro', { tag: '@stage' }, async ({ page }) => {
-	test.setTimeout(60_000);
 	const jproLoginSteps = new JProLoginSteps(page);
 	const blueprintsSteps = new BlueprintsSteps(page);
 
@@ -28,8 +27,6 @@ test('Blueprints list is loaded in Jamf Pro', { tag: '@stage' }, async ({ page }
 });
 
 test('Blueprint can be added via templates and removed in Jamf Pro', { tag: '@stage' }, async ({ page }) => {
-	test.setTimeout(100_000);
-
 	const jproLoginSteps = new JProLoginSteps(page);
 	const blueprintsSteps = new BlueprintsSteps(page);
 
@@ -65,7 +62,6 @@ test('Blueprint can be added via templates and removed in Jamf Pro', { tag: '@st
 });
 
 test('Blueprint can be added via builder and removed in Jamf Pro', { tag: '@stage' }, async ({ page }) => {
-	test.setTimeout(100_000);
 	const jproLoginSteps = new JProLoginSteps(page);
 	const blueprintsSteps = new BlueprintsSteps(page);
 
