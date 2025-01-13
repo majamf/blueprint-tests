@@ -84,12 +84,12 @@ test('Blueprint can be added via builder and removed in Jamf Pro', { tag: '@stag
 
 	await blueprintsSteps.adminOpensConfigurationOfComponent();
 
-	await blueprintsSteps.diskManagementDrawerIsOpen();
+	await blueprintsSteps.diskManagementDrawerIsOpened();
 	await blueprintsSteps.adminClicksOnExternalStorageCheckbox();
 	await blueprintsSteps.adminSavesConfigurationOfComponent();
 
 	await blueprintsSteps.adminOpensScopeDrawer();
-	await blueprintsSteps.scopingDrawerIsOpen();
+	await blueprintsSteps.scopingDrawerIsOpened();
 
 	await blueprintsSteps.adminSelectsFirstGroupInScopeModal();
 	await blueprintsSteps.adminSavesScope();
@@ -133,7 +133,7 @@ test('Searching in scope works', { tag: '@stage' }, async ({ page }) => {
 	await blueprintsSteps.adminClicksCreateBlueprintButton();
 
 	await blueprintsSteps.adminOpensScopeDrawer();
-	await blueprintsSteps.scopingDrawerIsOpen();
+	await blueprintsSteps.scopingDrawerIsOpened();
 
 	await blueprintsSteps.adminSearchesForGroupInScope('All Managed Clients');
 

@@ -199,8 +199,8 @@ export default class BlueprintsSteps {
 		await this.pageWithHeadingIsOpen('Passcode Policy');
 	}
 
-	@Step('Are you sure modal is open')
-	async areYouSureModalIsOpen() {
+	@Step('Are you sure modal is opened')
+	async areYouSureModalIsOpened() {
 		await this.modalWithHeadingIsOpen('Are you sure?');
 	}
 
@@ -209,16 +209,16 @@ export default class BlueprintsSteps {
 		await this.modalWithHeadingIsOpen('New blueprint');
 	}
 
-	@Step('Disk management drawer is open')
-	async diskManagementDrawerIsOpen() {
+	@Step('Disk management drawer is opened')
+	async diskManagementDrawerIsOpened() {
 		const formLocator = this.page.locator("[id*='builder-com.jamf.ddm.disk-management-configuration']");
 
 		await this.drawerWithHeadingIsOpen('Disk Management');
 		await expect(formLocator).toBeVisible();
 	}
 
-	@Step('Scope drawer is open')
-	async scopingDrawerIsOpen() {
+	@Step('Scoping drawer is opened')
+	async scopingDrawerIsOpened() {
 		await this.drawerWithHeadingIsOpen('Scope');
 	}
 
@@ -425,7 +425,7 @@ export default class BlueprintsSteps {
 		await deleteButton.focus();
 		await deleteButton.click();
 
-		await this.areYouSureModalIsOpen();
+		await this.areYouSureModalIsOpened();
 
 		const blueprintGetPromise = this.waitForBlueprintsResponse();
 

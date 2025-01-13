@@ -66,12 +66,12 @@ test('Blueprint can be added via builder and removed', { tag: '@sbox' }, async (
 	await blueprintSteps.adminDragsAndDropsComponent('Disk management');
 	await blueprintSteps.adminOpensConfigurationOfComponent();
 
-	await blueprintSteps.diskManagementDrawerIsOpen();
+	await blueprintSteps.diskManagementDrawerIsOpened();
 	await blueprintSteps.adminClicksOnExternalStorageCheckbox();
 	await blueprintSteps.adminSavesConfigurationOfComponent();
 
 	await blueprintSteps.adminOpensScopeDrawer();
-	await blueprintSteps.scopingDrawerIsOpen();
+	await blueprintSteps.scopingDrawerIsOpened();
 
 	await blueprintSteps.adminSelectsFirstGroupInScopeModal();
 	await blueprintSteps.adminSavesScope();
@@ -124,16 +124,16 @@ test('Scope of blueprint can be updated (created via builder)', { tag: '@sbox' }
 	await blueprintSteps.adminClicksCreateBlueprintButton();
 
 	await blueprintSteps.adminOpensScopeDrawer();
-	await blueprintSteps.scopingDrawerIsOpen();
+	await blueprintSteps.scopingDrawerIsOpened();
 	await blueprintSteps.adminSelectsFirstGroupInScopeModal();
 	await blueprintSteps.adminSavesScope();
 
 	await blueprintSteps.adminOpensScopeDrawer();
-	await blueprintSteps.scopingDrawerIsOpen();
+	await blueprintSteps.scopingDrawerIsOpened();
 	await blueprintSteps.adminSelectsCertainGroupInScopeModal(1);
 	await blueprintSteps.adminSavesScope();
 	await blueprintSteps.adminOpensScopeDrawer();
-	await blueprintSteps.scopingDrawerIsOpen();
+	await blueprintSteps.scopingDrawerIsOpened();
 	await blueprintSteps.selectedScopeIsChecked(1);
 	await blueprintSteps.adminsClicksOnCancelButton();
 
@@ -157,17 +157,17 @@ test('Configuration of component can be updated', { tag: '@sbox' }, async ({ pag
 	await blueprintSteps.adminDragsAndDropsComponent('Disk management');
 	await blueprintSteps.adminOpensConfigurationOfComponent();
 
-	await blueprintSteps.diskManagementDrawerIsOpen();
+	await blueprintSteps.diskManagementDrawerIsOpened();
 	await blueprintSteps.adminClicksOnExternalStorageCheckbox();
 	await blueprintSteps.adminSavesConfigurationOfComponent();
 
 	await blueprintSteps.adminOpensConfigurationOfComponent();
-	await blueprintSteps.diskManagementDrawerIsOpen();
+	await blueprintSteps.diskManagementDrawerIsOpened();
 	await blueprintSteps.adminClicksOnNetworkStorageCheckbox();
 	await blueprintSteps.adminSavesConfigurationOfComponent();
 
 	await blueprintSteps.adminOpensConfigurationOfComponent();
-	await blueprintSteps.diskManagementDrawerIsOpen();
+	await blueprintSteps.diskManagementDrawerIsOpened();
 	await blueprintSteps.selectedDiskManagementIsChecked('Network storage');
 	await blueprintSteps.adminsClicksOnCancelButton();
 
