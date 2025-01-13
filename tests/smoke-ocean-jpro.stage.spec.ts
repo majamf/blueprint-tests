@@ -4,6 +4,7 @@ import JProLoginSteps from './steps/jpro-login-steps';
 import BlueprintsSteps from './steps/blueprints-steps';
 
 const baseUrl = 'https://forqhqdg.pyro.jamf.build';
+
 const id = uuidv4();
 
 test.beforeEach(async () => {
@@ -14,7 +15,6 @@ test.beforeEach(async () => {
 });
 
 test('Blueprints list is loaded in Jamf Pro', { tag: '@stage' }, async ({ page }) => {
-	test.setTimeout(60_000);
 	const jproLoginSteps = new JProLoginSteps(page);
 	const blueprintsSteps = new BlueprintsSteps(page);
 
@@ -27,8 +27,6 @@ test('Blueprints list is loaded in Jamf Pro', { tag: '@stage' }, async ({ page }
 });
 
 test('Blueprint can be added via templates and removed in Jamf Pro', { tag: '@stage' }, async ({ page }) => {
-	test.setTimeout(100_000);
-
 	const jproLoginSteps = new JProLoginSteps(page);
 	const blueprintsSteps = new BlueprintsSteps(page);
 
@@ -64,7 +62,6 @@ test('Blueprint can be added via templates and removed in Jamf Pro', { tag: '@st
 });
 
 test('Blueprint can be added via builder and removed in Jamf Pro', { tag: '@stage' }, async ({ page }) => {
-	test.setTimeout(100_000);
 	const jproLoginSteps = new JProLoginSteps(page);
 	const blueprintsSteps = new BlueprintsSteps(page);
 
@@ -87,12 +84,12 @@ test('Blueprint can be added via builder and removed in Jamf Pro', { tag: '@stag
 
 	await blueprintsSteps.adminOpensConfigurationOfComponent();
 
-	await blueprintsSteps.diskManagementDrawerIsOpen();
+	await blueprintsSteps.diskManagementDrawerIsOpened();
 	await blueprintsSteps.adminClicksOnExternalStorageCheckbox();
 	await blueprintsSteps.adminSavesConfigurationOfComponent();
 
 	await blueprintsSteps.adminOpensScopeDrawer();
-	await blueprintsSteps.scopingDrawerIsOpen();
+	await blueprintsSteps.scopingDrawerIsOpened();
 
 	await blueprintsSteps.adminSelectsFirstGroupInScopeModal();
 	await blueprintsSteps.adminSavesScope();
@@ -104,4 +101,44 @@ test('Blueprint can be added via builder and removed in Jamf Pro', { tag: '@stag
 
 	await blueprintsSteps.adminDeletesBlueprint();
 	await blueprintsSteps.thereIsNoBlueprintWithName('Disk_' + id);
+});
+
+test('Templates are properly loaded', { tag: '@stage' }, async ({ page }) => {
+	const jproLoginSteps = new JProLoginSteps(page);
+	const blueprintsSteps = new BlueprintsSteps(page);
+
+	await jproLoginSteps.loginToJamfPro(baseUrl);
+
+	await blueprintsSteps.adminOpensBlueprintsViaJamfProNavigation();
+	await blueprintsSteps.blueprintsPageIsOpen();
+
+	await blueprintsSteps.adminsClicksOnQuickStart();
+	await blueprintsSteps.verifyExpectedTemplates('Set passcode policies');
+});
+
+test('Searching in scope works', { tag: '@stage' }, async ({ page }) => {
+	const jproLoginSteps = new JProLoginSteps(page);
+	const blueprintsSteps = new BlueprintsSteps(page);
+
+	await jproLoginSteps.loginToJamfPro(baseUrl);
+
+	await blueprintsSteps.adminOpensBlueprintsViaJamfProNavigation();
+	await blueprintsSteps.blueprintsPageIsOpen();
+
+	await blueprintsSteps.adminOpensBlueprintBuilder();
+
+	await blueprintsSteps.newBlueprintModalIsOpen();
+
+	await blueprintsSteps.adminFillsNameOfBlueprint('Search_test' + id);
+	await blueprintsSteps.adminClicksCreateBlueprintButton();
+
+	await blueprintsSteps.adminOpensScopeDrawer();
+	await blueprintsSteps.scopingDrawerIsOpened();
+
+	await blueprintsSteps.adminSearchesForGroupInScope('All Managed Clients');
+
+	await blueprintsSteps.adminsClicksOnCancelButton();
+
+	await blueprintsSteps.adminDeletesBlueprint();
+	await blueprintsSteps.thereIsNoBlueprintWithName('Search_test' + id);
 });

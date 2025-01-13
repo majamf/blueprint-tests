@@ -17,8 +17,6 @@ test.beforeEach(async () => {
 });
 
 test('Blueprint can be added via templates and removed', { tag: '@sbox' }, async ({ page }) => {
-	test.setTimeout(100_000);
-
 	const sboxSteps = new SboxSetupSteps(page);
 	const blueprintSteps = new BlueprintsSteps(page);
 
@@ -50,7 +48,6 @@ test('Blueprint can be added via templates and removed', { tag: '@sbox' }, async
 });
 
 test('Blueprint can be added via builder and removed', { tag: '@sbox' }, async ({ page }) => {
-	test.setTimeout(100_000);
 	const sboxSteps = new SboxSetupSteps(page);
 	const blueprintSteps = new BlueprintsSteps(page);
 
@@ -67,15 +64,14 @@ test('Blueprint can be added via builder and removed', { tag: '@sbox' }, async (
 	await blueprintSteps.adminClicksCreateBlueprintButton();
 
 	await blueprintSteps.adminDragsAndDropsComponent('Disk management');
-
 	await blueprintSteps.adminOpensConfigurationOfComponent();
 
-	await blueprintSteps.diskManagementDrawerIsOpen();
+	await blueprintSteps.diskManagementDrawerIsOpened();
 	await blueprintSteps.adminClicksOnExternalStorageCheckbox();
 	await blueprintSteps.adminSavesConfigurationOfComponent();
 
 	await blueprintSteps.adminOpensScopeDrawer();
-	await blueprintSteps.scopingDrawerIsOpen();
+	await blueprintSteps.scopingDrawerIsOpened();
 
 	await blueprintSteps.adminSelectsFirstGroupInScopeModal();
 	await blueprintSteps.adminSavesScope();
@@ -87,4 +83,115 @@ test('Blueprint can be added via builder and removed', { tag: '@sbox' }, async (
 
 	await blueprintSteps.adminDeletesBlueprint();
 	await blueprintSteps.thereIsNoBlueprintWithName('Disk_' + id);
+});
+
+test('Name and description of blueprint can be updated', { tag: '@sbox' }, async ({ page }) => {
+	const sboxSteps = new SboxSetupSteps(page);
+	const blueprintSteps = new BlueprintsSteps(page);
+
+	await sboxSteps.sboxIsSetUp(baseUrl, clusterUrl);
+
+	await blueprintSteps.adminOpensBlueprintBuilder();
+
+	await blueprintSteps.newBlueprintModalIsOpen();
+
+	await blueprintSteps.adminFillsNameOfBlueprint('Disk_' + id);
+	await blueprintSteps.adminFillsDescriptionOfBlueprint('Some description');
+	await blueprintSteps.adminClicksCreateBlueprintButton();
+
+	await blueprintSteps.adminEditsDetailsOfBlueprint('Name updated' + id, 'Description updated' + id);
+	await blueprintSteps.adminsOpensBlueprintsRoute();
+	await blueprintSteps.thereIsBlueprintWithName('Name updated' + id);
+	await blueprintSteps.thereIsBlueprintWithDescription('Description updated' + id);
+
+	await blueprintSteps.adminOpensBlueprintWithName('Name updated' + id);
+	await blueprintSteps.adminDeletesBlueprint();
+	await blueprintSteps.thereIsNoBlueprintWithName('Name updated' + id);
+});
+
+test('Scope of blueprint can be updated (created via builder)', { tag: '@sbox' }, async ({ page }) => {
+	const sboxSteps = new SboxSetupSteps(page);
+	const blueprintSteps = new BlueprintsSteps(page);
+
+	await sboxSteps.sboxIsSetUp(baseUrl, clusterUrl);
+
+	await blueprintSteps.adminOpensBlueprintBuilder();
+
+	await blueprintSteps.newBlueprintModalIsOpen();
+
+	await blueprintSteps.adminFillsNameOfBlueprint('Disk_' + id);
+	await blueprintSteps.adminFillsDescriptionOfBlueprint('Some description');
+	await blueprintSteps.adminClicksCreateBlueprintButton();
+
+	await blueprintSteps.adminOpensScopeDrawer();
+	await blueprintSteps.scopingDrawerIsOpened();
+	await blueprintSteps.adminSelectsFirstGroupInScopeModal();
+	await blueprintSteps.adminSavesScope();
+
+	await blueprintSteps.adminOpensScopeDrawer();
+	await blueprintSteps.scopingDrawerIsOpened();
+	await blueprintSteps.adminSelectsCertainGroupInScopeModal(1);
+	await blueprintSteps.adminSavesScope();
+	await blueprintSteps.adminOpensScopeDrawer();
+	await blueprintSteps.scopingDrawerIsOpened();
+	await blueprintSteps.selectedScopeIsChecked(1);
+	await blueprintSteps.adminsClicksOnCancelButton();
+
+	await blueprintSteps.adminDeletesBlueprint();
+});
+
+test('Configuration of component can be updated', { tag: '@sbox' }, async ({ page }) => {
+	const sboxSteps = new SboxSetupSteps(page);
+	const blueprintSteps = new BlueprintsSteps(page);
+
+	await sboxSteps.sboxIsSetUp(baseUrl, clusterUrl);
+
+	await blueprintSteps.adminOpensBlueprintBuilder();
+
+	await blueprintSteps.newBlueprintModalIsOpen();
+
+	await blueprintSteps.adminFillsNameOfBlueprint('Disk_' + id);
+	await blueprintSteps.adminFillsDescriptionOfBlueprint('Some description');
+	await blueprintSteps.adminClicksCreateBlueprintButton();
+
+	await blueprintSteps.adminDragsAndDropsComponent('Disk management');
+	await blueprintSteps.adminOpensConfigurationOfComponent();
+
+	await blueprintSteps.diskManagementDrawerIsOpened();
+	await blueprintSteps.adminClicksOnExternalStorageCheckbox();
+	await blueprintSteps.adminSavesConfigurationOfComponent();
+
+	await blueprintSteps.adminOpensConfigurationOfComponent();
+	await blueprintSteps.diskManagementDrawerIsOpened();
+	await blueprintSteps.adminClicksOnNetworkStorageCheckbox();
+	await blueprintSteps.adminSavesConfigurationOfComponent();
+
+	await blueprintSteps.adminOpensConfigurationOfComponent();
+	await blueprintSteps.diskManagementDrawerIsOpened();
+	await blueprintSteps.selectedDiskManagementIsChecked('Network storage');
+	await blueprintSteps.adminsClicksOnCancelButton();
+
+	await blueprintSteps.adminDeletesBlueprint();
+});
+
+test('Components of blueprint can be updated', { tag: '@sbox' }, async ({ page }) => {
+	const sboxSteps = new SboxSetupSteps(page);
+	const blueprintSteps = new BlueprintsSteps(page);
+
+	await sboxSteps.sboxIsSetUp(baseUrl, clusterUrl);
+
+	await blueprintSteps.adminOpensBlueprintBuilder();
+
+	await blueprintSteps.newBlueprintModalIsOpen();
+	await blueprintSteps.adminFillsNameOfBlueprint('Disk_' + id);
+	await blueprintSteps.adminFillsDescriptionOfBlueprint('Some description');
+	await blueprintSteps.adminClicksCreateBlueprintButton();
+
+	await blueprintSteps.adminDragsAndDropsComponent('Disk management');
+	await blueprintSteps.adminsOpensBlueprintsRoute();
+	await blueprintSteps.adminOpensBlueprintWithName('Disk_' + id);
+	await blueprintSteps.adminDragsAndDropsComponent('Passcode Policy');
+	await blueprintSteps.adminDeletesComponent('Disk management');
+
+	await blueprintSteps.adminDeletesBlueprint();
 });

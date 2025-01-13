@@ -3,7 +3,6 @@ on:
   push:
     branches: [ main ]
   pull_request:
-    branches: [ main ]
   workflow_dispatch:
     inputs:
       filter:
@@ -13,6 +12,7 @@ on:
 env:
   JAMF_ACCOUNT_STAGE_USER_MAIL: ${{secrets.JAMF_ACCOUNT_STAGE_USER_MAIL}}
   JAMF_ACCOUNT_STAGE_USER_PASSWORD: ${{secrets.JAMF_ACCOUNT_STAGE_USER_PASSWORD}}
+  RP_API_KEY: ${{secrets.RP_API_KEY}}
 
 jobs:
   test:
@@ -41,7 +41,7 @@ jobs:
       shell: bash
     - name: Run Playwright tests
       run: |
-        HOME=/root PLAYWRIGHT_JSON_OUTPUT_NAME=results.json pnpm exec playwright test ${{ github.event.inputs.filter && format('-g {0}', github.event.inputs.filter) || '' }} --reporter=json,html
+        HOME=/root PLAYWRIGHT_JSON_OUTPUT_NAME=results.json pnpm exec playwright test ${{ github.event.inputs.filter && format('-g {0}', github.event.inputs.filter) || '' }}
     - uses: actions/upload-artifact@v4
       if: always()
       with:

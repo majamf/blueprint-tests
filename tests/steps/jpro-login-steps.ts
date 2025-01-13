@@ -1,6 +1,7 @@
 import * as process from 'node:process';
 import type { Page } from '@playwright/test';
 import UtilsSteps from './utils-steps';
+import { Step } from './utils';
 
 function assertString(value: unknown, propertyName?: string): asserts value is string {
 	if (typeof value !== 'string') {
@@ -9,11 +10,13 @@ function assertString(value: unknown, propertyName?: string): asserts value is s
 }
 
 export default class JProLoginSteps {
-	private utilsSteps: UtilsSteps;
-	constructor(private page: Page) {
+	private readonly utilsSteps: UtilsSteps;
+
+	constructor(private readonly page: Page) {
 		this.utilsSteps = new UtilsSteps(page);
 	}
 
+	@Step('Login to Jamf Pro at "$0"')
 	public async loginToJamfPro(baseUrl: string) {
 		assertString(process.env.JAMF_ACCOUNT_STAGE_USER_MAIL, 'JAMF_ACCOUNT_STAGE_USER_MAIL');
 		assertString(process.env.JAMF_ACCOUNT_STAGE_USER_PASSWORD, 'JAMF_ACCOUNT_STAGE_USER_PASSWORD');

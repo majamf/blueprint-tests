@@ -1,8 +1,10 @@
 import type { Page } from '@playwright/test';
+import { Step } from './utils';
 
 export default class UtilsSteps {
-	constructor(private page: Page) {}
+	constructor(private readonly page: Page) {}
 
+	@Step('Disable animations')
 	public async disableAnimations() {
 		await this.page.addStyleTag({
 			content: `
