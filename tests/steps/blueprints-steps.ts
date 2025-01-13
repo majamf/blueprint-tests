@@ -34,13 +34,7 @@ const blueprintDropdownLocator = '*[wa-component="nebula--dropdown"]';
 const blueprintDrawerLocator = '*[wa-component="nebula--drawer"]';
 
 export default class BlueprintsSteps {
-	constructor(private page: Page) {}
-
-	// private async waitForBlueprintsToLoad(url: string) {
-	// 	await this.page.waitForURL(url);
-	// 	await this.waitForBlueprintsResponse();
-	// 	await this.page.waitForLoadState('load');
-	// }
+	constructor(private readonly page: Page) {}
 
 	private waitForBlueprintsResponse() {
 		return this.page.waitForResponse(
@@ -70,7 +64,7 @@ export default class BlueprintsSteps {
 	}
 
 	@Step('Page with heading "$0" is opened')
-	public async pageWithHeadingIsOpen(heading: string) {
+	async pageWithHeadingIsOpen(heading: string) {
 		await this.page.waitForLoadState('load');
 
 		const headingLocator = this.page.getByRole('heading', { name: heading });
@@ -92,13 +86,6 @@ export default class BlueprintsSteps {
 		await expect(this.page.locator(blueprintDrawerLocator).getByRole('heading', { name: heading })).toBeInViewport();
 	}
 
-	@Step('Modal with test id "$0" is open')
-	async modalWithTestIdIsOpen(testId: string) {
-		const modal = this.page.getByTestId(testId);
-		await modal.focus();
-		await expect(modal).toBeInViewport();
-	}
-
 	@Step('Admin navigates to route "$0"')
 	async navigateToRoute(route: string) {
 		const url = this.baseUrl(this.page.url()) + '/' + route;
@@ -116,7 +103,7 @@ export default class BlueprintsSteps {
 		await blueprintRadio.click();
 	}
 
-	baseUrl(fullUrl: string) {
+	private baseUrl(fullUrl: string) {
 		const url = new URL(fullUrl);
 
 		return `${url.protocol}//${url.host}`;
@@ -144,19 +131,6 @@ export default class BlueprintsSteps {
 		await blueprintGetPromise;
 	}
 
-	@Step('Admin goes back to blueprints list via breadcrumbs')
-	async adminGoesBackToBlueprintsListViaBreadCrumbs() {
-		const breadCrumbLink = this.page.getByRole('link', { name: 'Blueprints' });
-
-		const blueprintGetPromise = this.waitForBlueprintsResponse();
-
-		await breadCrumbLink.click();
-
-		await this.page.waitForURL('**/blueprints');
-
-		await blueprintGetPromise;
-	}
-
 	@Step('Admin opens blueprints via Jamf Pro navigation')
 	async adminOpensBlueprintsViaJamfProNavigation() {
 		const blueprintsNavigation = this.page.locator('jamf-nav-side-container').getByText('Blueprints');
@@ -172,19 +146,6 @@ export default class BlueprintsSteps {
 	async adminsClicksOnQuickStart() {
 		await this.clicksOnRadioButtonWithValue('templates');
 		await this.page.waitForURL('**/blueprints/templates');
-	}
-
-	@Step('Admin opens blueprints via url "$0"')
-	async adminOpensBlueprintsViaUrl(baseUrl: string) {
-		const url = baseUrl + '/blueprints';
-
-		const blueprintGetPromise = this.waitForBlueprintsResponse();
-
-		await this.page.goto(url);
-
-		await this.page.waitForURL('**/blueprints');
-
-		await blueprintGetPromise;
 	}
 
 	@Step('Admin waits for blueprints to load')
@@ -216,11 +177,6 @@ export default class BlueprintsSteps {
 		const cardWithName = cards.filter({ hasText: name });
 
 		await expect(cardWithName).toBeHidden();
-	}
-
-	@Step('Admin waits for scoping modal to appear')
-	async adminWaitsForScopingModalToAppear() {
-		await this.modalWithTestIdIsOpen('scoping-modal');
 	}
 
 	@Step('Blueprints page is opened')
@@ -331,13 +287,6 @@ export default class BlueprintsSteps {
 		const firstGroup = this.page.locator(blueprintCheckboxLocator).nth(0);
 
 		await firstGroup.click();
-	}
-
-	@Step('Admin selects certain group in scope')
-	async adminSelectsCertainGroupInScope(index: number) {
-		const certainGroup = this.page.locator(blueprintCheckboxLocator).nth(index);
-
-		await certainGroup.click();
 	}
 
 	@Step('Admin selects first group in scope modal')

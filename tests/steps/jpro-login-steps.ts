@@ -10,8 +10,9 @@ function assertString(value: unknown, propertyName?: string): asserts value is s
 }
 
 export default class JProLoginSteps {
-	private utilsSteps: UtilsSteps;
-	constructor(private page: Page) {
+	private readonly utilsSteps: UtilsSteps;
+
+	constructor(private readonly page: Page) {
 		this.utilsSteps = new UtilsSteps(page);
 	}
 
