@@ -64,7 +64,7 @@ test('Blueprint can be added via builder and removed', { tag: '@sbox' }, async (
 	await blueprintSteps.adminClicksCreateBlueprintButton();
 
 	await blueprintSteps.adminDragsAndDropsComponent('Disk management');
-	await blueprintSteps.adminOpensConfigurationOfComponent();
+	await blueprintSteps.adminOpensConfigurationOfComponent('Disk management');
 
 	await blueprintSteps.diskManagementDrawerIsOpened();
 	await blueprintSteps.adminClicksOnExternalStorageCheckbox();
@@ -155,18 +155,18 @@ test('Configuration of component can be updated', { tag: '@sbox' }, async ({ pag
 	await blueprintSteps.adminClicksCreateBlueprintButton();
 
 	await blueprintSteps.adminDragsAndDropsComponent('Disk management');
-	await blueprintSteps.adminOpensConfigurationOfComponent();
+	await blueprintSteps.adminOpensConfigurationOfComponent('Disk management');
 
 	await blueprintSteps.diskManagementDrawerIsOpened();
 	await blueprintSteps.adminClicksOnExternalStorageCheckbox();
 	await blueprintSteps.adminSavesConfigurationOfComponent();
 
-	await blueprintSteps.adminOpensConfigurationOfComponent();
+	await blueprintSteps.adminOpensConfigurationOfComponent('Disk management');
 	await blueprintSteps.diskManagementDrawerIsOpened();
 	await blueprintSteps.adminClicksOnNetworkStorageCheckbox();
 	await blueprintSteps.adminSavesConfigurationOfComponent();
 
-	await blueprintSteps.adminOpensConfigurationOfComponent();
+	await blueprintSteps.adminOpensConfigurationOfComponent('Disk management');
 	await blueprintSteps.diskManagementDrawerIsOpened();
 	await blueprintSteps.selectedDiskManagementIsChecked('Network storage');
 	await blueprintSteps.adminsClicksOnCancelButton();

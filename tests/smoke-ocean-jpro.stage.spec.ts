@@ -82,7 +82,7 @@ test('Blueprint can be added via builder and removed in Jamf Pro', { tag: '@stag
 
 	await blueprintsSteps.adminDragsAndDropsComponent('Disk management');
 
-	await blueprintsSteps.adminOpensConfigurationOfComponent();
+	await blueprintsSteps.adminOpensConfigurationOfComponent('Disk management');
 
 	await blueprintsSteps.diskManagementDrawerIsOpened();
 	await blueprintsSteps.adminClicksOnExternalStorageCheckbox();

@@ -82,8 +82,9 @@ export default class BlueprintsSteps {
 
 	@Step('Drawer with heading "$0" is open')
 	async drawerWithHeadingIsOpen(heading: string) {
-		await this.page.waitForLoadState('load');
-		await expect(this.page.locator(blueprintDrawerLocator).getByRole('heading', { name: heading })).toBeInViewport();
+		const headingLocator = this.page.locator(blueprintDrawerLocator).getByRole('heading', { name: heading });
+
+		await expect(headingLocator).toBeInViewport();
 	}
 
 	@Step('Admin navigates to route "$0"')
@@ -157,24 +158,21 @@ export default class BlueprintsSteps {
 
 	@Step('There is blueprint with name "$0"')
 	async thereIsBlueprintWithName(name: string) {
-		const cards = this.page.locator(blueprintCardLocator);
-		const blueprintWithName = cards.filter({ hasText: name });
+		const blueprintWithName = this.page.locator(blueprintCardLocator, { hasText: name });
 
 		await expect(blueprintWithName).toHaveCount(1, { timeout: 10000 });
 	}
 
 	@Step('There is blueprint with description "$0"')
 	async thereIsBlueprintWithDescription(description: string) {
-		const cards = this.page.locator(blueprintCardLocator);
-		const blueprintWithDescription = cards.filter({ hasText: description });
+		const blueprintWithDescription = this.page.locator(blueprintCardLocator, { hasText: description });
 
 		await expect(blueprintWithDescription).toHaveCount(1);
 	}
 
 	@Step('There is no blueprint with name "$0"')
 	async thereIsNoBlueprintWithName(name: string) {
-		const cards = this.page.locator(blueprintCardLocator);
-		const cardWithName = cards.filter({ hasText: name });
+		const cardWithName = this.page.locator(blueprintCardLocator, { hasText: name });
 
 		await expect(cardWithName).toBeHidden();
 	}
@@ -231,8 +229,8 @@ export default class BlueprintsSteps {
 
 	@Step('Admin opens blueprint with name "$0"')
 	async adminOpensBlueprintWithName(name: string) {
-		const cards = this.page.locator(blueprintCardLocator);
-		const blueprintCardLink = cards.filter({ hasText: name }).getByRole('link');
+		const cardWithName = this.page.locator(blueprintCardLocator, { hasText: name });
+		const blueprintCardLink = cardWithName.getByRole('link');
 
 		await blueprintCardLink.click();
 	}
@@ -310,21 +308,20 @@ export default class BlueprintsSteps {
 
 	@Step('Admin searches for group with name "$0" in scope')
 	async adminSearchesForGroupInScope(group: string) {
-		const searchInput = this.page.locator('input[placeholder="Search"]');
+		const searchInput = this.page.locator(blueprintDrawerLocator).locator('input[placeholder="Search"]');
 
 		await searchInput.fill(group);
 
-		const groupLocator = this.page.locator(`[wa-component="nebula--checkbox"]:has-text("${group}")`);
-		await groupLocator.waitFor();
+		const groupLocator = this.page
+			.locator(blueprintDrawerLocator)
+			.locator(`${blueprintCheckboxLocator}:has-text("${group}")`);
 		await expect(groupLocator).toBeVisible();
 		await expect(groupLocator).toHaveText(group);
 	}
 
 	@Step('Disk management option with name "$0" is checked')
 	async selectedDiskManagementIsChecked(name: string) {
-		await expect(
-			this.page.locator(blueprintCheckboxLocator).filter({ hasText: name }).locator('span').first()
-		).toBeChecked();
+		await expect(this.page.locator(blueprintCheckboxLocator, { hasText: name }).locator('span').first()).toBeChecked();
 	}
 
 	@Step('Admin selects password to be required')
@@ -337,8 +334,7 @@ export default class BlueprintsSteps {
 	@Step('Admin clicks on external storage checkbox')
 	async adminClicksOnExternalStorageCheckbox() {
 		const externalStorageCheckbox = this.page
-			.locator(blueprintCheckboxLocator)
-			.filter({ hasText: 'External storage' })
+			.locator(blueprintCheckboxLocator, { hasText: 'External storage' })
 			.locator('label div')
 			.first();
 
@@ -348,8 +344,7 @@ export default class BlueprintsSteps {
 	@Step('Admin clicks on network storage checkbox')
 	async adminClicksOnNetworkStorageCheckbox() {
 		const externalStorageCheckbox = this.page
-			.locator(blueprintCheckboxLocator)
-			.filter({ hasText: 'Network storage' })
+			.locator(blueprintCheckboxLocator, { hasText: 'Network storage' })
 			.locator('label div')
 			.first();
 
@@ -436,9 +431,14 @@ export default class BlueprintsSteps {
 		await blueprintGetPromise;
 	}
 
-	@Step('Admin opens configuration of component')
-	async adminOpensConfigurationOfComponent() {
-		const configureButton = this.page.getByTestId('configure-component-button');
+	@Step('Admin opens configuration of component with title "$0"')
+	async adminOpensConfigurationOfComponent(componentTitle: string) {
+		const declarationGroup = this.page.getByTestId('step-0');
+		const componentInDeclarationGroup = declarationGroup.locator(blueprintCardLocator, { hasText: componentTitle });
+
+		await componentInDeclarationGroup.hover();
+
+		const configureButton = componentInDeclarationGroup.getByTestId('configure-component-button');
 
 		await configureButton.focus();
 		await configureButton.click();
@@ -476,7 +476,7 @@ export default class BlueprintsSteps {
 		const targetElementBound = await targetElement.boundingBox();
 
 		if (!targetElementBound) {
-			throw new Error(`Bounding box for element "${targetElementBound}" is null.`);
+			throw new Error(`Bounding box for element "${targetSelector}" is null.`);
 		}
 
 		await this.page.mouse.move(
@@ -488,19 +488,21 @@ export default class BlueprintsSteps {
 
 		await this.page.mouse.up();
 
+		const componentInDeclarationGroup = targetElement.locator(blueprintCardLocator, { hasText: componentTitle });
+
+		await expect(componentInDeclarationGroup).toBeVisible();
+
 		await blueprintUpdatePromise;
 	}
 
 	@Step('Admin deletes component with title "$0"')
 	async adminDeletesComponent(componentTitle: string) {
-		const declarationGroup = this.page.locator('[data-testid="step-0"]');
+		const declarationGroup = this.page.getByTestId('step-0');
 
-		const componentInDeclarationGroup = declarationGroup
-			.locator(blueprintCardLocator)
-			.filter({ hasText: componentTitle });
+		const componentInDeclarationGroup = declarationGroup.locator(blueprintCardLocator, { hasText: componentTitle });
 		await componentInDeclarationGroup.hover();
 
-		const deleteButton = componentInDeclarationGroup.locator('[data-testid="delete-component-button"]');
+		const deleteButton = componentInDeclarationGroup.getByTestId('delete-component-button');
 		await deleteButton.focus();
 
 		const blueprintUpdatePromise = this.waitForBlueprintsUpdateResponse();
