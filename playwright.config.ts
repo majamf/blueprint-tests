@@ -56,7 +56,6 @@ export default defineConfig({
 			name: 'chromium',
 			use: { ...devices['Desktop Chrome'] },
 		},
-
 		{
 			name: 'firefox',
 			use: {
@@ -68,10 +67,9 @@ export default defineConfig({
 				},
 			},
 		},
-		// TODO: Fix flakiness of test in webkit https://jamfpdd.atlassian.net/browse/JSC-62590
-		// {
-		// 	name: 'webkit',
-		// 	use: { ...devices['Desktop Safari'] },
-		// },
+		{
+			name: 'webkit',
+			use: { ...devices['Desktop Safari'] },
+		},
 	],
 });
