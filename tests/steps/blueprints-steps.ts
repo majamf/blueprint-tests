@@ -219,6 +219,14 @@ export default class BlueprintsSteps {
 		await expect(formLocator).toBeVisible();
 	}
 
+	@Step('Disk management add modal is opened')
+	async diskManagementAddModalIsOpened() {
+		const formLocator = this.page.locator("[id*='add-component-com.jamf.ddm.disk-management']");
+
+		await this.drawerWithHeadingIsOpen('Disk Management');
+		await expect(formLocator).toBeVisible();
+	}
+
 	@Step('Scoping drawer is opened')
 	async scopingDrawerIsOpened() {
 		await this.drawerWithHeadingIsOpen('Scope');
@@ -457,6 +465,15 @@ export default class BlueprintsSteps {
 		await blueprintUpdatePromise;
 	}
 
+	@Step('Admin adds configuration of component')
+	async adminAddsConfigurationOfComponent() {
+		const saveButton = this.page.getByTestId('add-component-button');
+
+		const blueprintUpdatePromise = this.waitForBlueprintsUpdateResponse();
+		await saveButton.click();
+		await blueprintUpdatePromise;
+	}
+
 	@Step('Admin drags and drops component "$0"')
 	async adminDragsAndDropsComponent(componentTitle: string) {
 		// https://github.com/microsoft/playwright/issues/13855
@@ -497,6 +514,15 @@ export default class BlueprintsSteps {
 		await expect(componentInDeclarationGroup).toBeVisible();
 
 		await blueprintUpdatePromise;
+	}
+
+	@Step('Admin opens add modal of component with title "$0"')
+	async adminOpensAddModalOfComponent(componentTitle: string) {
+		const componentList = this.page.getByTestId('component-list');
+		const componentInComponentList = componentList.locator(blueprintCardLocator, { hasText: componentTitle });
+
+		await componentInComponentList.focus();
+		await componentInComponentList.click();
 	}
 
 	@Step('Admin deletes component with title "$0"')

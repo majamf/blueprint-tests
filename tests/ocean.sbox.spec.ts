@@ -47,9 +47,8 @@ test('Blueprint can be added via templates and removed', { tag: '@sbox' }, async
 	await blueprintSteps.thereIsNoBlueprintWithName('Passcode_' + id);
 });
 
-test('Blueprint can be added via builder and removed', { tag: '@sbox' }, async ({ page, browserName }) => {
-	test.fixme(browserName === 'webkit', 'https://jamfpdd.atlassian.net/browse/JSC-62590');
-
+test('Blueprint can be added via builder and removed', { tag: '@stage' }, async ({ page, browserName }) => {
+	test.fixme(browserName !== 'chromium', 'https://jamfpdd.atlassian.net/browse/JSC-62590');
 	const sboxSteps = new SboxSetupSteps(page);
 	const blueprintSteps = new BlueprintsSteps(page);
 
@@ -142,9 +141,7 @@ test('Scope of blueprint can be updated (created via builder)', { tag: '@sbox' }
 	await blueprintSteps.adminDeletesBlueprint();
 });
 
-test('Configuration of component can be updated', { tag: '@sbox' }, async ({ page, browserName }) => {
-	test.fixme(browserName === 'webkit', 'https://jamfpdd.atlassian.net/browse/JSC-62590');
-
+test('Configuration of component can be updated', { tag: '@sbox' }, async ({ page }) => {
 	const sboxSteps = new SboxSetupSteps(page);
 	const blueprintSteps = new BlueprintsSteps(page);
 
@@ -158,12 +155,11 @@ test('Configuration of component can be updated', { tag: '@sbox' }, async ({ pag
 	await blueprintSteps.adminFillsDescriptionOfBlueprint('Some description');
 	await blueprintSteps.adminClicksCreateBlueprintButton();
 
-	await blueprintSteps.adminDragsAndDropsComponent('Disk management');
-	await blueprintSteps.adminOpensConfigurationOfComponent('Disk management');
+	await blueprintSteps.adminOpensAddModalOfComponent('Disk management');
 
-	await blueprintSteps.diskManagementDrawerIsOpened();
+	await blueprintSteps.diskManagementAddModalIsOpened();
 	await blueprintSteps.adminClicksOnExternalStorageCheckbox();
-	await blueprintSteps.adminSavesConfigurationOfComponent();
+	await blueprintSteps.adminAddsConfigurationOfComponent();
 
 	await blueprintSteps.adminOpensConfigurationOfComponent('Disk management');
 	await blueprintSteps.diskManagementDrawerIsOpened();
@@ -178,9 +174,7 @@ test('Configuration of component can be updated', { tag: '@sbox' }, async ({ pag
 	await blueprintSteps.adminDeletesBlueprint();
 });
 
-test('Components of blueprint can be updated', { tag: '@sbox' }, async ({ page, browserName }) => {
-	test.fixme(browserName === 'webkit', 'https://jamfpdd.atlassian.net/browse/JSC-62590');
-
+test('Components of blueprint can be updated', { tag: '@sbox' }, async ({ page }) => {
 	const sboxSteps = new SboxSetupSteps(page);
 	const blueprintSteps = new BlueprintsSteps(page);
 
@@ -193,10 +187,16 @@ test('Components of blueprint can be updated', { tag: '@sbox' }, async ({ page, 
 	await blueprintSteps.adminFillsDescriptionOfBlueprint('Some description');
 	await blueprintSteps.adminClicksCreateBlueprintButton();
 
-	await blueprintSteps.adminDragsAndDropsComponent('Disk management');
+	await blueprintSteps.adminOpensAddModalOfComponent('Disk management');
+
+	await blueprintSteps.adminAddsConfigurationOfComponent();
+
 	await blueprintSteps.adminsOpensBlueprintsRoute();
 	await blueprintSteps.adminOpensBlueprintWithName('Disk_' + id);
-	await blueprintSteps.adminDragsAndDropsComponent('Passcode Policy');
+
+	await blueprintSteps.adminOpensAddModalOfComponent('Passcode Policy');
+	await blueprintSteps.adminAddsConfigurationOfComponent();
+
 	await blueprintSteps.adminDeletesComponent('Disk management');
 
 	await blueprintSteps.adminDeletesBlueprint();

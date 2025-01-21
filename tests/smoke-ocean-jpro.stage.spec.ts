@@ -61,7 +61,8 @@ test('Blueprint can be added via templates and removed in Jamf Pro', { tag: '@st
 	await blueprintsSteps.thereIsNoBlueprintWithName('Passcode_' + id);
 });
 
-test('Blueprint can be added via builder and removed in Jamf Pro', { tag: '@stage' }, async ({ page }) => {
+test('Blueprint can be added via builder and removed in Jamf Pro', { tag: '@stage' }, async ({ page, browserName }) => {
+	test.fixme(browserName !== 'chromium', 'https://jamfpdd.atlassian.net/browse/JSC-62590');
 	const jproLoginSteps = new JProLoginSteps(page);
 	const blueprintsSteps = new BlueprintsSteps(page);
 
