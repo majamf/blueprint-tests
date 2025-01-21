@@ -33,6 +33,10 @@ const blueprintCheckboxLocator = '*[wa-component="nebula--checkbox"]';
 const blueprintDropdownLocator = '*[wa-component="nebula--dropdown"]';
 const blueprintDrawerLocator = '*[wa-component="nebula--drawer"]';
 
+const blueprintIdUrlRegExp = new RegExp(
+	/^.*\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[1-5][a-fA-F0-9]{3}-[89abAB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}$/
+);
+
 export default class BlueprintsSteps {
 	constructor(private readonly page: Page) {}
 
@@ -127,7 +131,7 @@ export default class BlueprintsSteps {
 
 		await breadCrumbsLink.click();
 
-		await this.page.waitForURL('**/blueprints');
+		await this.page.waitForURL('**/list');
 
 		await blueprintGetPromise;
 	}
@@ -244,7 +248,7 @@ export default class BlueprintsSteps {
 	async adminsOpensBlueprintsRoute() {
 		const blueprintGetPromise = this.waitForBlueprintsResponse();
 
-		await this.navigateToRoute('blueprints');
+		await this.navigateToRoute('list');
 
 		await blueprintGetPromise;
 	}
@@ -396,7 +400,7 @@ export default class BlueprintsSteps {
 
 		await saveButton.click();
 
-		await this.page.waitForURL('**/blueprints/*');
+		await this.page.waitForURL(blueprintIdUrlRegExp);
 
 		await blueprintGetPromise;
 	}
@@ -426,7 +430,7 @@ export default class BlueprintsSteps {
 
 		await confirmDeleteButton.click();
 
-		await this.page.waitForURL('**/blueprints');
+		await this.page.waitForURL('**/list');
 
 		await blueprintGetPromise;
 	}
