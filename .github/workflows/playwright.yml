@@ -59,6 +59,7 @@ jobs:
     name: Extract test result numbers
     runs-on: [ self-hosted, jamf-ubuntu-latest ]
     needs: [ test ]
+    if: ${{ !cancelled() }}
     outputs:
       passed: ${{ steps.extract.outputs.PASSED }}
       failed: ${{ steps.extract.outputs.FAILED }}
