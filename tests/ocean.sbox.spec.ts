@@ -7,10 +7,11 @@ import BlueprintsSteps from './steps/blueprints-steps';
 const baseUrl = process.env.SBOX_BASE_URL || 'https://blueprints.sbox-mfe.jamf.io';
 const clusterUrl = 'https://tyk.sbox.ocean.jamf.build';
 
-const id = uuidv4();
+let id = uuidv4();
 
 test.beforeEach(async () => {
 	console.log(`Running "${test.info().title}" in ${test.info().project.name}`);
+	id = uuidv4();
 	if (test.info().retry != 0) {
 		console.log(`Running ${test.info().retry}. retry of "${test.info().title}" in ${test.info().project.name}`);
 	}
@@ -200,4 +201,54 @@ test('Components of blueprint can be updated', { tag: '@sbox' }, async ({ page }
 	await blueprintSteps.adminDeletesComponent('Disk management');
 
 	await blueprintSteps.adminDeletesBlueprint();
+});
+
+test('Blueprint templates can be filtered', { tag: '@sbox' }, async ({ page }) => {
+	const sboxSteps = new SboxSetupSteps(page);
+	const blueprintSteps = new BlueprintsSteps(page);
+	await sboxSteps.sboxIsSetUp(baseUrl, clusterUrl);
+
+	await blueprintSteps.adminsOpensTemplatesRoute();
+	await blueprintSteps.moreThanOneBlueprintTemplateIsDisplayed();
+
+	await blueprintSteps.adminSearchesForBlueprintTemplate('Set passcode policies');
+	await blueprintSteps.onlyOneBlueprintTemplateIsDisplayedWithTitle('Set passcode policies');
+
+	await blueprintSteps.adminOpensTemplateWithName('Set passcode policies');
+	await blueprintSteps.generalPageIsOpen();
+});
+
+test('Blueprints can be filtered', { tag: '@sbox' }, async ({ page }) => {
+	const sboxSteps = new SboxSetupSteps(page);
+	const blueprintSteps = new BlueprintsSteps(page);
+	await sboxSteps.sboxIsSetUp(baseUrl, clusterUrl);
+	await blueprintSteps.adminOpensBlueprintBuilder();
+
+	await blueprintSteps.newBlueprintModalIsOpen();
+	await blueprintSteps.adminFillsNameOfBlueprint('Blueprint_' + id);
+	await blueprintSteps.adminClicksCreateBlueprintButton();
+
+	await blueprintSteps.adminsOpensBlueprintsRoute();
+	await blueprintSteps.adminOpensBlueprintBuilder();
+	await blueprintSteps.newBlueprintModalIsOpen();
+	await blueprintSteps.adminFillsNameOfBlueprint('Blueprint2_' + id);
+	await blueprintSteps.adminClicksCreateBlueprintButton();
+
+	await blueprintSteps.adminsOpensBlueprintsRoute();
+	await blueprintSteps.adminSearchesForBlueprint('Blueprint2_' + id);
+	await blueprintSteps.thereIsNoBlueprintWithName('Blueprint_' + id);
+	await blueprintSteps.onlyOneBlueprintIsDisplayedWithName('Blueprint2_' + id);
+});
+
+test('Available components of blueprint can be filtered', { tag: '@sbox' }, async ({ page }) => {
+	const sboxSteps = new SboxSetupSteps(page);
+	const blueprintSteps = new BlueprintsSteps(page);
+	await sboxSteps.sboxIsSetUp(baseUrl, clusterUrl);
+	await blueprintSteps.adminOpensBlueprintBuilder();
+	await blueprintSteps.newBlueprintModalIsOpen();
+	await blueprintSteps.adminFillsNameOfBlueprint('Blueprint_' + id);
+	await blueprintSteps.adminClicksCreateBlueprintButton();
+
+	await blueprintSteps.adminSearchesForComponent('Passcode');
+	await blueprintSteps.onlyOneBlueprintComponentIsDisplayedWithTitle('Passcode Policy');
 });
