@@ -8,11 +8,20 @@ on:
       filter:
         description: 'Filter selecting which tests to run'
         type: string
+      jamfProBaseUrl:
+        description: 'URL of the Jamf Pro server'
+        type: string
+      sboxBaseUrl:
+        description: 'URL of the Blueprints standalone deployment'
+        type: string
+
 
 env:
   JAMF_ACCOUNT_STAGE_USER_MAIL: ${{secrets.JAMF_ACCOUNT_STAGE_USER_MAIL}}
   JAMF_ACCOUNT_STAGE_USER_PASSWORD: ${{secrets.JAMF_ACCOUNT_STAGE_USER_PASSWORD}}
   RP_API_KEY: ${{secrets.RP_API_KEY}}
+  JAMF_PRO_BASE_URL: ${{ inputs.jamfProBaseUrl }}
+  SBOX_BASE_URL: ${{ inputs.sboxBaseUrl }}
 
 jobs:
   test:

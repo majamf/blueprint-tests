@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 import SboxSetupSteps from './steps/sbox-setup-steps';
 import BlueprintsSteps from './steps/blueprints-steps';
 
-const baseUrl = 'https://blueprints.sbox-mfe.jamf.io';
+const baseUrl = process.env.SBOX_BASE_URL || 'https://blueprints.sbox-mfe.jamf.io';
 const clusterUrl = 'https://tyk.sbox.ocean.jamf.build';
 
 const id = uuidv4();
