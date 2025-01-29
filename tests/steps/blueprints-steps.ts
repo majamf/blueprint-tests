@@ -32,6 +32,7 @@ const blueprintCardLocator = '*[wa-component="nebula--card"]';
 const blueprintCheckboxLocator = '*[wa-component="nebula--checkbox"]';
 const blueprintDropdownLocator = '*[wa-component="nebula--dropdown"]';
 const blueprintDrawerLocator = '*[wa-component="nebula--drawer"]';
+const blueprintTextInputLocator = '*[wa-component="nebula--text-input"]';
 
 const blueprintIdUrlRegExp = new RegExp(
 	/^.*\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[1-5][a-fA-F0-9]{3}-[89abAB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}$/
@@ -65,6 +66,13 @@ export default class BlueprintsSteps {
 				response.status() === 204 &&
 				response.request().method() === 'PATCH'
 		);
+	}
+
+	private async filterBlueprintsAndBlueprintTemplates(filter: string) {
+		const searchInput = this.page.locator(blueprintTextInputLocator).locator('input[placeholder="Search blueprints"]');
+		await searchInput.fill(filter);
+		const filterButton = this.page.locator('button[type="submit"]:has-text("Filter")');
+		await filterButton.click();
 	}
 
 	@Step('Page with heading "$0" is opened')
@@ -329,6 +337,49 @@ export default class BlueprintsSteps {
 			.locator(`${blueprintCheckboxLocator}:has-text("${group}")`);
 		await expect(groupLocator).toBeVisible();
 		await expect(groupLocator).toHaveText(group);
+	}
+
+	@Step('Admin searches for component with name "$0"')
+	async adminSearchesForComponent(componentName: string) {
+		const searchInput = this.page.locator(blueprintTextInputLocator).locator('input[placeholder="Search"]');
+		await searchInput.fill(componentName);
+	}
+
+	@Step('Admin searches for blueprint template "$0"')
+	async adminSearchesForBlueprintTemplate(templateTitle: string) {
+		await this.filterBlueprintsAndBlueprintTemplates(templateTitle);
+	}
+
+	@Step('Admin searches for blueprint "$0"')
+	async adminSearchesForBlueprint(blueprintName: string) {
+		await this.filterBlueprintsAndBlueprintTemplates(blueprintName);
+	}
+
+	@Step('More than one blueprint template is displayed')
+	async moreThanOneBlueprintTemplateIsDisplayed() {
+		await this.page.locator(blueprintCardLocator).locator('h5').first().waitFor();
+		const blueprintTemplateCards = await this.page.locator(blueprintCardLocator).locator('h5').all();
+		expect(blueprintTemplateCards.length).toBeGreaterThan(1);
+	}
+
+	@Step('Only one blueprint template is displayed and contains title "$0"')
+	async onlyOneBlueprintTemplateIsDisplayedWithTitle(templateTitle: string) {
+		await expect(this.page.locator(blueprintCardLocator).locator('h5')).toHaveCount(1);
+		await expect(this.page.locator(blueprintCardLocator).locator('h5')).toHaveText(templateTitle);
+	}
+
+	@Step('Only one blueprint component is displayed and contains title "$0"')
+	async onlyOneBlueprintComponentIsDisplayedWithTitle(componentTitle: string) {
+		await expect(this.page.getByTestId('component-list').locator(blueprintCardLocator).locator('h2')).toHaveCount(1);
+		await expect(this.page.getByTestId('component-list').locator(blueprintCardLocator).locator('h2')).toHaveText(
+			componentTitle
+		);
+	}
+
+	@Step('Only one blueprint is displayed and contains name "$0"')
+	async onlyOneBlueprintIsDisplayedWithName(blueprintName: string) {
+		await expect(this.page.locator(blueprintCardLocator).locator('h5')).toHaveCount(1);
+		await expect(this.page.locator(blueprintCardLocator).locator('h5')).toHaveText(blueprintName);
 	}
 
 	@Step('Disk management option with name "$0" is checked')
