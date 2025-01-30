@@ -15,7 +15,7 @@ test.beforeEach(async () => {
 	id = uuidv4();
 });
 
-test('Blueprints list is loaded in Jamf Pro', { tag: '@stage' }, async ({ page }) => {
+test('Blueprints list is loaded in Jamf Pro', { tag: ['@stage'] }, async ({ page }) => {
 	const jproLoginSteps = new JProLoginSteps(page);
 	const blueprintsSteps = new BlueprintsSteps(page);
 
@@ -27,7 +27,7 @@ test('Blueprints list is loaded in Jamf Pro', { tag: '@stage' }, async ({ page }
 	await blueprintsSteps.thereIsAtLeastOneCard();
 });
 
-test('Blueprint can be added via templates and removed in Jamf Pro', { tag: '@stage' }, async ({ page }) => {
+test('Blueprint can be added via templates and removed in Jamf Pro', { tag: ['@stage'] }, async ({ page }) => {
 	const jproLoginSteps = new JProLoginSteps(page);
 	const blueprintsSteps = new BlueprintsSteps(page);
 
@@ -62,50 +62,54 @@ test('Blueprint can be added via templates and removed in Jamf Pro', { tag: '@st
 	await blueprintsSteps.thereIsNoBlueprintWithName('Passcode_' + id);
 });
 
-test('Blueprint can be added via builder and removed in Jamf Pro', { tag: '@stage' }, async ({ page, browserName }) => {
-	test.fixme(browserName !== 'chromium', 'https://jamfpdd.atlassian.net/browse/JSC-62590');
-	const jproLoginSteps = new JProLoginSteps(page);
-	const blueprintsSteps = new BlueprintsSteps(page);
+test(
+	'Blueprint can be added via builder and removed in Jamf Pro',
+	{ tag: ['@stage'] },
+	async ({ page, browserName }) => {
+		test.fixme(browserName !== 'chromium', 'https://jamfpdd.atlassian.net/browse/JSC-62590');
+		const jproLoginSteps = new JProLoginSteps(page);
+		const blueprintsSteps = new BlueprintsSteps(page);
 
-	await jproLoginSteps.loginToJamfPro(baseUrl);
+		await jproLoginSteps.loginToJamfPro(baseUrl);
 
-	await blueprintsSteps.adminOpensBlueprintsViaJamfProNavigation();
-	await blueprintsSteps.blueprintsPageIsOpen();
+		await blueprintsSteps.adminOpensBlueprintsViaJamfProNavigation();
+		await blueprintsSteps.blueprintsPageIsOpen();
 
-	await blueprintsSteps.adminOpensBlueprintBuilder();
+		await blueprintsSteps.adminOpensBlueprintBuilder();
 
-	await blueprintsSteps.newBlueprintModalIsOpen();
+		await blueprintsSteps.newBlueprintModalIsOpen();
 
-	await blueprintsSteps.adminFillsNameOfBlueprint('Disk_' + id);
+		await blueprintsSteps.adminFillsNameOfBlueprint('Disk_' + id);
 
-	await blueprintsSteps.adminFillsDescriptionOfBlueprint('Some description');
+		await blueprintsSteps.adminFillsDescriptionOfBlueprint('Some description');
 
-	await blueprintsSteps.adminClicksCreateBlueprintButton();
+		await blueprintsSteps.adminClicksCreateBlueprintButton();
 
-	await blueprintsSteps.adminDragsAndDropsComponent('Disk management');
+		await blueprintsSteps.adminDragsAndDropsComponent('Disk management');
 
-	await blueprintsSteps.adminOpensConfigurationOfComponent('Disk management');
+		await blueprintsSteps.adminOpensConfigurationOfComponent('Disk management');
 
-	await blueprintsSteps.diskManagementDrawerIsOpened();
-	await blueprintsSteps.adminClicksOnExternalStorageCheckbox();
-	await blueprintsSteps.adminSavesConfigurationOfComponent();
+		await blueprintsSteps.diskManagementDrawerIsOpened();
+		await blueprintsSteps.adminClicksOnExternalStorageCheckbox();
+		await blueprintsSteps.adminSavesConfigurationOfComponent();
 
-	await blueprintsSteps.adminOpensScopeDrawer();
-	await blueprintsSteps.scopingDrawerIsOpened();
+		await blueprintsSteps.adminOpensScopeDrawer();
+		await blueprintsSteps.scopingDrawerIsOpened();
 
-	await blueprintsSteps.adminSelectsFirstGroupInScopeModal();
-	await blueprintsSteps.adminSavesScope();
+		await blueprintsSteps.adminSelectsFirstGroupInScopeModal();
+		await blueprintsSteps.adminSavesScope();
 
-	await blueprintsSteps.adminGoesBackToBlueprintsListViaBreadCrumbsInJPro();
+		await blueprintsSteps.adminGoesBackToBlueprintsListViaBreadCrumbsInJPro();
 
-	await blueprintsSteps.thereIsBlueprintWithName('Disk_' + id);
-	await blueprintsSteps.adminOpensBlueprintWithName('Disk_' + id);
+		await blueprintsSteps.thereIsBlueprintWithName('Disk_' + id);
+		await blueprintsSteps.adminOpensBlueprintWithName('Disk_' + id);
 
-	await blueprintsSteps.adminDeletesBlueprint();
-	await blueprintsSteps.thereIsNoBlueprintWithName('Disk_' + id);
-});
+		await blueprintsSteps.adminDeletesBlueprint();
+		await blueprintsSteps.thereIsNoBlueprintWithName('Disk_' + id);
+	}
+);
 
-test('Templates are properly loaded', { tag: '@stage' }, async ({ page }) => {
+test('Templates are properly loaded', { tag: ['@stage'] }, async ({ page }) => {
 	const jproLoginSteps = new JProLoginSteps(page);
 	const blueprintsSteps = new BlueprintsSteps(page);
 
@@ -118,7 +122,7 @@ test('Templates are properly loaded', { tag: '@stage' }, async ({ page }) => {
 	await blueprintsSteps.verifyExpectedTemplates('Set passcode policies');
 });
 
-test('Searching in scope works', { tag: '@stage' }, async ({ page }) => {
+test('Searching in scope works', { tag: ['@stage'] }, async ({ page }) => {
 	const jproLoginSteps = new JProLoginSteps(page);
 	const blueprintsSteps = new BlueprintsSteps(page);
 

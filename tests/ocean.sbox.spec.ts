@@ -17,7 +17,7 @@ test.beforeEach(async () => {
 	id = uuidv4();
 });
 
-test('Blueprint can be added via templates and removed', { tag: '@sbox' }, async ({ page }) => {
+test('Blueprint can be added via templates and removed', { tag: ['@sbox'] }, async ({ page }) => {
 	const sboxSteps = new SboxSetupSteps(page);
 	const blueprintSteps = new BlueprintsSteps(page);
 
@@ -48,7 +48,7 @@ test('Blueprint can be added via templates and removed', { tag: '@sbox' }, async
 	await blueprintSteps.thereIsNoBlueprintWithName('Passcode_' + id);
 });
 
-test('Blueprint can be added via builder and removed', { tag: '@stage' }, async ({ page, browserName }) => {
+test('Blueprint can be added via builder and removed', { tag: ['@sbox'] }, async ({ page, browserName }) => {
 	test.fixme(browserName !== 'chromium', 'https://jamfpdd.atlassian.net/browse/JSC-62590');
 	const sboxSteps = new SboxSetupSteps(page);
 	const blueprintSteps = new BlueprintsSteps(page);
@@ -87,7 +87,7 @@ test('Blueprint can be added via builder and removed', { tag: '@stage' }, async 
 	await blueprintSteps.thereIsNoBlueprintWithName('Disk_' + id);
 });
 
-test('Name and description of blueprint can be updated', { tag: '@sbox' }, async ({ page }) => {
+test('Name and description of blueprint can be updated', { tag: ['@sbox'] }, async ({ page }) => {
 	const sboxSteps = new SboxSetupSteps(page);
 	const blueprintSteps = new BlueprintsSteps(page);
 
@@ -111,7 +111,7 @@ test('Name and description of blueprint can be updated', { tag: '@sbox' }, async
 	await blueprintSteps.thereIsNoBlueprintWithName('Name updated' + id);
 });
 
-test('Scope of blueprint can be updated (created via builder)', { tag: '@sbox' }, async ({ page }) => {
+test('Scope of blueprint can be updated (created via builder)', { tag: ['@sbox'] }, async ({ page }) => {
 	const sboxSteps = new SboxSetupSteps(page);
 	const blueprintSteps = new BlueprintsSteps(page);
 
@@ -142,7 +142,7 @@ test('Scope of blueprint can be updated (created via builder)', { tag: '@sbox' }
 	await blueprintSteps.adminDeletesBlueprint();
 });
 
-test('Configuration of component can be updated', { tag: '@sbox' }, async ({ page }) => {
+test('Configuration of component can be updated', { tag: ['@sbox'] }, async ({ page }) => {
 	const sboxSteps = new SboxSetupSteps(page);
 	const blueprintSteps = new BlueprintsSteps(page);
 
@@ -175,7 +175,7 @@ test('Configuration of component can be updated', { tag: '@sbox' }, async ({ pag
 	await blueprintSteps.adminDeletesBlueprint();
 });
 
-test('Components of blueprint can be updated', { tag: '@sbox' }, async ({ page }) => {
+test('Components of blueprint can be updated', { tag: ['@sbox'] }, async ({ page }) => {
 	const sboxSteps = new SboxSetupSteps(page);
 	const blueprintSteps = new BlueprintsSteps(page);
 
@@ -203,7 +203,7 @@ test('Components of blueprint can be updated', { tag: '@sbox' }, async ({ page }
 	await blueprintSteps.adminDeletesBlueprint();
 });
 
-test('Blueprint templates can be filtered', { tag: '@sbox' }, async ({ page }) => {
+test('Blueprint templates can be filtered', { tag: ['@sbox'] }, async ({ page }) => {
 	const sboxSteps = new SboxSetupSteps(page);
 	const blueprintSteps = new BlueprintsSteps(page);
 	await sboxSteps.sboxIsSetUp(baseUrl, clusterUrl);
@@ -218,7 +218,7 @@ test('Blueprint templates can be filtered', { tag: '@sbox' }, async ({ page }) =
 	await blueprintSteps.generalPageIsOpen();
 });
 
-test('Blueprints can be filtered', { tag: '@sbox' }, async ({ page }) => {
+test('Blueprints can be filtered', { tag: ['@sbox'] }, async ({ page }) => {
 	const sboxSteps = new SboxSetupSteps(page);
 	const blueprintSteps = new BlueprintsSteps(page);
 	await sboxSteps.sboxIsSetUp(baseUrl, clusterUrl);
@@ -240,7 +240,7 @@ test('Blueprints can be filtered', { tag: '@sbox' }, async ({ page }) => {
 	await blueprintSteps.onlyOneBlueprintIsDisplayedWithName('Blueprint2_' + id);
 });
 
-test('Available components of blueprint can be filtered', { tag: '@sbox' }, async ({ page }) => {
+test('Available components of blueprint can be filtered', { tag: ['@sbox'] }, async ({ page }) => {
 	const sboxSteps = new SboxSetupSteps(page);
 	const blueprintSteps = new BlueprintsSteps(page);
 	await sboxSteps.sboxIsSetUp(baseUrl, clusterUrl);
