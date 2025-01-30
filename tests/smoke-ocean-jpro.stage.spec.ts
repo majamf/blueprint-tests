@@ -5,13 +5,14 @@ import BlueprintsSteps from './steps/blueprints-steps';
 
 const baseUrl = process.env.JAMF_PRO_BASE_URL || 'https://forqhqdg.pyro.jamf.build';
 
-const id = uuidv4();
+let id = uuidv4();
 
 test.beforeEach(async () => {
 	console.log(`Running "${test.info().title}" in ${test.info().project.name}`);
 	if (test.info().retry != 0) {
 		console.log(`Running ${test.info().retry}. retry of "${test.info().title}" in ${test.info().project.name}`);
 	}
+	id = uuidv4();
 });
 
 test('Blueprints list is loaded in Jamf Pro', { tag: '@stage' }, async ({ page }) => {

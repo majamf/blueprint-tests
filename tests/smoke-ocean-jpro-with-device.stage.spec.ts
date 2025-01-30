@@ -7,13 +7,14 @@ import MimicSteps from './steps/mimic-steps';
 
 const baseUrl = 'https://vhdpsvhf.pyro.jamf.build/';
 
-const id = uuidv4();
+let id = uuidv4();
 
 test.beforeEach(async () => {
 	console.log(`Running "${test.info().title}" in ${test.info().project.name}`);
 	if (test.info().retry != 0) {
 		console.log(`Running ${test.info().retry}. retry of "${test.info().title}" in ${test.info().project.name}`);
 	}
+	id = uuidv4();
 });
 
 test('Deploy blueprint to mimic device in Jamf Pro', { tag: ['@stage', '@mimic'] }, async ({ page }) => {

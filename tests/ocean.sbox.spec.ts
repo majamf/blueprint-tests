@@ -11,10 +11,10 @@ let id = uuidv4();
 
 test.beforeEach(async () => {
 	console.log(`Running "${test.info().title}" in ${test.info().project.name}`);
-	id = uuidv4();
 	if (test.info().retry != 0) {
 		console.log(`Running ${test.info().retry}. retry of "${test.info().title}" in ${test.info().project.name}`);
 	}
+	id = uuidv4();
 });
 
 test('Blueprint can be added via templates and removed', { tag: '@sbox' }, async ({ page }) => {
