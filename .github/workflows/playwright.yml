@@ -3,6 +3,8 @@ on:
   push:
     branches: [ main ]
   pull_request:
+  schedule:
+  - cron: "0 6 * * *"
   workflow_dispatch:
     inputs:
       filter:
@@ -95,7 +97,7 @@ jobs:
     name: Notify Tests Success
     runs-on: [ self-hosted, jamf-ubuntu-latest ]
     needs: [ test, extract-results ]
-    if: ${{ success() && github.event_name == 'workflow_dispatch' && needs.extract-results.outputs.passed > 0 }}
+    if: ${{ success() && (github.event_name == 'workflow_dispatch' || github.event_name == 'schedule') && needs.extract-results.outputs.passed > 0 }}
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/notify-result
@@ -111,7 +113,7 @@ jobs:
     name: Notify Tests Failure
     runs-on: [ self-hosted, jamf-ubuntu-latest ]
     needs: [ test, extract-results  ]
-    if: ${{ (failure() || needs.extract-results.outputs.passed == 0) && github.event_name == 'workflow_dispatch' }}
+    if: ${{ (failure() || needs.extract-results.outputs.passed == 0) && (github.event_name == 'workflow_dispatch' || github.event_name == 'schedule') }}
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/notify-result
