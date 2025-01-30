@@ -5,7 +5,7 @@ import BlueprintsSteps from './steps/blueprints-steps';
 import JProApiSteps from './steps/jpro-api-steps';
 import MimicSteps from './steps/mimic-steps';
 
-const baseUrl = 'https://vhdpsvhf.pyro.jamf.build/';
+const baseUrl = process.env.JAMF_PRO_BASE_URL || 'https://vhdpsvhf.pyro.jamf.build/';
 
 let id = uuidv4();
 

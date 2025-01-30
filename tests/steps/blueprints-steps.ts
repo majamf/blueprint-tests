@@ -87,7 +87,7 @@ export default class BlueprintsSteps {
 	private async filterBlueprintsAndBlueprintTemplates(filter: string) {
 		const searchInput = this.page.locator(blueprintTextInputLocator).locator('input[placeholder="Search blueprints"]');
 		await searchInput.fill(filter);
-		const filterButton = this.page.locator('button[type="submit"]:has-text("Filter")');
+		const filterButton = this.page.locator('button[type="submit"]').getByText('Filter');
 		await filterButton.click();
 	}
 
@@ -189,9 +189,9 @@ export default class BlueprintsSteps {
 
 	@Step('Admin waits for blueprints to load')
 	async thereIsAtLeastOneCard() {
-		const cards = this.page.locator(blueprintCardLocator);
+		const cards = await this.page.locator(blueprintCardLocator).all();
 
-		await expect(cards.nth(0)).toBeVisible();
+		expect(cards.length).toBeGreaterThanOrEqual(1);
 	}
 
 	@Step('There is blueprint with name "$0"')
