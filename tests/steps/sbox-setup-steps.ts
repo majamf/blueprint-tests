@@ -1,6 +1,6 @@
 import UtilsSteps from './utils-steps';
 import type { Page } from '@playwright/test';
-import { Step } from './utils';
+import { Step } from '../utils/utils';
 
 export default class SboxSetupSteps {
 	private readonly utilsSteps: UtilsSteps;

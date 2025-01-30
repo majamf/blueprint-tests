@@ -1,5 +1,5 @@
 import { expect, type Page } from '@playwright/test';
-import { Step } from './utils';
+import { Step } from '../utils/utils';
 
 type componentsMap = {
 	[templateTitle: string]: string;
@@ -50,11 +50,27 @@ export default class BlueprintsSteps {
 		);
 	}
 
-	private waitForBlueprintsCreateResponse() {
-		return this.page.waitForResponse(
+	private async waitForBlueprintsCreateResponse() {
+		const response = await this.page.waitForResponse(
 			(response) =>
 				response.url().includes('/blueprints/management/v1/blueprints') &&
 				response.status() === 201 &&
+				response.request().method() === 'POST'
+		);
+
+		const responseData = await response.json();
+		return {
+			response,
+			data: responseData,
+		};
+	}
+
+	private waitForBlueprintsDeployResponse() {
+		return this.page.waitForResponse(
+			(response) =>
+				response.url().includes('/blueprints/management/v1/blueprints') &&
+				response.url().endsWith('/deploy') &&
+				response.status() === 202 &&
 				response.request().method() === 'POST'
 		);
 	}
@@ -150,6 +166,16 @@ export default class BlueprintsSteps {
 
 		const blueprintGetPromise = this.waitForBlueprintsResponse();
 
+		await blueprintsNavigation.click();
+
+		await blueprintGetPromise;
+	}
+
+	@Step('Admin opens blueprints via Jamf School navigation')
+	async adminOpensBlueprintsViaJamfSchoolNavigation() {
+		const blueprintsNavigation = this.page.locator('.topmenu').getByText('Blueprints');
+
+		const blueprintGetPromise = this.waitForBlueprintsResponse();
 		await blueprintsNavigation.click();
 
 		await blueprintGetPromise;
@@ -307,6 +333,13 @@ export default class BlueprintsSteps {
 		await firstGroup.click();
 	}
 
+	@Step('Admin selects group with name "$0" in scope')
+	async adminSelectsGroupWithNameInScope(name: string) {
+		const firstGroup = this.page.locator(blueprintCheckboxLocator).getByText(name);
+
+		await firstGroup.click();
+	}
+
 	@Step('Admin selects first group in scope modal')
 	async adminSelectsFirstGroupInScopeModal() {
 		const firstGroup = this.page.locator(blueprintCheckboxLocator).nth(0).locator('span').first();
@@ -326,8 +359,8 @@ export default class BlueprintsSteps {
 		await expect(this.page.locator(blueprintCheckboxLocator).nth(index).locator('span').first()).toBeChecked();
 	}
 
-	@Step('Admin searches for group with name "$0" in scope')
-	async adminSearchesForGroupInScope(group: string) {
+	@Step('Admin searches for group with name "$0" in scope drawer')
+	async adminSearchesForGroupInScopeDrawer(group: string) {
 		const searchInput = this.page.locator(blueprintDrawerLocator).locator('input[placeholder="Search"]');
 
 		await searchInput.fill(group);
@@ -455,13 +488,15 @@ export default class BlueprintsSteps {
 	async adminsSavesBlueprint() {
 		const saveButton = this.page.locator(blueprintButtonLocator).locator('*[type="submit"]');
 
-		const blueprintGetPromise = this.waitForBlueprintsResponse();
+		const blueprintCreatePromise = this.waitForBlueprintsCreateResponse();
 
 		await saveButton.click();
 
 		await this.page.waitForURL(blueprintIdUrlRegExp);
 
-		await blueprintGetPromise;
+		const { data } = await blueprintCreatePromise;
+
+		return await data.id;
 	}
 
 	@Step('Admin clicks on cancel button')
@@ -473,12 +508,13 @@ export default class BlueprintsSteps {
 
 	@Step('Admin deletes blueprint')
 	async adminDeletesBlueprint() {
-		const dropdown = this.page.locator(blueprintDropdownLocator);
-		const deleteButton = dropdown.getByText('Delete');
+		const moreActionButton = this.page.locator(blueprintDropdownLocator).getByTestId('more-actions-button');
+		const moreActionDropdown = this.page.locator(blueprintDropdownLocator);
+		const deleteButton = moreActionDropdown.getByText('Delete');
 		const confirmDeleteButton = this.page.getByTestId('confirm-delete-button');
 
-		await dropdown.focus();
-		await dropdown.click();
+		await moreActionButton.focus();
+		await moreActionButton.click();
 
 		await deleteButton.focus();
 		await deleteButton.click();
@@ -492,6 +528,17 @@ export default class BlueprintsSteps {
 		await this.page.waitForURL('**/list');
 
 		await blueprintGetPromise;
+	}
+
+	@Step('Admin deploys blueprint')
+	async adminDeploysBlueprint() {
+		const deployButton = this.page.getByTestId('deploy-button');
+
+		const blueprintDeployPromise = this.waitForBlueprintsDeployResponse();
+
+		await deployButton.click();
+
+		await blueprintDeployPromise;
 	}
 
 	@Step('Admin opens configuration of component with title "$0"')

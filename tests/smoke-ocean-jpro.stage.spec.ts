@@ -136,7 +136,7 @@ test('Searching in scope works', { tag: '@stage' }, async ({ page }) => {
 	await blueprintsSteps.adminOpensScopeDrawer();
 	await blueprintsSteps.scopingDrawerIsOpened();
 
-	await blueprintsSteps.adminSearchesForGroupInScope('All Managed Clients');
+	await blueprintsSteps.adminSearchesForGroupInScopeDrawer('All Managed Clients');
 
 	await blueprintsSteps.adminsClicksOnCancelButton();
 

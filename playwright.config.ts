@@ -48,7 +48,7 @@ export default defineConfig({
 		video: 'on-first-retry',
 	},
 	/* Timeout for each test */
-	timeout: 5 * 60 * 1000,
+	timeout: process.env.CI ? 5 * 60 * 1000 : 2 * 60 * 1000,
 
 	/* Configure projects for major browsers */
 	projects: [

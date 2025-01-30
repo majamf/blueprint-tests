@@ -8,3 +8,9 @@ export function Step(titleTemplate: string) {
 		};
 	};
 }
+
+export function assertEnvironmentVariable(value: unknown, propertyName?: string): asserts value is string {
+	if (typeof value !== 'string') {
+		throw new Error(`Expected ${propertyName} value to be a string`);
+	}
+}
