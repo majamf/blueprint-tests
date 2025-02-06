@@ -4,6 +4,9 @@ import BlueprintsSteps from './steps/blueprints-steps';
 import MimicSteps from './steps/mimic-steps';
 import JSchoolLoginSteps from './steps/jschool-login-steps';
 import JSchoolApiSteps from './steps/jschool-api-steps';
+import BlueprintTemplatePageSteps from './steps/blueprint-template-page-steps';
+import BlueprintDetailPageSteps from './steps/blueprint-detail-page-steps';
+import NavigationSteps from './steps/navigation-steps';
 
 const baseUrl = 'https://oceanplaywrightstage.dev.jamfnimbus.cloud/';
 
@@ -21,6 +24,9 @@ test('Deploy blueprint to mimic device in Jamf School', { tag: ['@stage', '@mimi
 	test.fixme(true, 'https://jamfpdd.atlassian.net/browse/SCH-18401');
 	const jSchoolLoginSteps = new JSchoolLoginSteps(page);
 	const blueprintsSteps = new BlueprintsSteps(page);
+	const blueprintTemplatePageSteps = new BlueprintTemplatePageSteps(page);
+	const blueprintDetailPageSteps = new BlueprintDetailPageSteps(page);
+	const navigationSteps = new NavigationSteps(page);
 	const jSchoolApiSteps = new JSchoolApiSteps(baseUrl);
 	const mimicSteps = new MimicSteps();
 
@@ -28,35 +34,35 @@ test('Deploy blueprint to mimic device in Jamf School', { tag: ['@stage', '@mimi
 
 	await jSchoolLoginSteps.loginToJamfSchool(baseUrl);
 
-	await blueprintsSteps.adminOpensBlueprintsViaJamfSchoolNavigation();
+	await navigationSteps.adminOpensBlueprintsViaJamfSchoolNavigation();
 	await blueprintsSteps.blueprintsPageIsOpen();
 
 	await blueprintsSteps.adminsClicksOnQuickStart();
 
-	await blueprintsSteps.adminOpensTemplateWithName('Set passcode policies');
+	await blueprintTemplatePageSteps.adminOpensTemplateWithName('Set passcode policies');
 
-	await blueprintsSteps.generalPageIsOpen();
+	await blueprintTemplatePageSteps.generalPageIsOpen();
 	await blueprintsSteps.adminFillsNameOfBlueprint('Passcode_' + id);
 
 	await blueprintsSteps.adminFillsDescriptionOfBlueprint('Some description');
-	await blueprintsSteps.adminClicksNextButton();
+	await blueprintTemplatePageSteps.adminClicksNextButton();
 
-	await blueprintsSteps.scopingPageIsOpen();
-	await blueprintsSteps.adminSelectsGroupWithNameInScope('mimic device');
-	await blueprintsSteps.adminClicksNextButton();
+	await blueprintTemplatePageSteps.scopingPageIsOpen();
+	await blueprintTemplatePageSteps.adminSelectsGroupWithNameInScope('mimic device');
+	await blueprintTemplatePageSteps.adminClicksNextButton();
 
-	await blueprintsSteps.passcodePolicyPageIsOpen();
-	await blueprintsSteps.adminSelectsPasswordToBeRequired();
-	const blueprintId = await blueprintsSteps.adminsSavesBlueprint();
+	await blueprintTemplatePageSteps.passcodePolicyPageIsOpen();
+	await blueprintTemplatePageSteps.adminSelectsPasswordToBeRequired();
+	const blueprintId = await blueprintTemplatePageSteps.adminsSavesBlueprint();
 
-	await blueprintsSteps.adminGoesBackToBlueprintsListViaBreadCrumbsInJPro();
+	await navigationSteps.adminGoesBackToBlueprintsListViaBreadCrumbsInJPro();
 	await blueprintsSteps.thereIsBlueprintWithName('Passcode_' + id);
 	await blueprintsSteps.adminOpensBlueprintWithName('Passcode_' + id);
 
-	await blueprintsSteps.adminDeploysBlueprint();
+	await blueprintDetailPageSteps.adminDeploysBlueprint();
 
 	await mimicSteps.blueprintIsDeployedToMimicDevice(blueprintId, udid, 'com.apple.configuration.passcode.settings');
 
-	await blueprintsSteps.adminDeletesBlueprint();
+	await blueprintDetailPageSteps.adminDeletesBlueprint();
 	await blueprintsSteps.thereIsNoBlueprintWithName('Passcode_' + id);
 });

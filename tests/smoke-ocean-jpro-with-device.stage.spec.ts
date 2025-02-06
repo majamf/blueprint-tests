@@ -4,6 +4,9 @@ import JProLoginSteps from './steps/jpro-login-steps';
 import BlueprintsSteps from './steps/blueprints-steps';
 import JProApiSteps from './steps/jpro-api-steps';
 import MimicSteps from './steps/mimic-steps';
+import BlueprintTemplatePageSteps from './steps/blueprint-template-page-steps';
+import BlueprintDetailPageSteps from './steps/blueprint-detail-page-steps';
+import NavigationSteps from './steps/navigation-steps';
 
 const baseUrl = process.env.JAMF_PRO_BASE_URL || 'https://vhdpsvhf.pyro.jamf.build/';
 
@@ -20,6 +23,9 @@ test.beforeEach(async () => {
 test('Deploy blueprint to mimic device in Jamf Pro', { tag: ['@stage', '@mimic'] }, async ({ page }) => {
 	const jproLoginSteps = new JProLoginSteps(page);
 	const blueprintsSteps = new BlueprintsSteps(page);
+	const blueprintTemplatePageSteps = new BlueprintTemplatePageSteps(page);
+	const blueprintDetailPageSteps = new BlueprintDetailPageSteps(page);
+	const navigationSteps = new NavigationSteps(page);
 	const jproApiSteps = new JProApiSteps(baseUrl);
 	const mimicSteps = new MimicSteps();
 
@@ -27,35 +33,35 @@ test('Deploy blueprint to mimic device in Jamf Pro', { tag: ['@stage', '@mimic']
 
 	await jproLoginSteps.loginToJamfPro(baseUrl);
 
-	await blueprintsSteps.adminOpensBlueprintsViaJamfProNavigation();
+	await navigationSteps.adminOpensBlueprintsViaJamfProNavigation();
 	await blueprintsSteps.blueprintsPageIsOpen();
 
 	await blueprintsSteps.adminsClicksOnQuickStart();
 
-	await blueprintsSteps.adminOpensTemplateWithName('Set passcode policies');
+	await blueprintTemplatePageSteps.adminOpensTemplateWithName('Set passcode policies');
 
-	await blueprintsSteps.generalPageIsOpen();
+	await blueprintTemplatePageSteps.generalPageIsOpen();
 	await blueprintsSteps.adminFillsNameOfBlueprint('Passcode_' + id);
 
 	await blueprintsSteps.adminFillsDescriptionOfBlueprint('Some description');
-	await blueprintsSteps.adminClicksNextButton();
+	await blueprintTemplatePageSteps.adminClicksNextButton();
 
-	await blueprintsSteps.scopingPageIsOpen();
-	await blueprintsSteps.adminSelectsGroupWithNameInScope('mimic device');
-	await blueprintsSteps.adminClicksNextButton();
+	await blueprintTemplatePageSteps.scopingPageIsOpen();
+	await blueprintTemplatePageSteps.adminSelectsGroupWithNameInScope('mimic device');
+	await blueprintTemplatePageSteps.adminClicksNextButton();
 
-	await blueprintsSteps.passcodePolicyPageIsOpen();
-	await blueprintsSteps.adminSelectsPasswordToBeRequired();
-	const blueprintId = await blueprintsSteps.adminsSavesBlueprint();
+	await blueprintTemplatePageSteps.passcodePolicyPageIsOpen();
+	await blueprintTemplatePageSteps.adminSelectsPasswordToBeRequired();
+	const blueprintId = await blueprintTemplatePageSteps.adminsSavesBlueprint();
 
-	await blueprintsSteps.adminGoesBackToBlueprintsListViaBreadCrumbsInJPro();
+	await navigationSteps.adminGoesBackToBlueprintsListViaBreadCrumbsInJPro();
 	await blueprintsSteps.thereIsBlueprintWithName('Passcode_' + id);
 	await blueprintsSteps.adminOpensBlueprintWithName('Passcode_' + id);
 
-	await blueprintsSteps.adminDeploysBlueprint();
+	await blueprintDetailPageSteps.adminDeploysBlueprint();
 
 	await mimicSteps.blueprintIsDeployedToMimicDevice(blueprintId, udid, 'com.apple.configuration.passcode.settings');
 
-	await blueprintsSteps.adminDeletesBlueprint();
+	await blueprintDetailPageSteps.adminDeletesBlueprint();
 	await blueprintsSteps.thereIsNoBlueprintWithName('Passcode_' + id);
 });
