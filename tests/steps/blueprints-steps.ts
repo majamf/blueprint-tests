@@ -189,9 +189,8 @@ export default class BlueprintsSteps {
 
 	@Step('Admin waits for blueprints to load')
 	async thereIsAtLeastOneCard() {
-		const cards = await this.page.locator(blueprintCardLocator).all();
-
-		expect(cards.length).toBeGreaterThanOrEqual(1);
+		const cards = this.page.locator(blueprintCardLocator);
+		await expect(cards).not.toHaveCount(0);
 	}
 
 	@Step('There is blueprint with name "$0"')
