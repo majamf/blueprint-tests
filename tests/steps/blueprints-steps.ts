@@ -87,7 +87,7 @@ export default class BlueprintsSteps {
 	private async filterBlueprintsAndBlueprintTemplates(filter: string) {
 		const searchInput = this.page.locator(blueprintTextInputLocator).locator('input[placeholder="Search blueprints"]');
 		await searchInput.fill(filter);
-		const filterButton = this.page.locator('button[type="submit"]:has-text("Filter")');
+		const filterButton = this.page.locator('button[type="submit"]').getByText('Filter');
 		await filterButton.click();
 	}
 
@@ -141,7 +141,7 @@ export default class BlueprintsSteps {
 	@Step('Admin opens scope drawer')
 	async adminOpensScopeDrawer() {
 		const scopeCardLink = this.page
-			.locator(blueprintCardLocator, { has: this.page.locator(`h5:has-text("Scope")`) })
+			.locator(blueprintCardLocator, { has: this.page.locator(`h5`).getByText('Scope') })
 			.getByRole('link');
 
 		await scopeCardLink.click();
@@ -190,8 +190,7 @@ export default class BlueprintsSteps {
 	@Step('Admin waits for blueprints to load')
 	async thereIsAtLeastOneCard() {
 		const cards = this.page.locator(blueprintCardLocator);
-
-		await expect(cards.nth(0)).toBeVisible();
+		await expect(cards).not.toHaveCount(0);
 	}
 
 	@Step('There is blueprint with name "$0"')
