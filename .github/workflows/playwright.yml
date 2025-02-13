@@ -34,7 +34,7 @@ jobs:
     timeout-minutes: 60
     runs-on: [ self-hosted, jamf-ubuntu-latest ]
     container:
-      image: mcr.microsoft.com/playwright:v1.50.0
+      image: mcr.microsoft.com/playwright:v1.50.1
     steps:
     - name: Git clone the repository
       uses: actions/checkout@v4

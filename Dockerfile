@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/playwright:v1.50.0-noble AS base
+FROM mcr.microsoft.com/playwright:v1.50.1 AS base
 
 RUN npm install corepack@^0.31.0 -g && \
     corepack enable pnpm
