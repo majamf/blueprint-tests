@@ -288,9 +288,9 @@ export default class BlueprintDetailPageSteps {
 		await this.drawerWithHeadingIsOpen('Scope');
 	}
 
-	@Step('Are you sure modal is opened')
-	async areYouSureModalIsOpened() {
-		await this.navigationSteps.modalWithHeadingIsOpen('Are you sure?');
+	@Step('Confirm delete modal is opened')
+	async confirmDeleteModalIsOpened() {
+		await this.navigationSteps.modalWithHeadingIsOpen('Delete this blueprint?');
 	}
 
 	@Step('Admin deletes blueprint')
@@ -306,7 +306,7 @@ export default class BlueprintDetailPageSteps {
 		await deleteButton.focus();
 		await deleteButton.click();
 
-		await this.areYouSureModalIsOpened();
+		await this.confirmDeleteModalIsOpened();
 
 		const blueprintGetPromise = this.navigationSteps.waitForBlueprintsResponse();
 
