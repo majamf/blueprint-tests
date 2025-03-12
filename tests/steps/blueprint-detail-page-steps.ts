@@ -62,14 +62,24 @@ export default class BlueprintDetailPageSteps {
 
 	@Step('Admin selects first group in scope modal')
 	async adminSelectsFirstGroupInScopeModal() {
-		const firstGroup = this.page.locator(blueprintCheckboxLocator).nth(0).locator('span').first();
+		const firstGroup = this.page
+			.locator('[name="groupsInScope"]')
+			.locator(blueprintCheckboxLocator)
+			.nth(0)
+			.locator('span')
+			.first();
 
 		await firstGroup.click();
 	}
 
 	@Step('Admin selects group in scope modal at index "$0"')
 	async adminSelectsCertainGroupInScopeModal(index: number) {
-		const certainGroup = this.page.locator(blueprintCheckboxLocator).nth(index).locator('span').first();
+		const certainGroup = this.page
+			.locator('[name="groupsInScope"]')
+			.locator(blueprintCheckboxLocator)
+			.nth(index)
+			.locator('span')
+			.first();
 
 		await certainGroup.click();
 	}
