@@ -1,7 +1,6 @@
-FROM mcr.microsoft.com/playwright:v1.50.1 AS base
+FROM mcr.microsoft.com/playwright:v1.51.0
 
-RUN npm install corepack@^0.31.0 -g && \
-    corepack enable pnpm
+RUN corepack enable pnpm
 
 WORKDIR /app
 
