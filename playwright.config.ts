@@ -8,8 +8,8 @@ import type { ReportPortalConfig } from '@reportportal/agent-js-playwright/build
 
 const RPconfig: ReportPortalConfig = {
 	apiKey: process.env.RP_API_KEY!,
-	endpoint: process.env.RP_URL ?? 'https://reportportal.oss.wandera.net/api/v1',
-	project: process.env.RP_PROJECT ?? 'jamf_platform',
+	endpoint: process.env.RP_URL ?? 'https://jamf.reportportal.io/api/v1',
+	project: process.env.RP_PROJECT ?? 'jamf_capabilities',
 	launch: 'blueprint-test',
 	description: 'Playwright blueprint-tests',
 	includeTestSteps: true,
