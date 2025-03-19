@@ -36,7 +36,7 @@ jobs:
     container:
       image: mcr.microsoft.com/playwright:v1.51.0
     outputs:
-      reportportal_url: ${{ steps.extract.outputs.REPORTPORTAL_URL }}
+      reportportal_url: ${{ steps.tests.outputs.REPORTPORTAL_URL }}
     steps:
     - name: Git clone the repository
       uses: actions/checkout@v4
@@ -56,7 +56,8 @@ jobs:
     - name: Install dependencies
       run: pnpm install --frozen-lockfile
       shell: bash
-    - name: Run Playwright tests
+    - id: tests
+      name: Run Playwright tests
       run: |
         (HOME=/root PLAYWRIGHT_JSON_OUTPUT_NAME=results.json pnpm exec playwright test ${{ github.event.inputs.filter && format('-g {0}', github.event.inputs.filter) || '' }} 2>&1) | tee /tmp/playwright.out
         REPORTPORTAL_URL=$(grep "^.*ReportPortal Launch Link:" /tmp/playwright.out | grep -o "https.*")
