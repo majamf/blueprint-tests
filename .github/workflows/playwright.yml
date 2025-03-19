@@ -35,6 +35,8 @@ jobs:
     runs-on: [ self-hosted, jamf-ubuntu-latest ]
     container:
       image: mcr.microsoft.com/playwright:v1.51.0
+    outputs:
+      reportportal_url: ${{ steps.extract.outputs.REPORTPORTAL_URL }}
     steps:
     - name: Git clone the repository
       uses: actions/checkout@v4
@@ -56,7 +58,10 @@ jobs:
       shell: bash
     - name: Run Playwright tests
       run: |
-        HOME=/root PLAYWRIGHT_JSON_OUTPUT_NAME=results.json pnpm exec playwright test ${{ github.event.inputs.filter && format('-g {0}', github.event.inputs.filter) || '' }}
+        (HOME=/root PLAYWRIGHT_JSON_OUTPUT_NAME=results.json pnpm exec playwright test ${{ github.event.inputs.filter && format('-g {0}', github.event.inputs.filter) || '' }} 2>&1) | tee /tmp/playwright.out
+        REPORTPORTAL_URL=$(grep "^.*ReportPortal Launch Link:" /tmp/playwright.out | grep -o "https.*")
+        echo "Reportportal launch: ${REPORTPORTAL_URL}" >> $GITHUB_STEP_SUMMARY
+        echo "REPORTPORTAL_URL=$REPORTPORTAL_URL" >> $GITHUB_OUTPUT
     - uses: actions/upload-artifact@v4
       if: always()
       with:
@@ -106,6 +111,7 @@ jobs:
           failed: ${{ needs.extract-results.outputs.failed }}
           skipped: ${{ needs.extract-results.outputs.skipped }}
           result: 'PASSED'
+          rp_link: ${{ needs.test.outputs.reportportal_url }}
           bg_color: '#36a64f'
           slack_token: ${{ secrets.GH_SLACK_TOKEN }}
 
@@ -122,5 +128,6 @@ jobs:
           failed: ${{ needs.extract-results.outputs.failed }}
           skipped: ${{ needs.extract-results.outputs.skipped }}
           result: 'FAILED'
+          rp_link: ${{ needs.test.outputs.reportportal_url }}
           bg_color: '#FF0000'
           slack_token: ${{ secrets.GH_SLACK_TOKEN }}

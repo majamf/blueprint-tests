@@ -14,6 +14,9 @@ inputs:
   result:
     description: The result of tests
     required: true
+  rp_link:
+    description: Link to the report portal launch
+    required: true
   bg_color:
     description: The background color of the message
     required: true
@@ -77,6 +80,13 @@ runs:
                   "text": {
                     "type": "mrkdwn",
                     "text": "Link to tests: <${{ env.WORKFLOW_RUN_URL }}|Workflow run>"
+                  }
+                },
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "<${{ inputs.rp_link }}|Reportportal launch>"
                   }
                 }
               ]
