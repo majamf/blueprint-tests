@@ -36,7 +36,7 @@ jobs:
     container:
       image: mcr.microsoft.com/playwright:v1.51.0
     outputs:
-      reportportal_url: ${{ steps.tests.outputs.REPORTPORTAL_URL }}
+      reportportal_url: ${{ steps.playwright_link.outputs.REPORTPORTAL_URL }}
     steps:
     - name: Git clone the repository
       uses: actions/checkout@v4
@@ -59,10 +59,17 @@ jobs:
     - id: tests
       name: Run Playwright tests
       run: |
+        set -o pipefail
         (HOME=/root PLAYWRIGHT_JSON_OUTPUT_NAME=results.json pnpm exec playwright test ${{ github.event.inputs.filter && format('-g {0}', github.event.inputs.filter) || '' }} 2>&1) | tee /tmp/playwright.out
+      shell: bash
+    - id: playwright_link
+      name: Get Playwright ReportPortal link
+      if: always()
+      run: |
         REPORTPORTAL_URL=$(grep "^.*ReportPortal Launch Link:" /tmp/playwright.out | grep -o "https.*")
         echo "Reportportal launch: ${REPORTPORTAL_URL}" >> $GITHUB_STEP_SUMMARY
         echo "REPORTPORTAL_URL=$REPORTPORTAL_URL" >> $GITHUB_OUTPUT
+      shell: bash
     - uses: actions/upload-artifact@v4
       if: always()
       with:
