@@ -174,9 +174,6 @@ class BlueprintManager {
 		console.log(`Found ${oldBlueprintIds.length} blueprints older than ${daysOld} days:`);
 		console.log(oldBlueprintIds);
 
-		// Limit the number of blueprints to delete to 1 for testing purposes
-		oldBlueprintIds = [oldBlueprintIds[0]];
-
 		if (oldBlueprintIds.length > 0) {
 			console.log('Starting deletion of old blueprints...');
 			for (const blueprintId of oldBlueprintIds) {
