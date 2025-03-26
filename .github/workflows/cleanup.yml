@@ -1,0 +1,66 @@
+name: "Daily Blueprint Cleanup"
+
+on:
+  schedule:
+  - cron: '0 5 * * *'
+  workflow_dispatch:
+    inputs:
+      jamfProBaseUrl:
+        description: 'URL of the Jamf Pro server'
+        type: string
+
+env:
+  JAMF_PRO_STAGE_API_USERNAME: ${{ secrets.JAMF_PRO_STAGE_API_USERNAME }}
+  JAMF_PRO_STAGE_API_PASSWORD: ${{ secrets.JAMF_PRO_STAGE_API_PASSWORD }}
+  API_GATEWAY_STAGE_CLIENT_ID: ${{ secrets.API_GATEWAY_STAGE_CLIENT_ID }}
+  API_GATEWAY_STAGE_CLIENT_SECRET: ${{ secrets.API_GATEWAY_STAGE_CLIENT_SECRET }}
+  JAMF_PRO_BASE_URL: ${{ inputs.jamfProBaseUrl }}
+
+jobs:
+  cleanup:
+    runs-on: [ self-hosted, jamf-ubuntu-latest ]
+    steps:
+    - name: Git clone the repository
+      uses: actions/checkout@v4
+    - name: Set Directory as Safe
+      run: |
+        git config --system --add safe.directory "$GITHUB_WORKSPACE"
+      shell: bash
+    - name: Setup Deno
+      uses: denoland/setup-deno@v1
+    - name: Run cleanup script
+      id: cleanup
+      working-directory: ./cleanup
+      run: deno task cleanup
+
+    - name: Send Slack notification on failure
+      if: ${{ failure() && (github.event_name == 'workflow_dispatch' || github.event_name == 'schedule') }}
+      uses: slackapi/slack-github-action@v1.24.0
+      with:
+        channel-id: ocean-tests
+        payload: |
+          {
+            "attachments": [
+              {
+                "color": "#FF0000",
+                "blocks": [
+                  {
+                    "type": "section",
+                    "text": {
+                      "type": "mrkdwn",
+                      "text": "*Blueprint Cleanup Failed!*"
+                    }
+                  },
+                  {
+                    "type": "section",
+                    "text": {
+                      "type": "mrkdwn",
+                      "text": "*Blueprint Cleanup Job Failed*\n Workflow: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.GH_SLACK_TOKEN }}

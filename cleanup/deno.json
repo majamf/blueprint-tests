@@ -1,0 +1,17 @@
+{
+	"tasks": {
+		"cleanup": "deno run --allow-net --frozen --allow-env --allow-read --env-file=../.env src/main.ts",
+		"check": "deno check src/**/*.ts"
+	},
+	"fmt": {
+		"include": ["src/"],
+		"useTabs": true,
+		"indentWidth": 1,
+		"lineWidth": 100,
+		"semiColons": true,
+		"singleQuote": true
+	},
+	"compilerOptions": {
+		"strict": true
+	}
+}
