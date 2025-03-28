@@ -29,6 +29,12 @@ class APIClient {
 	private async handleRequest<T>(request: Promise<Response>, errorContext: string): Promise<T> {
 		const response = await request;
 
+		if (response.status === 204) {
+			return {} as T;
+		}
+
+		const data = await response.json();
+
 		if (!response.ok) {
 			console.error('Request failed with details:', {
 				status: response.status,
@@ -39,11 +45,6 @@ class APIClient {
 			throw new Error(`${errorContext}: HTTP ${response.status} - ${response.statusText}`);
 		}
 
-		if (response.status === 204) {
-			return {} as T;
-		}
-
-		const data = await response.json();
 		return data as T;
 	}
 
@@ -162,6 +163,7 @@ class BlueprintManager {
 	}
 
 	async cleanupOldBlueprints(daysOld = 7): Promise<void> {
+		const failures: Array<{ id: string; error: string }> = [];
 		console.log('Starting blueprint cleanup...');
 
 		const jproToken = await this.api.getJProAuthToken();
@@ -177,14 +179,24 @@ class BlueprintManager {
 		if (oldBlueprintIds.length > 0) {
 			console.log('Starting deletion of old blueprints...');
 			for (const blueprintId of oldBlueprintIds) {
-				await this.api.deleteBlueprint(tykToken, blueprintId);
+				await this.api.deleteBlueprint(tykToken, blueprintId).catch((error: Error) => {
+					failures.push({
+						id: blueprintId,
+						error: error instanceof Error ? error.message : String(error),
+					});
+				});
 			}
 			console.log('Finished processing all blueprint deletions');
+			if (failures.length > 0) {
+				console.error('\nThe following blueprints failed to delete:');
+				failures.forEach((failure) => {
+					console.error(`- Blueprint ${failure.id}: ${failure.error}`);
+				});
+				throw new Error(`Failed to delete ${failures.length} blueprint(s)`);
+			}
 		} else {
 			console.log('No old blueprints to delete');
 		}
-
-		console.log('Cleanup completed successfully');
 	}
 }
 
