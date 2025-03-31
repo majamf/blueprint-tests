@@ -41,9 +41,9 @@ test('Deploy blueprint to mimic device in Jamf Pro', { tag: ['@stage', '@mimic']
 	await blueprintTemplatePageSteps.adminOpensTemplateWithName('Set passcode policies');
 
 	await blueprintTemplatePageSteps.generalPageIsOpen();
-	await blueprintsSteps.adminFillsNameOfBlueprint('Passcode_' + id);
+	await blueprintTemplatePageSteps.adminFillsNameOfBlueprint('Passcode_' + id);
 
-	await blueprintsSteps.adminFillsDescriptionOfBlueprint('Some description');
+	await blueprintTemplatePageSteps.adminFillsDescriptionOfBlueprint('Some description');
 	await blueprintTemplatePageSteps.adminClicksNextButton();
 
 	await blueprintTemplatePageSteps.scopingPageIsOpen();

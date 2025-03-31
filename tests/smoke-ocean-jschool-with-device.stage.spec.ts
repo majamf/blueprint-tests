@@ -42,9 +42,9 @@ test('Deploy blueprint to mimic device in Jamf School', { tag: ['@stage', '@mimi
 	await blueprintTemplatePageSteps.adminOpensTemplateWithName('Set passcode policies');
 
 	await blueprintTemplatePageSteps.generalPageIsOpen();
-	await blueprintsSteps.adminFillsNameOfBlueprint('Passcode_' + id);
+	await blueprintTemplatePageSteps.adminFillsNameOfBlueprint('Passcode_' + id);
 
-	await blueprintsSteps.adminFillsDescriptionOfBlueprint('Some description');
+	await blueprintTemplatePageSteps.adminFillsDescriptionOfBlueprint('Some description');
 	await blueprintTemplatePageSteps.adminClicksNextButton();
 
 	await blueprintTemplatePageSteps.scopingPageIsOpen();
