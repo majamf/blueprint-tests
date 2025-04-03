@@ -27,6 +27,16 @@ export default class BlueprintsSteps {
 		};
 	}
 
+	public async fillNameOfBlueprint(name: string) {
+		const nameInput = this.page.locator('input[name="name"]');
+		await nameInput.fill(name);
+	}
+
+	public async fillDescriptionOfBlueprint(description: string) {
+		const descriptionInput = this.page.locator('textarea[name="description"], input[name="description"]');
+		await descriptionInput.fill(description);
+	}
+
 	private async filterBlueprintsAndBlueprintTemplates(filter: string) {
 		const searchInput = this.page.locator(blueprintTextInputLocator).locator('input[placeholder="Search blueprints"]');
 		await searchInput.fill(filter);
@@ -99,16 +109,12 @@ export default class BlueprintsSteps {
 
 	@Step('Admin fills name of blueprint')
 	async adminFillsNameOfBlueprint(name: string) {
-		const nameInput = this.page.locator('input[name="name"]');
-
-		await nameInput.fill(name);
+		await this.fillNameOfBlueprint(name);
 	}
 
 	@Step('Admin fills description of blueprint')
 	async adminFillsDescriptionOfBlueprint(description: string) {
-		const descriptionInput = this.page.locator('textarea[name="description"], input[name="description"]');
-
-		await descriptionInput.fill(description);
+		await this.fillDescriptionOfBlueprint(description);
 	}
 
 	@Step('Admin searches for blueprint template "$0"')

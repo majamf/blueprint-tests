@@ -102,4 +102,14 @@ export default class BlueprintTemplatePageSteps {
 	async passcodePolicyPageIsOpen() {
 		await this.navigationSteps.pageWithHeadingIsOpen('Passcode Policy');
 	}
+
+	@Step('Admin fills name of blueprint')
+	async adminFillsNameOfBlueprint(name: string) {
+		await this.blueprintsSteps.fillNameOfBlueprint(name);
+	}
+
+	@Step('Admin fills description of blueprint')
+	async adminFillsDescriptionOfBlueprint(description: string) {
+		await this.blueprintsSteps.fillDescriptionOfBlueprint(description);
+	}
 }

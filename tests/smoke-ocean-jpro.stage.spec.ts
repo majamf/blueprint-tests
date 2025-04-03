@@ -48,9 +48,9 @@ test('Blueprint can be added via templates and removed in Jamf Pro', { tag: ['@s
 	await blueprintTemplatePageSteps.adminOpensTemplateWithName('Set passcode policies');
 
 	await blueprintTemplatePageSteps.generalPageIsOpen();
-	await blueprintsSteps.adminFillsNameOfBlueprint('Passcode_' + id);
+	await blueprintTemplatePageSteps.adminFillsNameOfBlueprint('Passcode_' + id);
 
-	await blueprintsSteps.adminFillsDescriptionOfBlueprint('Some description');
+	await blueprintTemplatePageSteps.adminFillsDescriptionOfBlueprint('Some description');
 	await blueprintTemplatePageSteps.adminClicksNextButton();
 
 	await blueprintTemplatePageSteps.scopingPageIsOpen();
