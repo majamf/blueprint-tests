@@ -201,6 +201,7 @@ test('Components of blueprint can be updated', { tag: ['@sbox'] }, async ({ page
 	await blueprintSteps.adminFillsDescriptionOfBlueprint('Some description');
 	await blueprintSteps.adminClicksCreateBlueprintButton();
 
+	await blueprintDetailPageSteps.adminSearchesForComponent('Disk management');
 	await blueprintDetailPageSteps.adminOpensAddModalOfComponent('Disk management');
 
 	await blueprintDetailPageSteps.adminAddsConfigurationOfComponent();
@@ -208,6 +209,7 @@ test('Components of blueprint can be updated', { tag: ['@sbox'] }, async ({ page
 	await navigationSteps.adminsOpensBlueprintsRoute();
 	await blueprintSteps.adminOpensBlueprintWithName('Disk_' + id);
 
+	await blueprintDetailPageSteps.adminSearchesForComponent('Passcode Policy');
 	await blueprintDetailPageSteps.adminOpensAddModalOfComponent('Passcode Policy');
 	await blueprintDetailPageSteps.adminAddsConfigurationOfComponent();
 
