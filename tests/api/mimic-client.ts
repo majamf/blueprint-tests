@@ -61,4 +61,14 @@ export default class MimicClient {
 		const apiUrl = encodeURI(`${this.baseUrl}devices/${udid}`);
 		return await this.fetchData(apiUrl);
 	}
+
+	public async checkIn(udid: string) {
+		const apiUrl = encodeURI(`${this.baseUrl}devices/${udid}/check-in`);
+		const context = await request.newContext();
+
+		const headers = {
+			accept: 'application/json',
+		};
+		await context.get(apiUrl, { headers });
+	}
 }

@@ -21,7 +21,6 @@ test.beforeEach(async () => {
 });
 
 test('Deploy blueprint to mimic device in Jamf School', { tag: ['@stage', '@mimic'] }, async ({ page }) => {
-	test.fixme(true, 'https://jamfpdd.atlassian.net/browse/SCH-18401');
 	const jSchoolLoginSteps = new JSchoolLoginSteps(page);
 	const blueprintsSteps = new BlueprintsSteps(page);
 	const blueprintTemplatePageSteps = new BlueprintTemplatePageSteps(page);
@@ -55,11 +54,13 @@ test('Deploy blueprint to mimic device in Jamf School', { tag: ['@stage', '@mimi
 	await blueprintTemplatePageSteps.adminSelectsPasswordToBeRequired();
 	const blueprintId = await blueprintTemplatePageSteps.adminsSavesBlueprint();
 
-	await navigationSteps.adminGoesBackToBlueprintsListViaBreadCrumbsInJPro();
+	await navigationSteps.adminGoesBackToBlueprintsListViaBreadCrumbsInJamfSchool();
 	await blueprintsSteps.thereIsBlueprintWithName('Passcode_' + id);
 	await blueprintsSteps.adminOpensBlueprintWithName('Passcode_' + id);
 
 	await blueprintDetailPageSteps.adminDeploysBlueprint();
+
+	await mimicSteps.mimicDeviceChecksIn(udid);
 
 	await mimicSteps.blueprintIsDeployedToMimicDevice(blueprintId, udid, 'com.apple.configuration.passcode.settings');
 

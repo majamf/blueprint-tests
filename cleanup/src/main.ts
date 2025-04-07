@@ -20,6 +20,9 @@ type TokenResponse = {
 const JPRO_API_URL = Deno.env.get('JAMF_PRO_BASE_URL') || 'https://vhdpsvhf.pyro.jamf.build';
 const JPRO_USERNAME = Deno.env.get('JAMF_PRO_STAGE_API_USERNAME');
 const JPRO_PASSWORD = Deno.env.get('JAMF_PRO_STAGE_API_PASSWORD');
+// it is not possible to retrieve tenantId from Jamf School API
+// tenantID related to instance: https://oceanplaywrightstage.dev.jamfnimbus.cloud
+const JSCHOOL_TENANTID = 'e4f64d69-fca7-4e72-ac8d-80a0c0c3d832';
 const TYK_URL = 'https://tyk-gateway.stage.apigw.jamfnebula.com';
 const TYK_CLIENT_ID = Deno.env.get('API_GATEWAY_STAGE_CLIENT_ID');
 const TYK_CLIENT_SECRET = Deno.env.get('API_GATEWAY_STAGE_CLIENT_SECRET');
@@ -100,7 +103,7 @@ class APIClient {
 		return response.access_token;
 	}
 
-	async getTenantId(token: string): Promise<string> {
+	async getJProTenantId(token: string): Promise<string> {
 		const response = await this.handleRequest<TenantResponse>(
 			fetch(`${JPRO_API_URL}/api/v1/csa/tenant-id`, {
 				headers: {
@@ -162,13 +165,8 @@ class BlueprintManager {
 		return blueprints.filter((blueprint) => new Date(blueprint.updated) < filterDate).map((blueprint) => blueprint.id);
 	}
 
-	async cleanupOldBlueprints(daysOld = 7): Promise<void> {
+	private async cleanupOldBlueprints(tykToken: string, daysOld: number): Promise<void> {
 		const failures: Array<{ id: string; error: string }> = [];
-		console.log('Starting blueprint cleanup...');
-
-		const jproToken = await this.api.getJProAuthToken();
-		const tenantId = await this.api.getTenantId(jproToken);
-		const tykToken = await this.api.getTykAuthToken(tenantId);
 
 		const blueprints = await this.api.getBlueprints(tykToken);
 		let oldBlueprintIds = BlueprintManager.getOldBlueprints(blueprints, daysOld);
@@ -198,13 +196,45 @@ class BlueprintManager {
 			console.log('No old blueprints to delete');
 		}
 	}
+
+	async cleanupOldBlueprintsInJamfPro(daysOld = 7): Promise<void> {
+		console.log('Starting Jamf Pro blueprint cleanup...');
+
+		const jproToken = await this.api.getJProAuthToken();
+		const tenantId = await this.api.getJProTenantId(jproToken);
+		const tykToken = await this.api.getTykAuthToken(tenantId);
+
+		await this.cleanupOldBlueprints(tykToken, daysOld);
+	}
+
+	async cleanupOldBlueprintsInJamfSchool(daysOld = 7): Promise<void> {
+		console.log('Starting Jamf School blueprint cleanup...');
+
+		const tykToken = await this.api.getTykAuthToken(JSCHOOL_TENANTID);
+
+		await this.cleanupOldBlueprints(tykToken, daysOld);
+	}
 }
 
 if (import.meta.main) {
 	const manager = new BlueprintManager(new APIClient());
+	const errors: Error[] = [];
 
-	manager.cleanupOldBlueprints().catch((error: Error) => {
-		console.error('Error:', error.message);
-		Deno.exit(1);
+	await manager.cleanupOldBlueprintsInJamfPro().catch((error: Error) => {
+		console.error('Jamf Pro Cleanup Error:', error.message);
+		errors.push(error);
 	});
+
+	await manager.cleanupOldBlueprintsInJamfSchool().catch((error: Error) => {
+		console.error('Jamf School Cleanup Error:', error.message);
+		errors.push(error);
+	});
+
+	if (errors.length > 0) {
+		console.error(`Script completed with ${errors.length} error(s)`);
+		Deno.exit(1);
+	} else {
+		console.log('All cleanup operations completed successfully');
+		Deno.exit(0);
+	}
 }

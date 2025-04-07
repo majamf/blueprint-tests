@@ -16,8 +16,8 @@ brew install deno
 
 ## Usage
 
-From the root directory:
+In cleanup directory, run the script:
 
 ```bash
-pnpm cleanup
+deno task cleanup
 ```

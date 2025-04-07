@@ -65,6 +65,19 @@ export default class NavigationSteps {
 		await blueprintGetPromise;
 	}
 
+	@Step('Admin goes back to blueprints list via breadcrumbs in Jamf School')
+	async adminGoesBackToBlueprintsListViaBreadCrumbsInJamfSchool() {
+		const breadCrumbsLink = this.page.getByTestId('blueprints-wrapper').getByRole('link', { name: 'Blueprints' });
+
+		const blueprintGetPromise = this.waitForBlueprintsResponse();
+
+		await breadCrumbsLink.click();
+
+		await this.page.waitForURL('**/list');
+
+		await blueprintGetPromise;
+	}
+
 	@Step('Admin opens blueprints via Jamf School navigation')
 	async adminOpensBlueprintsViaJamfSchoolNavigation() {
 		const blueprintsNavigation = this.page.locator('.topmenu').getByText('Blueprints');

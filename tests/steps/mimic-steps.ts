@@ -88,4 +88,9 @@ export default class MimicSteps {
 		expect(configuration!.active).toBeTruthy();
 		expect(configuration!.valid).toEqual('valid');
 	}
+
+	@Step('The mimic device "$0" checks in')
+	public async mimicDeviceChecksIn(udid: string) {
+		await this.mimicClient.checkIn(udid);
+	}
 }
