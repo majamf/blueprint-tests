@@ -1,7 +1,9 @@
 version: 2
 updates:
 - package-ecosystem: github-actions
-  directory: /
+  directories:
+    - "/"
+    - ".github/actions/*"
   schedule:
     interval: weekly
     day: tuesday
@@ -9,7 +11,7 @@ updates:
   commit-message:
     prefix: "TRIVIAL "
 - package-ecosystem: npm
-  directory: /
+  directory: "/"
   schedule:
     interval: weekly
     day: tuesday
@@ -21,7 +23,7 @@ updates:
   commit-message:
     prefix: "TRIVIAL "
 - package-ecosystem: docker
-  directory: /
+  directory: "/"
   schedule:
     interval: weekly
     day: tuesday
