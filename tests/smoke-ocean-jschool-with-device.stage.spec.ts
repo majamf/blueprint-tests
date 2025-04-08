@@ -60,7 +60,11 @@ test('Deploy blueprint to mimic device in Jamf School', { tag: ['@stage', '@mimi
 
 	await blueprintDetailPageSteps.adminDeploysBlueprint();
 
+	const timeOfCheckin = new Date();
+
 	await mimicSteps.mimicDeviceChecksIn(udid);
+
+	await jSchoolApiSteps.waitForCheckinOfDeviceInJamfSchool(timeOfCheckin);
 
 	await mimicSteps.blueprintIsDeployedToMimicDevice(blueprintId, udid, 'com.apple.configuration.passcode.settings');
 

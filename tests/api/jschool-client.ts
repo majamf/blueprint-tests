@@ -6,6 +6,7 @@ type ListResponse<T> = {
 
 type MobileDeviceDetails = {
 	UDID: string;
+	lastCheckin: Date;
 };
 
 export default class JSchoolClient {
