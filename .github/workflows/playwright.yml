@@ -90,6 +90,7 @@ jobs:
     if: ${{ !cancelled() }}
     outputs:
       passed: ${{ steps.extract.outputs.PASSED }}
+      flaky: ${{ steps.extract.outputs.FLAKY }}
       failed: ${{ steps.extract.outputs.FAILED }}
       skipped: ${{ steps.extract.outputs.SKIPPED }}
     steps:
@@ -100,9 +101,11 @@ jobs:
       name: Extract Playwright Test Results
       run: |
         PASSED=$(jq -r '.stats.expected' results.json)
+        FLAKY=$(jq -r '.stats.flaky' results.json)
         FAILED=$(jq -r '.stats.unexpected' results.json)
         SKIPPED=$(jq -r '.stats.skipped' results.json)
         echo "PASSED=$PASSED" >> $GITHUB_OUTPUT
+        echo "FLAKY=$FLAKY" >> $GITHUB_OUTPUT
         echo "FAILED=$FAILED" >> $GITHUB_OUTPUT
         echo "SKIPPED=$SKIPPED" >> $GITHUB_OUTPUT
 
@@ -116,6 +119,7 @@ jobs:
       - uses: ./.github/actions/notify-result
         with:
           passed: ${{ needs.extract-results.outputs.passed }}
+          flaky: ${{ needs.extract-results.outputs.flaky }}
           failed: ${{ needs.extract-results.outputs.failed }}
           skipped: ${{ needs.extract-results.outputs.skipped }}
           result: 'PASSED'
@@ -133,6 +137,7 @@ jobs:
       - uses: ./.github/actions/notify-result
         with:
           passed: ${{ needs.extract-results.outputs.passed }}
+          flaky: ${{ needs.extract-results.outputs.flaky }}
           failed: ${{ needs.extract-results.outputs.failed }}
           skipped: ${{ needs.extract-results.outputs.skipped }}
           result: 'FAILED'

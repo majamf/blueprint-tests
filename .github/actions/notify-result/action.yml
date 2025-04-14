@@ -5,6 +5,9 @@ inputs:
   passed:
     description: Number of skipped tests
     required: true
+  flaky:
+    description: Number of flaky tests
+    required: true
   failed:
     description: Number of skipped tests
     required: true
@@ -58,7 +61,7 @@ runs:
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "*Passed:* ${{ inputs.passed }}"
+                    "text": "*Passed:* ${{ inputs.passed }} (+ ${{ inputs.flaky }} flaky)"
                   }
                 },
                  {
