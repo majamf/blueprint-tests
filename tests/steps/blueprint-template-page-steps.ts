@@ -1,4 +1,4 @@
-import { type Page } from '@playwright/test';
+import { expect, type Page } from '@playwright/test';
 import { Step } from '../utils/utils';
 import BlueprintsSteps from './blueprints-steps';
 import NavigationSteps from './navigation-steps';
@@ -91,6 +91,8 @@ export default class BlueprintTemplatePageSteps {
 	@Step('Scoping page is opened')
 	async scopingPageIsOpen() {
 		await this.navigationSteps.pageWithHeadingIsOpen('Choose a scope');
+		const scopingForm = this.page.locator('form#scoping');
+		await expect(scopingForm).toBeVisible();
 	}
 
 	@Step('General page is opened')
