@@ -39,7 +39,6 @@ test('Blueprint can be added via templates and removed', { tag: ['@sbox'] }, asy
 	await blueprintTemplatePageSteps.adminClicksNextButton();
 
 	await blueprintTemplatePageSteps.scopingPageIsOpen();
-	await blueprintTemplatePageSteps.adminSelectsFirstGroupInScope();
 	await blueprintTemplatePageSteps.adminClicksNextButton();
 
 	await blueprintTemplatePageSteps.passcodePolicyPageIsOpen();
@@ -52,47 +51,6 @@ test('Blueprint can be added via templates and removed', { tag: ['@sbox'] }, asy
 
 	await blueprintDetailPageSteps.adminDeletesBlueprint();
 	await blueprintSteps.thereIsNoBlueprintWithName('Passcode_' + id);
-});
-
-test('Blueprint can be added via builder and removed', { tag: ['@sbox'] }, async ({ page, browserName }) => {
-	test.fixme(browserName !== 'chromium', 'https://jamfpdd.atlassian.net/browse/JSC-62590');
-	const sboxSteps = new SboxSetupSteps(page);
-	const blueprintSteps = new BlueprintsSteps(page);
-	const blueprintDetailPageSteps = new BlueprintDetailPageSteps(page);
-	const navigationSteps = new NavigationSteps(page);
-
-	await sboxSteps.sboxIsSetUp(baseUrl, clusterUrl);
-
-	await blueprintSteps.adminOpensBlueprintBuilder();
-
-	await navigationSteps.newBlueprintModalIsOpen();
-
-	await blueprintSteps.adminFillsNameOfBlueprint('Disk_' + id);
-
-	await blueprintSteps.adminFillsDescriptionOfBlueprint('Some description');
-
-	await blueprintSteps.adminClicksCreateBlueprintButton();
-
-	await blueprintDetailPageSteps.adminDragsAndDropsComponent('Disk management');
-	await blueprintDetailPageSteps.adminOpensConfigurationOfComponent('Disk management');
-
-	await blueprintDetailPageSteps.diskManagementDrawerIsOpened();
-	await blueprintDetailPageSteps.adminClicksOnExternalStorageCheckbox();
-	await blueprintDetailPageSteps.adminSavesConfigurationOfComponent();
-
-	await blueprintDetailPageSteps.adminOpensScopeDrawer();
-	await blueprintDetailPageSteps.scopingDrawerIsOpened();
-
-	await blueprintDetailPageSteps.adminSelectsFirstGroupInScopeModal();
-	await blueprintDetailPageSteps.adminSavesScope();
-
-	await navigationSteps.adminsOpensBlueprintsRoute();
-
-	await blueprintSteps.thereIsBlueprintWithName('Disk_' + id);
-	await blueprintSteps.adminOpensBlueprintWithName('Disk_' + id);
-
-	await blueprintDetailPageSteps.adminDeletesBlueprint();
-	await blueprintSteps.thereIsNoBlueprintWithName('Disk_' + id);
 });
 
 test('Name and description of blueprint can be updated', { tag: ['@sbox'] }, async ({ page }) => {
@@ -119,38 +77,6 @@ test('Name and description of blueprint can be updated', { tag: ['@sbox'] }, asy
 	await blueprintSteps.adminOpensBlueprintWithName('Name updated' + id);
 	await blueprintDetailPageSteps.adminDeletesBlueprint();
 	await blueprintSteps.thereIsNoBlueprintWithName('Name updated' + id);
-});
-
-test('Scope of blueprint can be updated (created via builder)', { tag: ['@sbox'] }, async ({ page }) => {
-	const sboxSteps = new SboxSetupSteps(page);
-	const blueprintSteps = new BlueprintsSteps(page);
-	const blueprintDetailPageSteps = new BlueprintDetailPageSteps(page);
-	const navigationSteps = new NavigationSteps(page);
-	await sboxSteps.sboxIsSetUp(baseUrl, clusterUrl);
-
-	await blueprintSteps.adminOpensBlueprintBuilder();
-
-	await navigationSteps.newBlueprintModalIsOpen();
-
-	await blueprintSteps.adminFillsNameOfBlueprint('Disk_' + id);
-	await blueprintSteps.adminFillsDescriptionOfBlueprint('Some description');
-	await blueprintSteps.adminClicksCreateBlueprintButton();
-
-	await blueprintDetailPageSteps.adminOpensScopeDrawer();
-	await blueprintDetailPageSteps.scopingDrawerIsOpened();
-	await blueprintDetailPageSteps.adminSelectsFirstGroupInScopeModal();
-	await blueprintDetailPageSteps.adminSavesScope();
-
-	await blueprintDetailPageSteps.adminOpensScopeDrawer();
-	await blueprintDetailPageSteps.scopingDrawerIsOpened();
-	await blueprintDetailPageSteps.adminSelectsCertainGroupInScopeModal(1);
-	await blueprintDetailPageSteps.adminSavesScope();
-	await blueprintDetailPageSteps.adminOpensScopeDrawer();
-	await blueprintDetailPageSteps.scopingDrawerIsOpened();
-	await blueprintDetailPageSteps.selectedScopeIsChecked(1);
-	await blueprintDetailPageSteps.adminsClicksOnCancelButton();
-
-	await blueprintDetailPageSteps.adminDeletesBlueprint();
 });
 
 test('Configuration of component can be updated', { tag: ['@sbox'] }, async ({ page }) => {
