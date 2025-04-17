@@ -54,6 +54,10 @@ test('Deploy blueprint to mimic device in Jamf Pro', { tag: ['@stage', '@mimic']
 	await blueprintTemplatePageSteps.adminSelectsPasswordToBeRequired();
 	const blueprintId = await blueprintTemplatePageSteps.adminsSavesBlueprint();
 
+	await blueprintDetailPageSteps.blueprintWithNameIsOpened('Passcode_' + id);
+
+	await blueprintDetailPageSteps.adminWaitsForToastToDisappear('Blueprint created');
+
 	await navigationSteps.adminGoesBackToBlueprintsListViaBreadCrumbsInJPro();
 	await blueprintsSteps.thereIsBlueprintWithName('Passcode_' + id);
 	await blueprintsSteps.adminOpensBlueprintWithName('Passcode_' + id);

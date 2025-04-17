@@ -45,6 +45,10 @@ test('Blueprint can be added via templates and removed', { tag: ['@sbox'] }, asy
 	await blueprintTemplatePageSteps.adminSelectsPasswordToBeRequired();
 	await blueprintTemplatePageSteps.adminsSavesBlueprint();
 
+	await blueprintDetailPageSteps.blueprintWithNameIsOpened('Passcode_' + id);
+
+	await blueprintDetailPageSteps.adminWaitsForToastToDisappear('Blueprint created');
+
 	await navigationSteps.adminsOpensBlueprintsRoute();
 	await blueprintSteps.thereIsBlueprintWithName('Passcode_' + id);
 	await blueprintSteps.adminOpensBlueprintWithName('Passcode_' + id);

@@ -61,6 +61,10 @@ test('Blueprint can be added via templates and removed in Jamf Pro', { tag: ['@s
 	await blueprintTemplatePageSteps.adminSelectsPasswordToBeRequired();
 	await blueprintTemplatePageSteps.adminsSavesBlueprint();
 
+	await blueprintDetailPageSteps.blueprintWithNameIsOpened('Passcode_' + id);
+
+	await blueprintDetailPageSteps.adminWaitsForToastToDisappear('Blueprint created');
+
 	await navigationSteps.adminGoesBackToBlueprintsListViaBreadCrumbsInJPro();
 	await blueprintsSteps.thereIsBlueprintWithName('Passcode_' + id);
 	await blueprintsSteps.adminOpensBlueprintWithName('Passcode_' + id);
@@ -93,6 +97,10 @@ test(
 		await blueprintsSteps.adminFillsDescriptionOfBlueprint('Some description');
 
 		await blueprintsSteps.adminClicksCreateBlueprintButton();
+
+		await blueprintDetailPageSteps.blueprintWithNameIsOpened('Disk_' + id);
+
+		await blueprintDetailPageSteps.adminWaitsForToastToDisappear('Blueprint created');
 
 		await blueprintDetailPageSteps.adminDragsAndDropsComponent('Disk management');
 

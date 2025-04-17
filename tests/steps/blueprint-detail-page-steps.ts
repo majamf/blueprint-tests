@@ -24,8 +24,8 @@ const blueprintTextInputLocator = '*[wa-component="nebula--text-input"]';
 const blueprintDropdownLocator = '*[wa-component="nebula--dropdown"]';
 
 export default class BlueprintDetailPageSteps {
-	private blueprintsSteps: BlueprintsSteps;
-	private navigationSteps: NavigationSteps;
+	private readonly blueprintsSteps: BlueprintsSteps;
+	private readonly navigationSteps: NavigationSteps;
 
 	constructor(private readonly page: Page) {
 		this.blueprintsSteps = new BlueprintsSteps(page);
@@ -49,6 +49,13 @@ export default class BlueprintDetailPageSteps {
 				response.status() === 204 &&
 				response.request().method() === 'PATCH'
 		);
+	}
+
+	@Step('Blueprint with name "$0" is opened')
+	async blueprintWithNameIsOpened(name: string) {
+		const blueprintHeading = this.page.getByRole('heading', { name: name });
+
+		await expect(blueprintHeading).toBeVisible();
 	}
 
 	@Step('Admin opens scope drawer')
@@ -242,6 +249,13 @@ export default class BlueprintDetailPageSteps {
 		await expect(componentInDeclarationGroup).toBeVisible();
 
 		await blueprintUpdatePromise;
+	}
+
+	@Step('Admin waits for toast "$0" to disappear')
+	async adminWaitsForToastToDisappear(toast: string) {
+		const successToast = this.page.getByText(toast);
+
+		await successToast.waitFor({ state: 'hidden' });
 	}
 
 	@Step('Admin opens add modal of component with title "$0"')
