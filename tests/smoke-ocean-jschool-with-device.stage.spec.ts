@@ -20,7 +20,7 @@ test.beforeEach(async () => {
 	id = uuidv4();
 });
 
-test('Deploy blueprint to mimic device in Jamf School', { tag: ['@stage', '@mimic'] }, async ({ page }) => {
+test('Deploy blueprint to mimic device in Jamf School', { tag: ['@stage', '@school', '@mimic'] }, async ({ page }) => {
 	const jSchoolLoginSteps = new JSchoolLoginSteps(page);
 	const blueprintsSteps = new BlueprintsSteps(page);
 	const blueprintTemplatePageSteps = new BlueprintTemplatePageSteps(page);

@@ -80,7 +80,9 @@ export default class NavigationSteps {
 
 	@Step('Admin opens blueprints via Jamf School navigation')
 	async adminOpensBlueprintsViaJamfSchoolNavigation() {
-		const blueprintsNavigation = this.page.locator('.topmenu').getByText('Blueprints');
+		const blueprintsNavigation = this.page
+			.getByRole('navigation', { name: 'primary-navigation' })
+			.getByRole('link', { name: 'Blueprints' });
 
 		const blueprintGetPromise = this.waitForBlueprintsResponse();
 		await blueprintsNavigation.click();

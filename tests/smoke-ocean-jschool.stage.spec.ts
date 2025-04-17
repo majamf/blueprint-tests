@@ -18,7 +18,7 @@ test.beforeEach(async () => {
 	id = uuidv4();
 });
 
-test('Blueprints list is loaded in Jamf School', { tag: ['@stage'] }, async ({ page }) => {
+test('Blueprints list is loaded in Jamf School', { tag: ['@stage', '@school'] }, async ({ page }) => {
 	const jSchoolLoginSteps = new JSchoolLoginSteps(page);
 	const blueprintsSteps = new BlueprintsSteps(page);
 	const navigationSteps = new NavigationSteps(page);
@@ -31,51 +31,55 @@ test('Blueprints list is loaded in Jamf School', { tag: ['@stage'] }, async ({ p
 	await blueprintsSteps.thereIsAtLeastOneCard();
 });
 
-test('Blueprint can be added via templates and removed in Jamf School', { tag: ['@stage'] }, async ({ page }) => {
-	const jSchoolLoginSteps = new JSchoolLoginSteps(page);
-	const blueprintsSteps = new BlueprintsSteps(page);
-	const blueprintTemplatePageSteps = new BlueprintTemplatePageSteps(page);
-	const blueprintDetailPageSteps = new BlueprintDetailPageSteps(page);
-	const navigationSteps = new NavigationSteps(page);
+test(
+	'Blueprint can be added via templates and removed in Jamf School',
+	{ tag: ['@stage', '@school'] },
+	async ({ page }) => {
+		const jSchoolLoginSteps = new JSchoolLoginSteps(page);
+		const blueprintsSteps = new BlueprintsSteps(page);
+		const blueprintTemplatePageSteps = new BlueprintTemplatePageSteps(page);
+		const blueprintDetailPageSteps = new BlueprintDetailPageSteps(page);
+		const navigationSteps = new NavigationSteps(page);
 
-	await jSchoolLoginSteps.loginToJamfSchool(baseUrl);
+		await jSchoolLoginSteps.loginToJamfSchool(baseUrl);
 
-	await navigationSteps.adminOpensBlueprintsViaJamfSchoolNavigation();
-	await blueprintsSteps.blueprintsPageIsOpen();
+		await navigationSteps.adminOpensBlueprintsViaJamfSchoolNavigation();
+		await blueprintsSteps.blueprintsPageIsOpen();
 
-	await blueprintsSteps.adminsClicksOnQuickStart();
+		await blueprintsSteps.adminsClicksOnQuickStart();
 
-	await blueprintTemplatePageSteps.adminOpensTemplateWithName('Set passcode policies');
+		await blueprintTemplatePageSteps.adminOpensTemplateWithName('Set passcode policies');
 
-	await blueprintTemplatePageSteps.generalPageIsOpen();
-	await blueprintsSteps.adminFillsNameOfBlueprint('Passcode_' + id);
+		await blueprintTemplatePageSteps.generalPageIsOpen();
+		await blueprintsSteps.adminFillsNameOfBlueprint('Passcode_' + id);
 
-	await blueprintsSteps.adminFillsDescriptionOfBlueprint('Some description');
-	await blueprintTemplatePageSteps.adminClicksNextButton();
+		await blueprintsSteps.adminFillsDescriptionOfBlueprint('Some description');
+		await blueprintTemplatePageSteps.adminClicksNextButton();
 
-	await blueprintTemplatePageSteps.scopingPageIsOpen();
-	await blueprintTemplatePageSteps.adminSelectsFirstGroupInScope();
-	await blueprintTemplatePageSteps.adminClicksNextButton();
+		await blueprintTemplatePageSteps.scopingPageIsOpen();
+		await blueprintTemplatePageSteps.adminSelectsFirstGroupInScope();
+		await blueprintTemplatePageSteps.adminClicksNextButton();
 
-	await blueprintTemplatePageSteps.passcodePolicyPageIsOpen();
-	await blueprintTemplatePageSteps.adminSelectsPasswordToBeRequired();
-	await blueprintTemplatePageSteps.adminsSavesBlueprint();
+		await blueprintTemplatePageSteps.passcodePolicyPageIsOpen();
+		await blueprintTemplatePageSteps.adminSelectsPasswordToBeRequired();
+		await blueprintTemplatePageSteps.adminsSavesBlueprint();
 
-	await blueprintDetailPageSteps.blueprintWithNameIsOpened('Passcode_' + id);
+		await blueprintDetailPageSteps.blueprintWithNameIsOpened('Passcode_' + id);
 
-	await blueprintDetailPageSteps.adminWaitsForToastToDisappear('Blueprint created');
+		await blueprintDetailPageSteps.adminWaitsForToastToDisappear('Blueprint created');
 
-	await navigationSteps.adminGoesBackToBlueprintsListViaBreadCrumbsInJamfSchool();
-	await blueprintsSteps.thereIsBlueprintWithName('Passcode_' + id);
-	await blueprintsSteps.adminOpensBlueprintWithName('Passcode_' + id);
+		await navigationSteps.adminGoesBackToBlueprintsListViaBreadCrumbsInJamfSchool();
+		await blueprintsSteps.thereIsBlueprintWithName('Passcode_' + id);
+		await blueprintsSteps.adminOpensBlueprintWithName('Passcode_' + id);
 
-	await blueprintDetailPageSteps.adminDeletesBlueprint();
-	await blueprintsSteps.thereIsNoBlueprintWithName('Passcode_' + id);
-});
+		await blueprintDetailPageSteps.adminDeletesBlueprint();
+		await blueprintsSteps.thereIsNoBlueprintWithName('Passcode_' + id);
+	}
+);
 
 test(
 	'Blueprint can be added via builder and removed in Jamf School',
-	{ tag: ['@stage'] },
+	{ tag: ['@stage', '@school'] },
 	async ({ page, browserName }) => {
 		test.fixme(browserName !== 'chromium', 'https://jamfpdd.atlassian.net/browse/JSC-62590');
 		const jSchoolLoginSteps = new JSchoolLoginSteps(page);
@@ -126,7 +130,7 @@ test(
 	}
 );
 
-test('Templates are properly loaded in Jamf School', { tag: ['@stage'] }, async ({ page }) => {
+test('Templates are properly loaded in Jamf School', { tag: ['@stage', '@school'] }, async ({ page }) => {
 	const jSchoolLoginSteps = new JSchoolLoginSteps(page);
 	const blueprintsSteps = new BlueprintsSteps(page);
 	const navigationSteps = new NavigationSteps(page);
@@ -140,7 +144,7 @@ test('Templates are properly loaded in Jamf School', { tag: ['@stage'] }, async 
 	await blueprintsSteps.verifyExpectedTemplates('Set passcode policies');
 });
 
-test('Searching in scope works in Jamf School', { tag: ['@stage'] }, async ({ page }) => {
+test('Searching in scope works in Jamf School', { tag: ['@stage', '@school'] }, async ({ page }) => {
 	const jSchoolLoginSteps = new JSchoolLoginSteps(page);
 	const blueprintsSteps = new BlueprintsSteps(page);
 	const blueprintDetailPageSteps = new BlueprintDetailPageSteps(page);
