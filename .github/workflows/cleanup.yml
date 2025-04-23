@@ -33,9 +33,11 @@ jobs:
       if: ${{ failure() && (github.event_name == 'workflow_dispatch' || github.event_name == 'schedule') }}
       uses: slackapi/slack-github-action@v2.0.0
       with:
-        channel-id: ocean-tests
+        token: ${{ secrets.GH_SLACK_TOKEN }}
+        method: chat.postMessage
         payload: |
           {
+          "channel": "ocean-tests",
             "attachments": [
               {
                 "color": "#FF0000",
@@ -58,5 +60,3 @@ jobs:
               }
             ]
           }
-      env:
-        SLACK_BOT_TOKEN: ${{ secrets.GH_SLACK_TOKEN }}
