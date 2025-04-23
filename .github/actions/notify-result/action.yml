@@ -36,9 +36,11 @@ runs:
   - name: Post to a Slack channel
     uses: slackapi/slack-github-action@v2.0.0
     with:
-      channel-id: ocean-tests
+      token: ${{ inputs.slack_token }}
+      method: chat.postMessage
       payload: |
         {
+          "channel": "ocean-tests",
           "attachments": [
             {
               "color": "${{ inputs.bg_color}}",
@@ -96,5 +98,3 @@ runs:
             }
           ]
         }
-    env:
-      SLACK_BOT_TOKEN: ${{ inputs.slack_token }}
