@@ -31,10 +31,10 @@ export type Field =
 			};
 	  };
 
-type DistributeKeys<T> = T extends any ? keyof T : never;
+type DistributeKeys<T> = T extends unknown ? keyof T : never;
 export type FieldName = DistributeKeys<Field>;
 export type FieldRecord = {
-	[K in FieldName]: Field extends infer U ? (U extends Record<K, any> ? U[K] : never) : never;
+	[K in FieldName]: Field extends infer U ? (U extends Record<K, unknown> ? U[K] : never) : never;
 };
 export type FieldType<T extends FieldName> = FieldRecord[T];
 
