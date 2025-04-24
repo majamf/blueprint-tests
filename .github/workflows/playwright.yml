@@ -34,7 +34,7 @@ jobs:
     timeout-minutes: 60
     runs-on: [ self-hosted, jamf-ubuntu-latest ]
     container:
-      image: mcr.microsoft.com/playwright:v1.51.0
+      image: mcr.microsoft.com/playwright:v1.52.0
     outputs:
       reportportal_url: ${{ steps.playwright_link.outputs.REPORTPORTAL_URL }}
     steps:
