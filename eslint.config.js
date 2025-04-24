@@ -1,9 +1,10 @@
+import { defineConfig } from 'eslint/config';
 import playwrightConfig from 'eslint-plugin-playwright';
 import eslintConfigPrettier from 'eslint-config-prettier';
 import typescriptConfig from '@typescript-eslint/eslint-plugin';
 import typescriptParser from '@typescript-eslint/parser';
 
-export default [
+export default defineConfig([
 	{
 		...playwrightConfig.configs['flat/recommended'],
 		files: ['tests/**.*'],
@@ -16,14 +17,5 @@ export default [
 		},
 	},
 	eslintConfigPrettier,
-	{
-		...typescriptConfig.configs['flat/recommended'],
-		files: ['**/*.ts'],
-		rules: {
-			...typescriptConfig.rules['flat/recommended'],
-		},
-		languageOptions: {
-			parser: typescriptParser,
-		},
-	},
-];
+	...typescriptConfig.configs['flat/recommended'],
+]);
