@@ -293,7 +293,7 @@ export default class BlueprintDetailPageSteps {
 
 	@Step('Disk management drawer is opened')
 	async diskManagementDrawerIsOpened() {
-		const formLocator = this.page.locator("[id*='builder-com.jamf.ddm.disk-management-configuration']");
+		const formLocator = this.page.locator("[id*='com.jamf.ddm.disk-management-configuration']");
 
 		await this.drawerWithHeadingIsOpen('Disk Management');
 		await expect(formLocator).toBeVisible();
@@ -301,7 +301,7 @@ export default class BlueprintDetailPageSteps {
 
 	@Step('Disk management add modal is opened')
 	async diskManagementAddModalIsOpened() {
-		const formLocator = this.page.locator("[id*='add-component-com.jamf.ddm.disk-management']");
+		const formLocator = this.page.locator("[id*='com.jamf.ddm.disk-management-configuration']");
 
 		await this.drawerWithHeadingIsOpen('Disk Management');
 		await expect(formLocator).toBeVisible();
