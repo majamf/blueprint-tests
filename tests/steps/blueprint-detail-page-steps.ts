@@ -125,7 +125,7 @@ export default class BlueprintDetailPageSteps {
 
 	@Step('Disk management option with name "$0" is checked')
 	async selectedDiskManagementIsChecked(name: string) {
-		await expect(this.page.locator(blueprintCheckboxLocator, { hasText: name }).locator('span').first()).toBeChecked();
+		await expect(this.page.locator(blueprintCheckboxLocator, { hasText: name }).locator('input').first()).toBeChecked();
 	}
 
 	@Step('Admin clicks on external storage checkbox')
@@ -135,7 +135,7 @@ export default class BlueprintDetailPageSteps {
 			.locator('label div')
 			.first();
 
-		await externalStorageCheckbox.click();
+		await externalStorageCheckbox.click({ force: true });
 	}
 
 	@Step('Admin clicks on network storage checkbox')
@@ -145,7 +145,7 @@ export default class BlueprintDetailPageSteps {
 			.locator('label div')
 			.first();
 
-		await externalStorageCheckbox.click();
+		await externalStorageCheckbox.click({ force: true });
 	}
 
 	@Step('Admin saves scope')
@@ -304,6 +304,14 @@ export default class BlueprintDetailPageSteps {
 		const formLocator = this.page.locator("[id*='com.jamf.ddm.disk-management-configuration']");
 
 		await this.drawerWithHeadingIsOpen('Disk Management');
+		await expect(formLocator).toBeVisible();
+	}
+
+	@Step('Passcode policy add modal is opened')
+	async passcodeAddModalIsOpened() {
+		const formLocator = this.page.locator("[id*='com.jamf.ddm.passcode-settings-configuration']");
+
+		await this.drawerWithHeadingIsOpen('Passcode Policy');
 		await expect(formLocator).toBeVisible();
 	}
 
