@@ -42,11 +42,17 @@ export default class JSchoolLoginSteps {
 				response.request().method() === 'GET'
 		);
 
+		const dashboardRequests = this.page.waitForResponse(
+			(response) =>
+				response.url().includes('/dashboard/') && response.status() === 200 && response.request().method() === 'GET'
+		);
+
 		await passwordInput.fill(process.env.JAMF_ACCOUNT_STAGE_USER_PASSWORD);
 		await loginButton.click();
 
 		await this.page.waitForLoadState('load');
 		await apiTokenRequest;
+		await dashboardRequests;
 
 		const dashboardHeadingLocator = this.page.getByRole('heading', { name: 'Dashboard' });
 		await expect(dashboardHeadingLocator).toBeVisible({ timeout: 30_000 });

@@ -37,11 +37,7 @@ export default class MimicSteps {
 		return valueOfField.value.activations;
 	}
 
-	@Step('Blueprint with id "$0" is deployed to mimic device "$1" with type "$2"')
-	public async blueprintIsDeployedToMimicDevice(blueprintId: UUID, udid: string, type: string) {
-		const configurationIdentifier = 'Blueprint_' + blueprintId + '_s1_c1_cfg1';
-		const activationIdentifier = 'Blueprint_' + blueprintId + '_s1_activation';
-
+	private async pollMimicConfigurations(udid: string, configurationIdentifier: string) {
 		await expect
 			.poll(
 				async () => {
@@ -55,7 +51,26 @@ export default class MimicSteps {
 				}
 			)
 			.toContain(configurationIdentifier);
+	}
 
+	private async pollMimicConfigurationsWithCheckIn(udid: string, configurationIdentifier: string) {
+		await expect
+			.poll(
+				async () => {
+					await this.mimicDeviceChecksIn(udid);
+					const configurations = await this.getConfigurationsOfMimicDevice(udid);
+					return Object.keys(configurations);
+				},
+				{
+					message: 'Eventually mimic has correct configuration key',
+					intervals: pollIntervals,
+					timeout: pollTimeout,
+				}
+			)
+			.toContain(configurationIdentifier);
+	}
+
+	private async pollMimicActivations(udid: string, activationIdentifier: string) {
 		await expect
 			.poll(
 				async () => {
@@ -69,7 +84,9 @@ export default class MimicSteps {
 				}
 			)
 			.toContain(activationIdentifier);
+	}
 
+	private async validateActivations(udid: string, activationIdentifier: string, configurationIdentifier: string) {
 		const activations = await this.getActivationsOfMimicDevice(udid);
 		const activation = activations[activationIdentifier];
 
@@ -78,7 +95,9 @@ export default class MimicSteps {
 		expect(activation!.identifier).toEqual(activationIdentifier);
 		expect(activation!.active).toBeTruthy();
 		expect(activation!.valid).toEqual('valid');
+	}
 
+	private async validateConfigurations(udid: string, configurationIdentifier: string, type: string) {
 		const configurations = await this.getConfigurationsOfMimicDevice(udid);
 		const configuration = configurations[configurationIdentifier];
 
@@ -87,6 +106,34 @@ export default class MimicSteps {
 		expect(configuration!.identifier).toEqual(configurationIdentifier);
 		expect(configuration!.active).toBeTruthy();
 		expect(configuration!.valid).toEqual('valid');
+	}
+
+	@Step('Blueprint with id "$0" is deployed to mimic device "$1" with type "$2" via Jamf Pro')
+	public async blueprintIsDeployedToMimicDeviceViaJamfPro(blueprintId: UUID, udid: string, type: string) {
+		const configurationIdentifier = 'Blueprint_' + blueprintId + '_s1_c1_cfg1';
+		const activationIdentifier = 'Blueprint_' + blueprintId + '_s1_activation';
+
+		await this.pollMimicConfigurations(udid, configurationIdentifier);
+
+		await this.pollMimicActivations(udid, activationIdentifier);
+
+		await this.validateActivations(udid, activationIdentifier, configurationIdentifier);
+
+		await this.validateConfigurations(udid, configurationIdentifier, type);
+	}
+
+	@Step('Blueprint with id "$0" is deployed to mimic device "$1" with type "$2" via Jamf School')
+	public async blueprintIsDeployedToMimicDeviceViaJamfSchool(blueprintId: UUID, udid: string, type: string) {
+		const configurationIdentifier = 'Blueprint_' + blueprintId + '_s1_c1_cfg1';
+		const activationIdentifier = 'Blueprint_' + blueprintId + '_s1_activation';
+
+		await this.pollMimicConfigurationsWithCheckIn(udid, configurationIdentifier);
+
+		await this.pollMimicActivations(udid, activationIdentifier);
+
+		await this.validateActivations(udid, activationIdentifier, configurationIdentifier);
+
+		await this.validateConfigurations(udid, configurationIdentifier, type);
 	}
 
 	@Step('The mimic device "$0" checks in')

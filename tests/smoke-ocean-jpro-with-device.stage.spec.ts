@@ -64,7 +64,11 @@ test('Deploy blueprint to mimic device in Jamf Pro', { tag: ['@stage', '@mimic']
 
 	await blueprintDetailPageSteps.adminDeploysBlueprint();
 
-	await mimicSteps.blueprintIsDeployedToMimicDevice(blueprintId, udid, 'com.apple.configuration.passcode.settings');
+	await mimicSteps.blueprintIsDeployedToMimicDeviceViaJamfPro(
+		blueprintId,
+		udid,
+		'com.apple.configuration.passcode.settings'
+	);
 
 	await blueprintDetailPageSteps.adminDeletesBlueprint();
 	await blueprintsSteps.thereIsNoBlueprintWithName('Passcode_' + id);
