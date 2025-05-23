@@ -20,6 +20,8 @@ export default class JProLoginSteps {
 		const passwordInput = this.page.getByLabel('Password');
 		const loginButton = this.page.getByRole('button', { name: 'Log in using Jamf ID' });
 		const continueToJProButton = this.page.getByRole('button', { name: 'Continue to Jamf Pro' });
+		const blueprintsNavItem = this.page.locator('jamf-nav-single-item#blueprints-nav-item');
+		const slasaAgreeButton = this.page.locator('[data-test-id="slasa-agree-button"] > jamf-button');
 
 		await this.utilsSteps.disableAnimations();
 		await this.page.goto(baseUrl);
@@ -30,6 +32,19 @@ export default class JProLoginSteps {
 		await passwordInput.fill(process.env.JAMF_ACCOUNT_STAGE_USER_PASSWORD);
 		await loginButton.click();
 		await continueToJProButton.click();
-		await this.page.waitForLoadState('load');
+
+		await blueprintsNavItem.waitFor();
+
+		if (await slasaAgreeButton.isVisible()) {
+			const slasaAgreementContent = this.page.locator('jp-slasa-content > div');
+
+			await slasaAgreementContent.focus();
+
+			while ((await slasaAgreeButton.getAttribute('is-disabled')) !== null) {
+				await this.page.keyboard.press('End');
+			}
+
+			await slasaAgreeButton.click();
+		}
 	}
 }
