@@ -3,13 +3,13 @@ description: Notifies Tests results through Slack
 
 inputs:
   passed:
-    description: Number of skipped tests
+    description: Number of passed tests
     required: true
   flaky:
     description: Number of flaky tests
     required: true
   failed:
-    description: Number of skipped tests
+    description: Number of failed tests
     required: true
   skipped:
     description: Number of skipped tests
@@ -25,6 +25,9 @@ inputs:
     required: true
   slack_token:
     description: The Slack app token to use
+    required: true
+  environment:
+    description: The environment where the tests were run
     required: true
 
 runs:
@@ -50,6 +53,13 @@ runs:
                   "text": {
                     "type": "mrkdwn",
                     "text": "*Blueprint Tests* has finished"
+                  }
+                },
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "*Environment:* ${{ inputs.environment }}"
                   }
                 },
                 {

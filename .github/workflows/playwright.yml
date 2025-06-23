@@ -17,7 +17,6 @@ on:
         description: 'URL of the Blueprints standalone deployment'
         type: string
 
-
 env:
   JAMF_ACCOUNT_STAGE_USER_MAIL: ${{secrets.JAMF_ACCOUNT_STAGE_USER_MAIL}}
   JAMF_ACCOUNT_STAGE_USER_PASSWORD: ${{secrets.JAMF_ACCOUNT_STAGE_USER_PASSWORD}}
@@ -96,6 +95,24 @@ jobs:
         path: results.json
         retention-days: 30
 
+  extract-environment:
+    name: Extract Environment
+    runs-on: [ self-hosted, jamf-ubuntu-latest ]
+    outputs:
+      environment: ${{ steps.extract-env.outputs.environment }}
+    steps:
+    - id: extract-env
+      name: Extract Environment from Filter
+      run: |
+        if [[ "${{ github.event.inputs.filter }}" == *"stage"* ]]; then
+          echo "environment=stage" >> $GITHUB_OUTPUT
+        elif [[ "${{ github.event.inputs.filter }}" == *"sbox"* ]]; then
+          echo "environment=sbox" >> $GITHUB_OUTPUT
+        else
+          echo "environment=other" >> $GITHUB_OUTPUT
+        fi
+      shell: bash
+
   extract-results:
     name: Extract test result numbers
     runs-on: [ self-hosted, jamf-ubuntu-latest ]
@@ -125,7 +142,7 @@ jobs:
   notify-success:
     name: Notify Tests Success
     runs-on: [ self-hosted, jamf-ubuntu-latest ]
-    needs: [ test, extract-results ]
+    needs: [ test, extract-results, extract-environment ]
     if: ${{ success() && (github.event_name == 'workflow_dispatch' || github.event_name == 'schedule') && needs.extract-results.outputs.passed > 0 }}
     steps:
       - uses: actions/checkout@v4
@@ -139,11 +156,12 @@ jobs:
           rp_link: ${{ needs.test.outputs.reportportal_url }}
           bg_color: '#36a64f'
           slack_token: ${{ secrets.GH_SLACK_TOKEN }}
+          environment: ${{ needs.extract-environment.outputs.environment }}
 
   notify-failure:
     name: Notify Tests Failure
     runs-on: [ self-hosted, jamf-ubuntu-latest ]
-    needs: [ test, extract-results  ]
+    needs: [ test, extract-results, extract-environment ]
     if: ${{ (failure() || needs.extract-results.outputs.passed == 0) && (github.event_name == 'workflow_dispatch' || github.event_name == 'schedule') }}
     steps:
       - uses: actions/checkout@v4
@@ -157,3 +175,4 @@ jobs:
           rp_link: ${{ needs.test.outputs.reportportal_url }}
           bg_color: '#FF0000'
           slack_token: ${{ secrets.GH_SLACK_TOKEN }}
+          environment: ${{ needs.extract-environment.outputs.environment }}
