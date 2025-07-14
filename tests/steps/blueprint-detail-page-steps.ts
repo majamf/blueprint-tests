@@ -22,7 +22,6 @@ const blueprintCheckboxLocator = '*[wa-component="nebula--checkbox"]';
 const blueprintDrawerLocator = '*[wa-component="nebula--drawer"]';
 const blueprintTextInputLocator = '*[wa-component="nebula--text-input"]';
 const blueprintDropdownLocator = '*[wa-component="nebula--dropdown"]';
-
 export default class BlueprintDetailPageSteps {
 	private readonly blueprintsSteps: BlueprintsSteps;
 	private readonly navigationSteps: NavigationSteps;
@@ -70,11 +69,16 @@ export default class BlueprintDetailPageSteps {
 
 	@Step('Admin opens scope drawer')
 	async adminOpensScopeDrawer() {
-		const scopeCardLink = this.page
-			.locator(blueprintCardLocator, { has: this.page.locator(`h5`).getByText('Scope') })
-			.getByRole('link');
+		const scopeCard = this.page
+			.locator('[class*="details-card"]')
+			.filter({
+				has: this.page.locator('[class*="_clickable_"]'),
+			})
+			.filter({
+				has: this.page.locator('h5').getByText('Scope'),
+			});
 
-		await scopeCardLink.click();
+		await scopeCard.click();
 	}
 
 	@Step('Admin selects first group in scope modal')
