@@ -22,6 +22,7 @@ const blueprintCheckboxLocator = '*[wa-component="nebula--checkbox"]';
 const blueprintDrawerLocator = '*[wa-component="nebula--drawer"]';
 const blueprintTextInputLocator = '*[wa-component="nebula--text-input"]';
 const blueprintDropdownLocator = '*[wa-component="nebula--dropdown"]';
+
 export default class BlueprintDetailPageSteps {
 	private readonly blueprintsSteps: BlueprintsSteps;
 	private readonly navigationSteps: NavigationSteps;
@@ -72,7 +73,7 @@ export default class BlueprintDetailPageSteps {
 		const scopeCard = this.page
 			.locator('[class*="details-card"]')
 			.filter({
-				has: this.page.locator('[class*="_clickable_"]'),
+				has: this.page.locator('[class*="clickable"]'),
 			})
 			.filter({
 				has: this.page.locator('h5').getByText('Scope'),
