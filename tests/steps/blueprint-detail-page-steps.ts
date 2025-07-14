@@ -72,12 +72,9 @@ export default class BlueprintDetailPageSteps {
 	async adminOpensScopeDrawer() {
 		const scopeCard = this.page
 			.locator('[class*="details-card"]')
-			.filter({
-				has: this.page.locator('[class*="clickable"]'),
-			})
-			.filter({
-				has: this.page.locator('h5').getByText('Scope'),
-			});
+			.locator('[class*="clickable"]')
+			.locator('h5')
+			.getByText('Scope');
 
 		await scopeCard.click();
 	}
