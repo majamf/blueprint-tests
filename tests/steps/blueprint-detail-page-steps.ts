@@ -70,11 +70,13 @@ export default class BlueprintDetailPageSteps {
 
 	@Step('Admin opens scope drawer')
 	async adminOpensScopeDrawer() {
-		const scopeCardLink = this.page
-			.locator(blueprintCardLocator, { has: this.page.locator(`h5`).getByText('Scope') })
-			.getByRole('link');
+		const scopeCard = this.page
+			.locator('[class*="details-card"]')
+			.locator('[class*="clickable"]')
+			.locator('h5')
+			.getByText('Scope');
 
-		await scopeCardLink.click();
+		await scopeCard.click();
 	}
 
 	@Step('Admin selects first group in scope modal')
