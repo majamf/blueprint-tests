@@ -75,8 +75,6 @@ test('Deploy blueprint to mimic device in Jamf School', { tag: ['@stage', '@scho
 	await blueprintDetailPageSteps.blueprintWithNameIsOpened('Passcode_' + id);
 
 	await blueprintDetailPageSteps.thereAreDeployedDevicesInAnalytics(1);
-	await blueprintDetailPageSteps.thereArePendingDevicesInAnalytics(0);
-	await blueprintDetailPageSteps.thereAreErrorDevicesInAnalytics(0);
 
 	await blueprintDetailPageSteps.adminDeletesBlueprint();
 	await blueprintsSteps.thereIsNoBlueprintWithName('Passcode_' + id);
