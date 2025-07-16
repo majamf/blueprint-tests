@@ -236,7 +236,7 @@ export default class BlueprintDetailPageSteps {
 
 	@Step('Admin clicks on cancel button')
 	async adminsClicksOnCancelButton() {
-		const cancelButton = this.page.locator(blueprintDrawerLocator).getByRole('button', { name: 'Cancel' });
+		const cancelButton = this.page.locator(blueprintDrawerLocator).getByRole('button', { name: 'Cancel123' });
 
 		await cancelButton.click();
 	}
