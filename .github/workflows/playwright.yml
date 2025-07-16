@@ -183,6 +183,8 @@ jobs:
       runs-on: [ self-hosted, jamf-ubuntu-latest ]
       needs: [ test ]
       if: ${{ failure() }}
+      env:
+        GH_TOKEN: ${{ github.token }}
       steps:
         - uses: actions/download-artifact@v4
           with:
@@ -210,3 +212,17 @@ jobs:
             else
               echo "No failed specs found in 'goldminers' suites."
             fi
+        - name: Post to Slack on Failure
+          if: failure()
+          uses: slackapi/slack-github-action@v2.0.0
+          with:
+            method: chat.postMessage
+            token: ${{ secrets.GH_GM_SLACK_TOKEN }}
+            payload: |
+              channel: "gm-channel-test"
+              text: "Blueprints e2e tests: ${{ job.status }}\n"
+              blocks:
+                - type: "section"
+                  text:
+                    type: "mrkdwn"
+                    text: ":x: Build failed for *Blueprints e2e tests workflow* on branch `${{ github.ref_name }}`: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
