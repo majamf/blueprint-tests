@@ -32,7 +32,6 @@ const blueprintTextInputLocator = '*[wa-component="nebula--text-input"]';
 const blueprintDropdownLocator = '*[wa-component="nebula--dropdown"]';
 const blueprintToggleGroupLocator = '*[wa-component="nebula--toggle-group"]';
 
-
 export default class BlueprintDetailPageSteps {
 	private readonly blueprintsSteps: BlueprintsSteps;
 	private readonly navigationSteps: NavigationSteps;
@@ -164,15 +163,19 @@ export default class BlueprintDetailPageSteps {
 
 	@Step('Only one config profile component key with title "$0" is displayed inside a component')
 	async onlyOneKeyIsDisplayedInsideComponent(componentTitle: string) {
-		await expect(this.page.getByTestId('payload-settings-wrapper').locator('div[class="w-full"]').locator('h5')).toHaveCount(1);
-		await expect(this.page.getByTestId('payload-settings-wrapper').locator('div[class="w-full"]').locator('h5')).toHaveText(
-			componentTitle
-		);
+		await expect(
+			this.page.getByTestId('payload-settings-wrapper').locator('div[class="w-full"]').locator('h5')
+		).toHaveCount(1);
+		await expect(
+			this.page.getByTestId('payload-settings-wrapper').locator('div[class="w-full"]').locator('h5')
+		).toHaveText(componentTitle);
 	}
 
 	@Step('Given number of keys "$0" are displayed inside a component')
 	async givenNumberOfKeysAreDisplayedInsideComponent(numberOfKeys: number) {
-		await expect(this.page.getByTestId('payload-settings-wrapper').locator('div[class="w-full"]').locator('h5')).toHaveCount(numberOfKeys);
+		await expect(
+			this.page.getByTestId('payload-settings-wrapper').locator('div[class="w-full"]').locator('h5')
+		).toHaveCount(numberOfKeys);
 	}
 
 	@Step('Disk management option with name "$0" is checked')
@@ -187,7 +190,9 @@ export default class BlueprintDetailPageSteps {
 
 	@Step('No config profile component payload key matches given filter option')
 	async noPayloadKeyMatchesGivenFilterOption() {
-		await expect(this.page.getByTestId('payload-settings-wrapper')).toHaveText("No results found. Refine your search or filter criteria.")
+		await expect(this.page.getByTestId('payload-settings-wrapper')).toHaveText(
+			'No results found. Refine your search or filter criteria.'
+		);
 	}
 
 	@Step('Admin clicks on external storage checkbox')
@@ -212,11 +217,9 @@ export default class BlueprintDetailPageSteps {
 
 	@Step('Admin clicks on given checkbox in Config Profiles component')
 	async adminClicksOnGivenCheckbox(checkboxName: string) {
-		const checkbox = this.page
-			.locator(blueprintCheckboxLocator)
-			.and(this.page.locator(`[value="${checkboxName}"]`))
+		const checkbox = this.page.locator(blueprintCheckboxLocator).and(this.page.locator(`[value="${checkboxName}"]`));
 
-		await checkbox.click({force:true});
+		await checkbox.click({ force: true });
 	}
 
 	@Step('Admin saves scope')
@@ -254,7 +257,9 @@ export default class BlueprintDetailPageSteps {
 
 	@Step('Admin selects filter with name "$0" from Filters dropdown')
 	async adminSelectsFilterFromFiltersDropdown(filterName: string) {
-		const filterOption = this.page.locator(blueprintToggleGroupLocator).locator(blueprintCheckboxLocator, { hasText: filterName });
+		const filterOption = this.page
+			.locator(blueprintToggleGroupLocator)
+			.locator(blueprintCheckboxLocator, { hasText: filterName });
 
 		await filterOption.click();
 	}
@@ -396,7 +401,7 @@ export default class BlueprintDetailPageSteps {
 		const componentSettingsWrapper = this.page.getByTestId('payload-settings-wrapper');
 
 		await this.drawerWithHeadingIsOpen(configProfileComponent);
-		await expect(componentSettingsWrapper).toBeVisible({timeout:10000});
+		await expect(componentSettingsWrapper).toBeVisible({ timeout: 10000 });
 	}
 
 	@Step('Disk management add modal is opened')
@@ -420,7 +425,7 @@ export default class BlueprintDetailPageSteps {
 		const componentSettingsWrapper = this.page.getByTestId('payload-settings-wrapper');
 
 		await this.drawerWithHeadingIsOpen(configProfileComponent);
-		await expect(componentSettingsWrapper).toBeVisible({timeout:10000});
+		await expect(componentSettingsWrapper).toBeVisible({ timeout: 10000 });
 	}
 
 	@Step('Scoping drawer is opened')
@@ -537,8 +542,8 @@ export default class BlueprintDetailPageSteps {
 		const analyticsSkeleton = analyticsCard.locator('[class*="skeleton"]');
 
 		await expect(analyticsSkeleton).not.toBeVisible();
-		await expect(analyticsCard).toContainText("Not deployed");
-		await expect(analyticsCard).toContainText("Blueprint ready for deployment");
+		await expect(analyticsCard).toContainText('Not deployed');
+		await expect(analyticsCard).toContainText('Blueprint ready for deployment');
 	}
 
 	@Step('Blueprint state in Analytics card is Not ready for deployment')
@@ -548,7 +553,7 @@ export default class BlueprintDetailPageSteps {
 		const analyticsSkeleton = analyticsCard.locator('[class*="skeleton"]');
 
 		await expect(analyticsSkeleton).not.toBeVisible();
-		await expect(analyticsCard).toContainText("Incomplete");
-		await expect(analyticsCard).toContainText("Define scope");
+		await expect(analyticsCard).toContainText('Incomplete');
+		await expect(analyticsCard).toContainText('Define scope');
 	}
 }
