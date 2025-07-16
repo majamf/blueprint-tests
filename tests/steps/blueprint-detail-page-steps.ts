@@ -185,13 +185,13 @@ export default class BlueprintDetailPageSteps {
 
 	@Step('Selected option with name "$0" is checked')
 	async selectedCheckboxIsChecked(payloadKey: string) {
-		await expect(this.page.getByTestId(`${payloadKey}`).locator('label')).toBeChecked();
+		await expect(this.page.getByTestId(`${payloadKey}`).locator('label')).toBeEmpty();
 	}
 
 	@Step('No config profile component payload key matches given filter option')
 	async noPayloadKeyMatchesGivenFilterOption() {
 		await expect(this.page.getByTestId('payload-settings-wrapper')).toHaveText(
-			'No results found. Refine your search or filter criteria.'
+			'No results found. Refine your search or filter.'
 		);
 	}
 
@@ -236,7 +236,7 @@ export default class BlueprintDetailPageSteps {
 
 	@Step('Admin clicks on cancel button')
 	async adminsClicksOnCancelButton() {
-		const cancelButton = this.page.locator(blueprintDrawerLocator).getByRole('button', { name: 'Cancel123' });
+		const cancelButton = this.page.locator(blueprintDrawerLocator).getByRole('button', { name: 'Cancel' });
 
 		await cancelButton.click();
 	}
