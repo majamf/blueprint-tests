@@ -182,7 +182,7 @@ jobs:
     name: Notify Tests Failure to Goldminers test channel
     runs-on: [ self-hosted, jamf-ubuntu-latest ]
     needs: [ test, extract-results ]
-    if: ${{ (failure() || needs.extract-results.outputs.passed == 0) }}
+    if: ${{ (failure() || needs.extract-results.outputs.passed == 0) && (github.event_name == 'workflow_dispatch' || github.event_name == 'schedule') }}
     steps:
       - uses: actions/checkout@v4
       - name: Notify GM Test Failures
@@ -190,4 +190,4 @@ jobs:
         with:
           artifact_name: results.json
           slack_token: ${{ secrets.GH_GM_SLACK_TOKEN }}
-          slack_channel: "gm-channel-test"
+          slack_channel: "gm-tests"
