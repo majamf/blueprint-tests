@@ -22,7 +22,7 @@ const builderComponentMap: componentsMap = {
 	'Parental Controls: Dictionary': 'com.apple.Dictionary',
 	'Restrictions': 'com.apple.applicationaccess',
 	'Screensaver User': 'com.apple.screensaver.user',
-	'Single App Mode': 'com.apple.app.lock'
+	'Single App Mode': 'com.apple.app.lock',
 };
 
 const blueprintCardLocator = '*[wa-component="nebula--card"]';
@@ -185,13 +185,13 @@ export default class BlueprintDetailPageSteps {
 
 	@Step('Selected option with name "$0" is checked')
 	async selectedCheckboxIsChecked(payloadKey: string) {
-		await expect(this.page.getByTestId(`${payloadKey}`).locator('label')).toBeEmpty();
+		await expect(this.page.getByTestId(`${payloadKey}`).locator('label')).toBeChecked();
 	}
 
 	@Step('No config profile component payload key matches given filter option')
 	async noPayloadKeyMatchesGivenFilterOption() {
 		await expect(this.page.getByTestId('payload-settings-wrapper')).toHaveText(
-			'No results found. Refine your search or filter.'
+			'No results found. Refine your search or filter criteria.'
 		);
 	}
 
