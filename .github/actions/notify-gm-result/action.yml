@@ -40,7 +40,6 @@ runs:
           echo "Found failing tests in 'goldminers' suites:"
           echo "$has_failure"
           echo "has_failure=true" >> $GITHUB_OUTPUT
-          exit 1
         else
           echo "No failed tests found in 'goldminers' suites."
           echo "has_failure=false" >> $GITHUB_OUTPUT
@@ -48,7 +47,7 @@ runs:
       shell: bash
 
     - name: Post to Slack on Failure
-      if: ${{ failure() && steps.extract.outputs.has_failure == 'true' }}
+      if: ${{ steps.extract.outputs.has_failure == 'true' }}
       uses: slackapi/slack-github-action@v2.0.0
       with:
         method: chat.postMessage
@@ -60,4 +59,4 @@ runs:
             - type: "section"
               text:
                 type: "mrkdwn"
-                text: ":x: Build failed for *Blueprints e2e tests workflow* on branch `${{ github.ref_name }}`: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                text: ":x: Build failed for *Blueprints e2e test workflow*. Check details on: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
