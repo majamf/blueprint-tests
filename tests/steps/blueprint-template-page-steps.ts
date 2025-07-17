@@ -20,6 +20,7 @@ const templatesComponentMap: componentsMap = {
 };
 
 const blueprintButtonLocator = '*[wa-component="nebula--button"]';
+const blueprintCardLocator = '*[wa-component="nebula--card"]';
 const blueprintCheckboxLocator = '*[wa-component="nebula--checkbox"]';
 
 const blueprintIdUrlRegExp = new RegExp(
@@ -37,10 +38,11 @@ export default class BlueprintTemplatePageSteps {
 
 	@Step('Admin opens template with name "$0"')
 	async adminOpensTemplateWithName(templateTitle: string) {
-		const templateLink = this.page.locator('a[href*="' + templatesComponentMap[templateTitle] + '"]');
 		const url = '**/new-blueprint?template=' + templatesComponentMap[templateTitle];
+		const card = this.page.locator(`${blueprintCardLocator}:has-text("${templateTitle}")`);
+		await expect(card).toBeVisible();
 
-		await templateLink.click();
+		await card.click();
 		await this.page.waitForURL(url);
 		await this.page.waitForLoadState('load');
 	}
