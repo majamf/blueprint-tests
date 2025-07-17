@@ -184,6 +184,7 @@ jobs:
     needs: [ test, extract-results ]
     if: ${{ (failure() || needs.extract-results.outputs.passed == 0) }}
     steps:
+      - uses: actions/checkout@v4
       - name: Notify GM Test Failures
         uses: ./.github/actions/notify-gm-result
         with:
