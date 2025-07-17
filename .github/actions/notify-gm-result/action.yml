@@ -1,0 +1,63 @@
+name: notify-gm-result
+description: Downloads test results, checks for failures in 'goldminers' suites, and posts a Slack notification.
+
+inputs:
+  artifact_name:
+    description: Name of the artifact containing test results.
+    required: true
+  slack_token:
+    description: Slack token of GM test channel for posting notifications.
+    required: true
+  slack_channel:
+    description: GM test Slack channel to post the notification.
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Download Test Results Artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: ${{ inputs.artifact_name }}
+
+    - name: Extract Playwright Test Results
+      id: extract
+      run: |
+        if ! [ -f results.json ]; then
+          echo "results.json not found"
+          exit 1
+        fi
+
+        has_failure=$(jq -r '
+        .suites[]
+        | select(.title | test("goldminers"; "i"))
+        | .specs[]
+        | select(.ok == false)
+        | .title
+        ' results.json)
+
+        if [ -n "$has_failure" ]; then
+          echo "Found failing tests in 'goldminers' suites:"
+          echo "$has_failure"
+          echo "has_failure=true" >> $GITHUB_OUTPUT
+          exit 1
+        else
+          echo "No failed tests found in 'goldminers' suites."
+          echo "has_failure=false" >> $GITHUB_OUTPUT
+        fi
+      shell: bash
+
+    - name: Post to Slack on Failure
+      if: ${{ steps.extract.outputs.has_failure == 'true' }}
+      uses: slackapi/slack-github-action@v2.0.0
+      with:
+        method: chat.postMessage
+        token: ${{ inputs.slack_token }}
+        payload: |
+          channel: "${{ inputs.slack_channel }}"
+          text: "Blueprints e2e tests: ${{ job.status }}\n"
+          blocks:
+            - type: "section"
+              text:
+                type: "mrkdwn"
+                text: ":x: Build failed for *Blueprints e2e tests workflow* on branch `${{ github.ref_name }}`: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"

@@ -178,51 +178,15 @@ jobs:
           environment: ${{ needs.extract-environment.outputs.environment }}
 
 
-  notify-gm-test-failures:
-      name: Notify GM Test Failures
-      runs-on: [ self-hosted, jamf-ubuntu-latest ]
-      needs: [ test ]
-      if: ${{ failure() }}
-      env:
-        GH_TOKEN: ${{ github.token }}
-      steps:
-        - uses: actions/download-artifact@v4
-          with:
-            name: results.json
-        - id: extract
-          name: Extract Playwright Test Results
-          run: |
-            if ! [ -f results.json ]; then
-              echo "results.json not found"
-              exit 1
-            fi
-  
-            has_failure=$(jq -r '
-            .suites[]
-            | select(.title | test("goldminers"; "i"))
-            | .specs[]
-            | select(.ok == false)
-            | .title
-            ' results.json)
-  
-            if [ -n "$has_failure" ]; then
-              echo "Found failing specs in 'goldminers' suite:"
-              echo "$has_failure"
-              exit 1
-            else
-              echo "No failed specs found in 'goldminers' suites."
-            fi
-        - name: Post to Slack on Failure
-          if: failure()
-          uses: slackapi/slack-github-action@v2.0.0
-          with:
-            method: chat.postMessage
-            token: ${{ secrets.GH_GM_SLACK_TOKEN }}
-            payload: |
-              channel: "gm-channel-test"
-              text: "Blueprints e2e tests: ${{ job.status }}\n"
-              blocks:
-                - type: "section"
-                  text:
-                    type: "mrkdwn"
-                    text: ":x: Build failed for *Blueprints e2e tests workflow* on branch `${{ github.ref_name }}`: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+  notify-failure-to-gm-channel:
+    name: Notify Tests Failure to Goldminers test channel
+    runs-on: [ self-hosted, jamf-ubuntu-latest ]
+    needs: [ test, extract-results ]
+    if: ${{ (failure() || needs.extract-results.outputs.passed == 0) && (github.event_name == 'workflow_dispatch' || github.event_name == 'schedule') }}
+    steps:
+      - name: Notify GM Test Failures
+        uses: ./.github/actions/notify-gm-result
+        with:
+          artifact_name: results.json
+          slack_token: ${{ secrets.GH_GM_SLACK_TOKEN }}
+          slack_channel: "gm-channel-test"
