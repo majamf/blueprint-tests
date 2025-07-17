@@ -72,7 +72,7 @@ jobs:
       name: Run Playwright tests
       run: |
         set -o pipefail
-        (HOME=/root PLAYWRIGHT_JSON_OUTPUT_NAME=results.json pnpm exec playwright test tests/smoke-goldminers-jpro.stage.spec.ts)
+        (HOME=/root PLAYWRIGHT_JSON_OUTPUT_NAME=results.json pnpm exec playwright test ${{ github.event.inputs.filter && format('-g {0}', github.event.inputs.filter) || '' }} 2>&1) | tee /tmp/playwright.out
       shell: bash
     - id: playwright_link
       name: Get Playwright ReportPortal link
