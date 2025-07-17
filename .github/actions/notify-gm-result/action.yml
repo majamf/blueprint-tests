@@ -48,7 +48,7 @@ runs:
       shell: bash
 
     - name: Post to Slack on Failure
-      if: ${{ steps.extract.outputs.has_failure == 'true' }}
+      if: ${{ failure() && steps.extract.outputs.has_failure == 'true' }}
       uses: slackapi/slack-github-action@v2.0.0
       with:
         method: chat.postMessage
