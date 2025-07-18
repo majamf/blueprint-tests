@@ -19,7 +19,7 @@ test.beforeEach(async () => {
 });
 
 test(
-	'Config profile component can by filtered by component name, key name and OS type',
+	'Config profile component can be filtered by component name, key name and OS type',
 	{ tag: ['@stage'] },
 	async ({ page }) => {
 		const jproLoginSteps = new JProLoginSteps(page);
