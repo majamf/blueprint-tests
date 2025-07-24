@@ -160,7 +160,7 @@ export default class BlueprintsSteps {
 
 		const { data } = await blueprintCreatePromise;
 
-		return await data.id;
+		return data.id;
 	}
 
 	@Step('Blueprints page is opened')

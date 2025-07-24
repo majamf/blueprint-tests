@@ -163,12 +163,12 @@ export default class BlueprintDetailPageSteps {
 
 	@Step('Only one config profile component key with title "$0" is displayed inside a component')
 	async onlyOneKeyIsDisplayedInsideComponent(componentTitle: string) {
-		await expect(
-			this.page.getByTestId('payload-settings-wrapper').locator('div[class="w-full"]').locator('h5')
-		).toHaveCount(1);
-		await expect(
-			this.page.getByTestId('payload-settings-wrapper').locator('div[class="w-full"]').locator('h5')
-		).toHaveText(componentTitle);
+		const appleKeysWrapper = this.page
+			.getByTestId('payload-settings-wrapper')
+			.locator('div[class="w-full"]')
+			.locator('h5');
+		await expect(appleKeysWrapper).toHaveCount(1);
+		await expect(appleKeysWrapper).toHaveText(componentTitle);
 	}
 
 	@Step('Given number of keys "$0" are displayed inside a component')
