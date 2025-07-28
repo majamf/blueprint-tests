@@ -50,7 +50,22 @@ export default class JSchoolLoginSteps {
 		await passwordInput.fill(process.env.JAMF_ACCOUNT_STAGE_USER_PASSWORD);
 		await loginButton.click();
 
-		await this.page.waitForLoadState('load');
+		await this.page.waitForURL(baseUrl + '**');
+
+		if (this.page.url().startsWith(baseUrl + 'agreement')) {
+			await this.page.getByRole('link', { name: 'Continue' }).click();
+
+			await this.page.getByRole('link', { name: 'Yes, I am authorized' }).click();
+
+			await this.page.getByLabel('Job description').fill('Testing blueprints in Jamf School');
+			await this.page.getByRole('link', { name: 'Continue' }).click();
+
+			await this.page.getByLabel('I accept the terms of this agreement').check();
+			await this.page.getByRole('button', { name: 'Accept' }).click();
+
+			await this.page.getByRole('link', { name: 'Continue' }).click();
+		}
+
 		await apiTokenRequest;
 		await dashboardRequests;
 
