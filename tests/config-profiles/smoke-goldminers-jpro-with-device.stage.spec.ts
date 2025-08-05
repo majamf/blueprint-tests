@@ -1,11 +1,11 @@
 import { test } from '@playwright/test';
 import { v4 as uuidv4 } from 'uuid';
-import JProLoginSteps from './steps/jpro-login-steps';
-import BlueprintsSteps from './steps/blueprints-steps';
-import JProApiSteps from './steps/jpro-api-steps';
-import MimicSteps from './steps/mimic-steps';
-import BlueprintDetailPageSteps from './steps/blueprint-detail-page-steps';
-import NavigationSteps from './steps/navigation-steps';
+import JProLoginSteps from '../steps/jpro-login-steps';
+import BlueprintsSteps from '../steps/blueprints-steps';
+import JProApiSteps from '../steps/jpro-api-steps';
+import MimicSteps from '../steps/mimic-steps';
+import BlueprintDetailPageSteps from '../steps/blueprint-detail-page-steps';
+import NavigationSteps from '../steps/navigation-steps';
 
 const baseUrl = process.env.JAMF_PRO_BASE_URL || 'https://vhdpsvhf.pyro.jamf.build/';
 
@@ -31,17 +31,18 @@ test(
 		const mimicSteps = new MimicSteps();
 
 		const udid = await jproApiSteps.getMobileDeviceUdid();
+		const blueprintName = `Blueprint_with_CP_e2e_${id}`;
 
 		await jproLoginSteps.loginToJamfPro(baseUrl);
 		await navigationSteps.adminOpensBlueprintsViaJamfProNavigation();
 		await blueprintsSteps.blueprintsPageIsOpen();
 		await blueprintsSteps.adminOpensBlueprintBuilder();
 		await navigationSteps.newBlueprintModalIsOpen();
-		await blueprintsSteps.adminFillsNameOfBlueprint('Blueprint_with_CP_e2e_' + id);
+		await blueprintsSteps.adminFillsNameOfBlueprint(blueprintName);
 		await blueprintsSteps.adminFillsDescriptionOfBlueprint('e2e automated test');
 		const blueprintId = await blueprintsSteps.adminClicksCreateBlueprintButton();
 
-		await blueprintDetailPageSteps.blueprintWithNameIsOpened('Blueprint_with_CP_e2e_' + id);
+		await blueprintDetailPageSteps.blueprintWithNameIsOpened(blueprintName);
 		await blueprintDetailPageSteps.adminWaitsForToastToDisappear('Blueprint created');
 		await blueprintDetailPageSteps.adminOpensAddModalOfComponent('Lock Screen Message');
 		await blueprintDetailPageSteps.configProfileComponentDrawerIsOpened('Lock Screen Message');
@@ -57,10 +58,10 @@ test(
 		await mimicSteps.blueprintIsDeployedToMimicDeviceViaJamfPro(blueprintId, udid, 'com.apple.configuration.legacy');
 
 		await blueprintDetailPageSteps.adminReloadsTheBlueprintDetailsPage();
-		await blueprintDetailPageSteps.blueprintWithNameIsOpened('Blueprint_with_CP_e2e_' + id);
+		await blueprintDetailPageSteps.blueprintWithNameIsOpened(blueprintName);
 		await blueprintDetailPageSteps.thereAreDeployedDevicesInAnalytics(1);
 
 		await blueprintDetailPageSteps.adminDeletesBlueprint();
-		await blueprintsSteps.thereIsNoBlueprintWithName('Blueprint_with_CP_e2e_' + id);
+		await blueprintsSteps.thereIsNoBlueprintWithName(blueprintName);
 	}
 );

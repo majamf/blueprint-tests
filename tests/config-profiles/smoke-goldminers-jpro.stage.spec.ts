@@ -1,10 +1,10 @@
 import { test } from '@playwright/test';
 import { v4 as uuidv4 } from 'uuid';
 
-import BlueprintsSteps from './steps/blueprints-steps';
-import BlueprintDetailPageSteps from './steps/blueprint-detail-page-steps';
-import NavigationSteps from './steps/navigation-steps';
-import JProLoginSteps from './steps/jpro-login-steps';
+import BlueprintsSteps from '../steps/blueprints-steps';
+import BlueprintDetailPageSteps from '../steps/blueprint-detail-page-steps';
+import NavigationSteps from '../steps/navigation-steps';
+import JProLoginSteps from '../steps/jpro-login-steps';
 
 const baseUrl = process.env.JAMF_PRO_BASE_URL || 'https://vhdpsvhf.pyro.jamf.build/';
 
@@ -26,13 +26,14 @@ test(
 		const blueprintsSteps = new BlueprintsSteps(page);
 		const blueprintDetailPageSteps = new BlueprintDetailPageSteps(page);
 		const navigationSteps = new NavigationSteps(page);
+		const blueprintName = `Blueprint_with_CP_e2e_${id}`;
 
 		await jproLoginSteps.loginToJamfPro(baseUrl);
 		await navigationSteps.adminOpensBlueprintsViaJamfProNavigation();
 		await blueprintsSteps.blueprintsPageIsOpen();
 		await blueprintsSteps.adminOpensBlueprintBuilder();
 		await navigationSteps.newBlueprintModalIsOpen();
-		await blueprintsSteps.adminFillsNameOfBlueprint('Blueprint_with_CP_e2e_' + id);
+		await blueprintsSteps.adminFillsNameOfBlueprint(blueprintName);
 		await blueprintsSteps.adminFillsDescriptionOfBlueprint('e2e automated test');
 		await blueprintsSteps.adminClicksCreateBlueprintButton();
 
@@ -57,7 +58,7 @@ test(
 		await blueprintDetailPageSteps.adminsClicksOnCancelButton();
 
 		await blueprintDetailPageSteps.adminDeletesBlueprint();
-		await blueprintsSteps.thereIsNoBlueprintWithName('Blueprint_with_CP_e2e_' + id);
+		await blueprintsSteps.thereIsNoBlueprintWithName(blueprintName);
 	}
 );
 
@@ -66,13 +67,15 @@ test('Config profile component can be updated', { tag: ['@stage'] }, async ({ pa
 	const blueprintsSteps = new BlueprintsSteps(page);
 	const blueprintDetailPageSteps = new BlueprintDetailPageSteps(page);
 	const navigationSteps = new NavigationSteps(page);
+	const blueprintName = `Blueprint_with_CP_e2e_${id}`;
+
 
 	await jproLoginSteps.loginToJamfPro(baseUrl);
 	await navigationSteps.adminOpensBlueprintsViaJamfProNavigation();
 	await blueprintsSteps.blueprintsPageIsOpen();
 	await blueprintsSteps.adminOpensBlueprintBuilder();
 	await navigationSteps.newBlueprintModalIsOpen();
-	await blueprintsSteps.adminFillsNameOfBlueprint('Blueprint_with_CP_e2e_' + id);
+	await blueprintsSteps.adminFillsNameOfBlueprint(blueprintName);
 	await blueprintsSteps.adminFillsDescriptionOfBlueprint('e2e automated test');
 	await blueprintsSteps.adminClicksCreateBlueprintButton();
 
@@ -95,5 +98,5 @@ test('Config profile component can be updated', { tag: ['@stage'] }, async ({ pa
 	await blueprintDetailPageSteps.adminsClicksOnCloseButton();
 
 	await blueprintDetailPageSteps.adminDeletesBlueprint();
-	await blueprintsSteps.thereIsNoBlueprintWithName('Blueprint_with_CP_e2e_' + id);
+	await blueprintsSteps.thereIsNoBlueprintWithName(blueprintName);
 });
