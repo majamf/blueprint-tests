@@ -19,16 +19,16 @@
 	"private": true,
 	"devDependencies": {
 		"@playwright/test": "1.54.2",
-		"@types/node": "24.1.0",
+		"@types/node": "24.2.0",
 		"@types/uuid": "10.0.0",
-		"@typescript-eslint/eslint-plugin": "8.38.0",
-		"@typescript-eslint/parser": "8.38.0",
+		"@typescript-eslint/eslint-plugin": "8.39.0",
+		"@typescript-eslint/parser": "8.39.0",
 		"@reportportal/agent-js-playwright": "^5.1.11",
 		"eslint": "9.32.0",
 		"eslint-config-prettier": "10.1.8",
-		"eslint-plugin-playwright": "2.2.1",
+		"eslint-plugin-playwright": "2.2.2",
 		"prettier": "3.6.2",
-		"typescript": "5.8.3"
+		"typescript": "5.9.2"
 	},
 	"dependencies": {
 		"dotenv": "^17.2.1",
