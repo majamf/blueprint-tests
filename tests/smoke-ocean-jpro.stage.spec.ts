@@ -102,6 +102,12 @@ test(
 
 		await blueprintDetailPageSteps.adminWaitsForToastToDisappear('Blueprint created');
 
+		await blueprintDetailPageSteps.adminSearchesForComponent('Disk management');
+		await blueprintDetailPageSteps.onlyOneBlueprintComponentIsDisplayedWithTitle('Disk Management Policy');
+
+		// No real clue why, but it is needed to close the navigation modal for DnD to work properly in Jamf Pro
+		await navigationSteps.adminClosesJamfProNavigation();
+
 		await blueprintDetailPageSteps.adminDragsAndDropsComponent('Disk management');
 
 		await blueprintDetailPageSteps.adminOpensConfigurationOfComponent('Disk management');
