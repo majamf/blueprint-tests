@@ -37,7 +37,7 @@ runs:
     run: |
       echo "WORKFLOW_RUN_URL=${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" >> "$GITHUB_ENV"
   - name: Post to a Slack channel
-    uses: slackapi/slack-github-action@v2.1.0
+    uses: slackapi/slack-github-action@v2
     with:
       token: ${{ inputs.slack_token }}
       method: chat.postMessage
