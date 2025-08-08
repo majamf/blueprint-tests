@@ -21,10 +21,10 @@ on:
         description: 'Filter selecting which tests to run'
         default: 'ocean-tests'
         type: string
-      notify-success:
+      notify_success:
         description: 'Set to true to notify on success'
-        default: 'true'
-        type: boolean
+        default: 'false'
+        type: string
 
 jobs:
   test:
@@ -38,7 +38,7 @@ jobs:
           jamfProBaseUrl: ${{ inputs.jamfProBaseUrl }}
           sboxBaseUrl: ${{ inputs.sboxBaseUrl }}
           slack_channel: ${{ inputs.slack_channel }}
-          notify-success: ${{ inputs.notify-success }}
+          notify_success: ${{ inputs.notify_success }}
         secrets:
           JAMF_ACCOUNT_STAGE_USER_MAIL: ${{ secrets.JAMF_ACCOUNT_STAGE_USER_MAIL }}
           JAMF_ACCOUNT_STAGE_USER_PASSWORD: ${{ secrets.JAMF_ACCOUNT_STAGE_USER_PASSWORD }}
