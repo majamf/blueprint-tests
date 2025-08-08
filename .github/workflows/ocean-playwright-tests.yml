@@ -1,0 +1,51 @@
+name: ocean-playwright-tests.yml
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+  schedule:
+    - cron: "0 6 * * *"
+  workflow_dispatch:
+    inputs:
+      filter:
+        description: 'Filter selecting which tests to run'
+        type: string
+      jamfProBaseUrl:
+        description: 'URL of the Jamf Pro server'
+        type: string
+      sboxBaseUrl:
+        description: 'URL of the Blueprints standalone deployment'
+        type: string
+      slack_channel:
+        required: true
+        description: 'Filter selecting which tests to run'
+        default: 'ocean-tests'
+        type: string
+      notify-success:
+        description: 'Set to true to notify on success'
+        default: 'true'
+        type: boolean
+
+jobs:
+  test:
+    runs-on: [ self-hosted,jamf-ubuntu-latest ]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run local composite action
+        uses: ./.github/workflows/reusable-playwright-setup.yml
+        with:
+          filter: ${{ inputs.filter }}
+          jamfProBaseUrl: ${{ inputs.jamfProBaseUrl }}
+          sboxBaseUrl: ${{ inputs.sboxBaseUrl }}
+          slack_channel: ${{ inputs.slack_channel }}
+          notify-success: ${{ inputs.notify-success }}
+        secrets:
+          JAMF_ACCOUNT_STAGE_USER_MAIL: ${{ secrets.JAMF_ACCOUNT_STAGE_USER_MAIL }}
+          JAMF_ACCOUNT_STAGE_USER_PASSWORD: ${{ secrets.JAMF_ACCOUNT_STAGE_USER_PASSWORD }}
+          JAMF_PRO_STAGE_API_USERNAME: ${{ secrets.JAMF_PRO_STAGE_API_USERNAME }}
+          JAMF_PRO_STAGE_API_PASSWORD: ${{ secrets.JAMF_PRO_STAGE_API_PASSWORD }}
+          JAMF_SCHOOL_STAGE_API_USERNAME: ${{ secrets.JAMF_SCHOOL_STAGE_API_USERNAME }}
+          JAMF_SCHOOL_STAGE_API_PASSWORD: ${{ secrets.JAMF_SCHOOL_STAGE_API_PASSWORD }}
+          RP_API_KEY: ${{ secrets.RP_API_KEY }}
+          GH_SLACK_TOKEN: ${{ secrets.GH_SLACK_TOKEN }}
+          GH_GM_SLACK_TOKEN: ${{ secrets.GH_GM_SLACK_TOKEN }}
