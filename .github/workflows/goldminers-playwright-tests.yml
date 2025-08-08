@@ -34,7 +34,6 @@ jobs:
       jamfProBaseUrl: ${{ inputs.jamfProBaseUrl }}
       sboxBaseUrl: ${{ inputs.sboxBaseUrl }}
       slack_channel: ${{ inputs.slack_channel }}
-      slack_token: ${{ inputs.slack_token }}
       notify-success: ${{ inputs.notify-success }}
     secrets:
       JAMF_ACCOUNT_STAGE_USER_MAIL: ${{ secrets.JAMF_ACCOUNT_STAGE_USER_MAIL }}
