@@ -23,7 +23,7 @@ on:
         type: string
       notify-success:
         description: 'Set to true to notify on success'
-        default: false
+        default: 'false'
         type: boolean
 
 jobs:
