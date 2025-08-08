@@ -19,6 +19,10 @@ on:
         required: true
         type: string
         description: 'Slack channel for notifications'
+      slack_token:
+        required: true
+        type: string
+        description: 'Slack token for slack channel'
       notify-success:
         description: 'Set to true to notify on success'
         required: false
