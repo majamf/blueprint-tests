@@ -21,10 +21,6 @@ on:
         description: 'Filter selecting which tests to run'
         default: 'gm-tests'
         type: string
-      slack_token:
-        required: true
-        description: 'Set slack token'
-        type: string
       notify-success:
         description: 'Set to true to notify on success'
         default: false
