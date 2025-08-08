@@ -24,7 +24,7 @@ on:
       slack_token:
         required: true
         description: 'Set slack token'
-        default: ${{ secrets.GM_GH_SLACK_TOKEN }}
+        default: ${{ secrets.GH_GM_SLACK_TOKEN }}
         type: string
       notify-success:
         description: 'Set to true to notify on success'
