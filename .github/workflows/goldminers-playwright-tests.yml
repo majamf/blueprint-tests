@@ -24,7 +24,6 @@ on:
       slack_token:
         required: true
         description: 'Set slack token'
-        default: ${{ secrets.GH_GM_SLACK_TOKEN }}
         type: string
       notify-success:
         description: 'Set to true to notify on success'
@@ -53,5 +52,4 @@ jobs:
           JAMF_SCHOOL_STAGE_API_USERNAME: ${{ secrets.JAMF_SCHOOL_STAGE_API_USERNAME }}
           JAMF_SCHOOL_STAGE_API_PASSWORD: ${{ secrets.JAMF_SCHOOL_STAGE_API_PASSWORD }}
           RP_API_KEY: ${{ secrets.RP_API_KEY }}
-          GH_SLACK_TOKEN: ${{ secrets.GH_SLACK_TOKEN }}
           GH_GM_SLACK_TOKEN: ${{ secrets.GH_GM_SLACK_TOKEN }}
