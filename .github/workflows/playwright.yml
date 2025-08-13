@@ -36,7 +36,7 @@ jobs:
       playwright_version: ${{ steps.playwright-version.outputs.PLAYWRIGHT_VERSION }}
     steps:
     - name: Git clone the repository
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
     - name: Check Playwright version
       id: playwright-version
       run: |
@@ -53,7 +53,7 @@ jobs:
       reportportal_url: ${{ steps.playwright_link.outputs.REPORTPORTAL_URL }}
     steps:
     - name: Git clone the repository
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
     - name: Set Directory as Safe
       run: |
         git config --system --add safe.directory "$GITHUB_WORKSPACE"
@@ -145,7 +145,7 @@ jobs:
     needs: [ test, extract-results, extract-environment ]
     if: ${{ success() && (github.event_name == 'workflow_dispatch' || github.event_name == 'schedule') && needs.extract-results.outputs.passed > 0 }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: ./.github/actions/notify-result
         with:
           passed: ${{ needs.extract-results.outputs.passed }}
@@ -164,7 +164,7 @@ jobs:
     needs: [ test, extract-results, extract-environment ]
     if: ${{ (failure() || needs.extract-results.outputs.passed == 0) && (github.event_name == 'workflow_dispatch' || github.event_name == 'schedule') }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: ./.github/actions/notify-result
         with:
           passed: ${{ needs.extract-results.outputs.passed }}
