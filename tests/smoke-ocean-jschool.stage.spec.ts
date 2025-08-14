@@ -106,6 +106,9 @@ test(
 
 		await blueprintDetailPageSteps.adminWaitsForToastToDisappear('Blueprint created');
 
+		await blueprintDetailPageSteps.adminSearchesForComponent('Disk management');
+		await blueprintDetailPageSteps.onlyOneBlueprintComponentIsDisplayedWithTitle('Disk Management Policy');
+
 		await blueprintDetailPageSteps.adminDragsAndDropsComponent('Disk management');
 
 		await blueprintDetailPageSteps.adminOpensConfigurationOfComponent('Disk management');

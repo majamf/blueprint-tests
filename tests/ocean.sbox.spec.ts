@@ -132,6 +132,8 @@ test('Components of blueprint can be updated', { tag: ['@sbox'] }, async ({ page
 	await blueprintSteps.adminClicksCreateBlueprintButton();
 
 	await blueprintDetailPageSteps.adminSearchesForComponent('Disk management');
+	await blueprintDetailPageSteps.onlyOneBlueprintComponentIsDisplayedWithTitle('Disk Management Policy');
+
 	await blueprintDetailPageSteps.adminOpensAddModalOfComponent('Disk management');
 	await blueprintDetailPageSteps.diskManagementDrawerIsOpened();
 
@@ -141,6 +143,8 @@ test('Components of blueprint can be updated', { tag: ['@sbox'] }, async ({ page
 	await blueprintSteps.adminOpensBlueprintWithName('Disk_' + id);
 
 	await blueprintDetailPageSteps.adminSearchesForComponent('Passcode Policy');
+	await blueprintDetailPageSteps.onlyOneBlueprintComponentIsDisplayedWithTitle('Passcode Policy');
+
 	await blueprintDetailPageSteps.adminOpensAddModalOfComponent('Passcode Policy');
 
 	await blueprintDetailPageSteps.passcodeAddModalIsOpened();
