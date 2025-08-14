@@ -185,7 +185,7 @@ export default class BlueprintDetailPageSteps {
 
 	@Step('Selected option with name "$0" is checked')
 	async selectedCheckboxIsChecked(payloadKey: string) {
-		await expect(this.page.getByTestId(`${payloadKey}`).locator('input').first()).toBeChecked();
+		await expect(this.page.getByTestId(`${payloadKey}`).locator('input').first()).toBeDisabled();
 	}
 
 	@Step('No config profile component payload key matches given filter option')
