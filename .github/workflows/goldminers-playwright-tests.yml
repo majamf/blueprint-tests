@@ -34,17 +34,27 @@ on:
         default: 'config-profiles'
         type: string
 
+env:
+  FILTER: ${{ inputs.filter|| '' }}
+  JAMF_PRO_BASE_URL: ${{ inputs.jamfProBaseUrl || ''}}
+  SBOX_BASE_URL: ${{ inputs.sboxBaseUrl || '' }}
+  SLACK_CHANNEL: ${{ inputs.slack_channel || 'gm-tests' }}
+  NOTIFY_SUCCESS: ${{ inputs.notify_success || 'false' }}
+  NOTIFY_FAILURE: ${{ inputs.notify_failure || 'false' }}
+  TEST_FOLDER: ${{ inputs.test_folder || 'config-profiles' }}
+
+
 jobs:
   setup-playwright-workflow:
     uses: ./.github/workflows/reusable-playwright-setup.yml
     with:
-      filter: ${{ inputs.filter }}
-      jamfProBaseUrl: ${{ inputs.jamfProBaseUrl }}
-      sboxBaseUrl: ${{ inputs.sboxBaseUrl }}
-      slack_channel: ${{ inputs.slack_channel }}
-      notify_success: ${{ inputs.notify_success }}
-      notify_failure: ${{ inputs.notify_failure }}
-      test_folder: ${{ inputs.test_folder }}
+      filter: ${{ env.FILTER}}
+      jamfProBaseUrl: ${{ env.JAMF_PRO_BASE_URL }}
+      sboxBaseUrl: ${{ env.SBOX_BASE_URL }}
+      slack_channel: ${{ env.SLACK_CHANNEL }}
+      notify_success: ${{ env.NOTIFY_SUCCESS }}
+      notify_failure: ${{ env.NOTIFY_FAILURE }}
+      test_folder: ${{ env.TEST_FOLDER }}
     secrets:
       JAMF_ACCOUNT_STAGE_USER_MAIL: ${{ secrets.JAMF_ACCOUNT_STAGE_USER_MAIL }}
       JAMF_ACCOUNT_STAGE_USER_PASSWORD: ${{ secrets.JAMF_ACCOUNT_STAGE_USER_PASSWORD }}
