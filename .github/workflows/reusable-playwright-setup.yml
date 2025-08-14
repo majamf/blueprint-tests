@@ -105,7 +105,7 @@ jobs:
         run: |
           set -o pipefail 
           (HOME=/root PLAYWRIGHT_JSON_OUTPUT_NAME=results.json pnpm exec playwright test \
-          ${{ inputs.testFolder && format('{0}', inputs.testFolder) || '' }} ${{ inputs.filter && format('-g {0}', inputs.filter) || '' }} 2>&1) | tee /tmp/playwright.out
+          ${{ inputs.test_folder && format('{0}', inputs.test_folder) || '' }} ${{ inputs.filter && format('-g {0}', inputs.filter) || '' }} 2>&1) | tee /tmp/playwright.out
         shell: bash
       - id: playwright_link
         name: Get Playwright ReportPortal link
