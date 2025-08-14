@@ -16,11 +16,19 @@ on:
         required: false
         type: string
       slack_channel:
+        description: 'Slack channel for notifications'
         required: true
         type: string
-        description: 'Slack channel for notifications'
       notify_success:
         description: 'Set to true to notify on success'
+        required: false
+        type: string
+      notify_failure:
+        description: 'Set to true to notify on failure'
+        required: false
+        type: string
+      test_folder:
+        description: 'Select which folder to run tests from'
         required: false
         type: string
     secrets:
@@ -39,8 +47,6 @@ on:
       RP_API_KEY:
         required: true
       GH_SLACK_TOKEN:
-        required: true
-      GH_GM_SLACK_TOKEN:
         required: true
 
 env:
@@ -61,12 +67,14 @@ jobs:
     outputs:
       playwright_version: ${{ steps.playwright-version.outputs.PLAYWRIGHT_VERSION }}
     steps:
-      - uses: actions/checkout@v4
-      - id: playwright-version
+      - name: Git clone the repository
+        uses: actions/checkout@v4
+      - name: Check Playwright version
+        id: playwright-version
         run: |
           PLAYWRIGHT_VERSION=$(jq -r '.devDependencies."@playwright/test"' package.json)
           echo "PLAYWRIGHT_VERSION=$PLAYWRIGHT_VERSION" >> $GITHUB_OUTPUT
-
+        shell: bash
   test:
     timeout-minutes: 60
     runs-on: [ self-hosted, jamf-ubuntu-latest ]
@@ -76,24 +84,37 @@ jobs:
     outputs:
       reportportal_url: ${{ steps.playwright_link.outputs.REPORTPORTAL_URL }}
     steps:
-      - uses: actions/checkout@v4
-      - run: git config --system --add safe.directory "$GITHUB_WORKSPACE"
-      - uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v4
+      - name: Git clone the repository
+        uses: actions/checkout@v4
+      - name: Set Directory as Safe
+        run: |
+          git config --system --add safe.directory "$GITHUB_WORKSPACE"
+        shell: bash
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+      - name: Setup node
+        uses: actions/setup-node@v4
         with:
           cache: 'pnpm'
           node-version-file: '.nvmrc'
-      - run: pnpm install --frozen-lockfile
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+        shell: bash
       - id: tests
+        name: Run Playwright tests
         run: |
-          set -o pipefail
-          (HOME=/root PLAYWRIGHT_JSON_OUTPUT_NAME=results.json pnpm exec playwright test ${{ inputs.filter && format('-g {0}', inputs.filter) || '' }} 2>&1) | tee /tmp/playwright.out
+          set -o pipefail 
+          (HOME=/root PLAYWRIGHT_JSON_OUTPUT_NAME=results.json pnpm exec playwright test \
+          ${{ inputs.testFolder && format('{0}', inputs.testFolder) || '' }} ${{ inputs.filter && format('-g {0}', inputs.filter) || '' }} 2>&1) | tee /tmp/playwright.out
+        shell: bash
       - id: playwright_link
+        name: Get Playwright ReportPortal link
         if: always()
         run: |
           REPORTPORTAL_URL=$(grep "^.*ReportPortal Launch Link:" /tmp/playwright.out | grep -o "https.*")
           echo "Reportportal launch: ${REPORTPORTAL_URL}" >> $GITHUB_STEP_SUMMARY
           echo "REPORTPORTAL_URL=$REPORTPORTAL_URL" >> $GITHUB_OUTPUT
+        shell: bash
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -108,11 +129,13 @@ jobs:
           retention-days: 30
 
   extract-environment:
+    name: Extract Environment
     runs-on: [ self-hosted, jamf-ubuntu-latest ]
     outputs:
       environment: ${{ steps.extract-env.outputs.environment }}
     steps:
       - id: extract-env
+        name: Extract Environment from Filter
         run: |
           if [[ "${{ inputs.filter }}" == *"stage"* ]]; then
             echo "environment=stage" >> $GITHUB_OUTPUT
@@ -121,8 +144,10 @@ jobs:
           else
             echo "environment=other" >> $GITHUB_OUTPUT
           fi
+        shell: bash
 
   extract-results:
+    name: Extract test result numbers
     runs-on: [ self-hosted, jamf-ubuntu-latest ]
     needs: [ test ]
     if: ${{ !cancelled() }}
@@ -136,6 +161,7 @@ jobs:
         with:
           name: results.json
       - id: extract
+        name: Extract Playwright Test Results
         run: |
           PASSED=$(jq -r '.stats.expected' results.json)
           FLAKY=$(jq -r '.stats.flaky' results.json)
@@ -147,6 +173,7 @@ jobs:
           echo "SKIPPED=$SKIPPED" >> $GITHUB_OUTPUT
 
   notify-success:
+    name: Notify Tests Success
     runs-on: [ self-hosted, jamf-ubuntu-latest ]
     needs: [ test, extract-results, extract-environment ]
     if: ${{ inputs.notify_success && success() && needs.extract-results.outputs.passed > 0 }}
@@ -166,9 +193,10 @@ jobs:
           environment: ${{ needs.extract-environment.outputs.environment }}
 
   notify-failure:
+    name: Notify Tests Failure
     runs-on: [ self-hosted, jamf-ubuntu-latest ]
     needs: [ test, extract-results, extract-environment ]
-    if: ${{ (failure() || needs.extract-results.outputs.passed == 0) }}
+    if: ${{ inputs.notify_failure && failure() && needs.extract-results.outputs.passed == 0 }}
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/notify-result
@@ -183,15 +211,3 @@ jobs:
           slack_channel: ${{ inputs.slack_channel }}
           slack_token: ${{ secrets.GH_SLACK_TOKEN }}
           environment: ${{ needs.extract-environment.outputs.environment }}
-
-  notify-failure-to-gm-channel:
-    runs-on: [ self-hosted, jamf-ubuntu-latest ]
-    needs: [ test, extract-results ]
-    if: ${{ (failure() || needs.extract-results.outputs.passed == 0) }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: ./.github/actions/notify-gm-result
-        with:
-          artifact_name: results.json
-          slack_token: ${{ secrets.GH_GM_SLACK_TOKEN }}
-          slack_channel: "gm-tests"

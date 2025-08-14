@@ -17,17 +17,25 @@ on:
         description: 'URL of the Blueprints standalone deployment'
         type: string
       slack_channel:
-        required: true
         description: 'Filter selecting which tests to run'
+        required: true
         default: 'gm-tests'
         type: string
       notify_success:
         description: 'Set to true to notify on success'
         default: 'false'
         type: string
+      notify_failure:
+        description: 'Set to true to notify on failure'
+        default: 'false'
+        type: string
+      test_folder:
+        description: 'Select which folder to run tests from'
+        default: 'config-profiles'
+        type: string
 
 jobs:
-  test:
+  setup-playwright-workflow:
     uses: ./.github/workflows/reusable-playwright-setup.yml
     with:
       filter: ${{ inputs.filter }}
@@ -35,6 +43,8 @@ jobs:
       sboxBaseUrl: ${{ inputs.sboxBaseUrl }}
       slack_channel: ${{ inputs.slack_channel }}
       notify_success: ${{ inputs.notify_success }}
+      notify_failure: ${{ inputs.notify_failure }}
+      test_folder: ${{ inputs.test_folder }}
     secrets:
       JAMF_ACCOUNT_STAGE_USER_MAIL: ${{ secrets.JAMF_ACCOUNT_STAGE_USER_MAIL }}
       JAMF_ACCOUNT_STAGE_USER_PASSWORD: ${{ secrets.JAMF_ACCOUNT_STAGE_USER_PASSWORD }}
@@ -43,5 +53,4 @@ jobs:
       JAMF_SCHOOL_STAGE_API_USERNAME: ${{ secrets.JAMF_SCHOOL_STAGE_API_USERNAME }}
       JAMF_SCHOOL_STAGE_API_PASSWORD: ${{ secrets.JAMF_SCHOOL_STAGE_API_PASSWORD }}
       RP_API_KEY: ${{ secrets.RP_API_KEY }}
-      GH_SLACK_TOKEN: ${{ secrets.GH_SLACK_TOKEN }}
-      GH_GM_SLACK_TOKEN: ${{ secrets.GH_GM_SLACK_TOKEN }}
+      GH_SLACK_TOKEN: ${{ secrets.GH_GM_SLACK_TOKEN }}
