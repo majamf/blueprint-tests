@@ -42,7 +42,7 @@ jobs:
       jamfProBaseUrl: ${{ github.event.inputs.jamfProBaseUrl || '' }}
       sboxBaseUrl: ${{ github.event.inputs.sboxBaseUrl || '' }}
       slack_channel: ${{ github.event.inputs.slack_channel || 'gm-channel-tests' }}
-      notify_success: ${{ github.event.inputs.notify_success || false }}
+      notify_success: ${{ github.event.inputs.notify_success || true }}
       notify_failure: ${{ github.event.inputs.notify_failure || true }}
       test_folder: ${{ github.event.inputs.test_folder || 'config-profiles' }}
     secrets:

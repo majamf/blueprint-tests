@@ -22,11 +22,11 @@ on:
       notify_success:
         description: 'Set to true to notify on success'
         required: false
-        type: string
+        type: boolean
       notify_failure:
         description: 'Set to true to notify on failure'
         required: false
-        type: string
+        type: boolean
       test_folder:
         description: 'Select which folder to run tests from'
         required: false
