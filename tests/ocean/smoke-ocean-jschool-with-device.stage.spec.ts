@@ -1,14 +1,14 @@
 import { test } from '@playwright/test';
 import { v4 as uuidv4 } from 'uuid';
-import JProLoginSteps from './steps/jpro-login-steps';
-import BlueprintsSteps from './steps/blueprints-steps';
-import JProApiSteps from './steps/jpro-api-steps';
-import MimicSteps from './steps/mimic-steps';
-import BlueprintTemplatePageSteps from './steps/blueprint-template-page-steps';
-import BlueprintDetailPageSteps from './steps/blueprint-detail-page-steps';
-import NavigationSteps from './steps/navigation-steps';
+import BlueprintsSteps from '../steps/blueprints-steps';
+import MimicSteps from '../steps/mimic-steps';
+import JSchoolLoginSteps from '../steps/jschool-login-steps';
+import JSchoolApiSteps from '../steps/jschool-api-steps';
+import BlueprintTemplatePageSteps from '../steps/blueprint-template-page-steps';
+import BlueprintDetailPageSteps from '../steps/blueprint-detail-page-steps';
+import NavigationSteps from '../steps/navigation-steps';
 
-const baseUrl = process.env.JAMF_PRO_BASE_URL || 'https://vhdpsvhf.pyro.jamf.build/';
+const baseUrl = 'https://oceanplaywrightstage.dev.jamfnimbus.cloud/';
 
 let id = uuidv4();
 
@@ -20,20 +20,20 @@ test.beforeEach(async () => {
 	id = uuidv4();
 });
 
-test('Deploy blueprint to mimic device in Jamf Pro', { tag: ['@stage', '@mimic'] }, async ({ page }) => {
-	const jproLoginSteps = new JProLoginSteps(page);
+test('Deploy blueprint to mimic device in Jamf School', { tag: ['@stage', '@school', '@mimic'] }, async ({ page }) => {
+	const jSchoolLoginSteps = new JSchoolLoginSteps(page);
 	const blueprintsSteps = new BlueprintsSteps(page);
 	const blueprintTemplatePageSteps = new BlueprintTemplatePageSteps(page);
 	const blueprintDetailPageSteps = new BlueprintDetailPageSteps(page);
 	const navigationSteps = new NavigationSteps(page);
-	const jproApiSteps = new JProApiSteps(baseUrl);
+	const jSchoolApiSteps = new JSchoolApiSteps(baseUrl);
 	const mimicSteps = new MimicSteps();
 
-	const udid = await jproApiSteps.getMobileDeviceUdid();
+	const udid = await jSchoolApiSteps.getMobileDeviceUdid();
 
-	await jproLoginSteps.loginToJamfPro(baseUrl);
+	await jSchoolLoginSteps.loginToJamfSchool(baseUrl);
 
-	await navigationSteps.adminOpensBlueprintsViaJamfProNavigation();
+	await navigationSteps.adminOpensBlueprintsViaJamfSchoolNavigation();
 	await blueprintsSteps.blueprintsPageIsOpen();
 
 	await blueprintsSteps.adminsClicksOnQuickStart();
@@ -58,13 +58,13 @@ test('Deploy blueprint to mimic device in Jamf Pro', { tag: ['@stage', '@mimic']
 
 	await blueprintDetailPageSteps.adminWaitsForToastToDisappear('Blueprint created');
 
-	await navigationSteps.adminGoesBackToBlueprintsListViaBreadCrumbsInJPro();
+	await navigationSteps.adminGoesBackToBlueprintsListViaBreadCrumbsInJamfSchool();
 	await blueprintsSteps.thereIsBlueprintWithName('Passcode_' + id);
 	await blueprintsSteps.adminOpensBlueprintWithName('Passcode_' + id);
 
 	await blueprintDetailPageSteps.adminDeploysBlueprint();
 
-	await mimicSteps.blueprintIsDeployedToMimicDeviceViaJamfPro(
+	await mimicSteps.blueprintIsDeployedToMimicDeviceViaJamfSchool(
 		blueprintId,
 		udid,
 		'com.apple.configuration.passcode.settings'

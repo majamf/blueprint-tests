@@ -1,10 +1,10 @@
-name: Goldminers team playwright tests
+name: Ocean team playwright tests
 on:
   push:
     branches: [ main, story/JPCFM-3925-add-playwright-tests-for-cpsc ]
   pull_request:
   schedule:
-    - cron: "0 7 * * *"
+    - cron: "0 6 * * *"
   workflow_dispatch:
     inputs:
       filter:
@@ -31,7 +31,7 @@ on:
         type: boolean
       test_folder:
         description: 'Select which folder to run tests from'
-        default: 'goldminers'
+        default: 'ocean'
         type: string
 
 jobs:
@@ -44,7 +44,7 @@ jobs:
       slack_channel: ${{ github.event.inputs.slack_channel || 'gm-channel-test' }}
       notify_success: ${{ github.event.inputs.notify_success || true }}
       notify_failure: ${{ github.event.inputs.notify_failure || true }}
-      test_folder: ${{ github.event.inputs.test_folder || 'goldminers' }}
+      test_folder: ${{ github.event.inputs.test_folder || 'ocean' }}
     secrets:
       JAMF_ACCOUNT_STAGE_USER_MAIL: ${{ secrets.JAMF_ACCOUNT_STAGE_USER_MAIL }}
       JAMF_ACCOUNT_STAGE_USER_PASSWORD: ${{ secrets.JAMF_ACCOUNT_STAGE_USER_PASSWORD }}

@@ -1,4 +1,4 @@
-name: Playwright Tests
+name: Reusable Playwright setup
 
 on:
   workflow_call:
