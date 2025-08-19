@@ -1,7 +1,7 @@
 name: Playwright Tests
 on:
   push:
-    branches: [ main, story/JPCFM-3925-add-playwright-tests-for-cpsc ]
+    branches: [ main ]
   pull_request:
   schedule:
   - cron: "0 6 * * *"
@@ -41,7 +41,7 @@ jobs:
       filter: ${{ github.event.inputs.filter || '' }}
       jamfProBaseUrl: ${{ github.event.inputs.jamfProBaseUrl || '' }}
       sboxBaseUrl: ${{ github.event.inputs.sboxBaseUrl || '' }}
-      slack_channel: ${{ github.event.inputs.slack_channel || 'gm-channel-test' }}
+      slack_channel: ${{ github.event.inputs.slack_channel || 'ocean-tests' }}
       notify_success: ${{ github.event.inputs.notify_success || true }}
       notify_failure: ${{ github.event.inputs.notify_failure || true }}
       test_folder: ${{ github.event.inputs.test_folder || 'ocean' }}
