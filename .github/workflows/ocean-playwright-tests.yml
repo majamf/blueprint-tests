@@ -17,7 +17,7 @@ on:
         description: 'URL of the Blueprints standalone deployment'
         type: string
       slack_channel:
-        description: 'Filter selecting which tests to run'
+        description: 'Slack channel for notifications'
         required: true
         default: 'ocean-tests'
         type: string
