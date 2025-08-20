@@ -23,12 +23,12 @@ on:
         type: string
       notify_success:
         description: 'Set to true to notify test channel on success'
-        default: false
-        type: boolean
+        default: 'true'
+        type: string
       notify_failure:
         description: 'Set to true to notify test channel on failure'
-        default: true
-        type: boolean
+        default: 'true'
+        type: string
       test_folder:
         description: 'Select which folder to run tests from'
         default: 'ocean'
@@ -42,8 +42,8 @@ jobs:
       jamfProBaseUrl: ${{ github.event.inputs.jamfProBaseUrl || '' }}
       sboxBaseUrl: ${{ github.event.inputs.sboxBaseUrl || '' }}
       slack_channel: ${{ github.event.inputs.slack_channel || 'ocean-tests' }}
-      notify_success: ${{ github.event.inputs.notify_success || true }}
-      notify_failure: ${{ github.event.inputs.notify_failure || true }}
+      notify_success: ${{ github.event.inputs.notify_success || 'true' }}
+      notify_failure: ${{ github.event.inputs.notify_failure || 'true' }}
       test_folder: ${{ github.event.inputs.test_folder || 'ocean' }}
     secrets:
       JAMF_ACCOUNT_STAGE_USER_MAIL: ${{ secrets.JAMF_ACCOUNT_STAGE_USER_MAIL }}
