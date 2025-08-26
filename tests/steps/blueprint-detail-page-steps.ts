@@ -249,7 +249,8 @@ export default class BlueprintDetailPageSteps {
 
 		await this.page.mouse.move(
 			targetElementBound.x + targetElementBound.width / 2,
-			targetElementBound.y + targetElementBound.height / 2
+			targetElementBound.y + targetElementBound.height / 2,
+			{ steps: 10 }
 		);
 
 		const blueprintUpdatePromise = this.waitForBlueprintsUpdateResponse();
