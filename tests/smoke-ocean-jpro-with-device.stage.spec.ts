@@ -20,7 +20,9 @@ test.beforeEach(async () => {
 	id = uuidv4();
 });
 
-test('Deploy blueprint to mimic device in Jamf Pro', { tag: ['@stage', '@mimic'] }, async ({ page }) => {
+test('Deploy blueprint to mimic device in Jamf Pro', { tag: ['@stage', '@mimic'] }, async ({ page, browserName }) => {
+	// eslint-disable-next-line playwright/no-skipped-test
+	test.skip(browserName !== 'chromium', 'Enough to run in one browser');
 	const jproLoginSteps = new JProLoginSteps(page);
 	const blueprintsSteps = new BlueprintsSteps(page);
 	const blueprintTemplatePageSteps = new BlueprintTemplatePageSteps(page);

@@ -20,62 +20,68 @@ test.beforeEach(async () => {
 	id = uuidv4();
 });
 
-test('Deploy blueprint to mimic device in Jamf School', { tag: ['@stage', '@school', '@mimic'] }, async ({ page }) => {
-	const jSchoolLoginSteps = new JSchoolLoginSteps(page);
-	const blueprintsSteps = new BlueprintsSteps(page);
-	const blueprintTemplatePageSteps = new BlueprintTemplatePageSteps(page);
-	const blueprintDetailPageSteps = new BlueprintDetailPageSteps(page);
-	const navigationSteps = new NavigationSteps(page);
-	const jSchoolApiSteps = new JSchoolApiSteps(baseUrl);
-	const mimicSteps = new MimicSteps();
+test(
+	'Deploy blueprint to mimic device in Jamf School',
+	{ tag: ['@stage', '@school', '@mimic'] },
+	async ({ page, browserName }) => {
+		// eslint-disable-next-line playwright/no-skipped-test
+		test.skip(browserName !== 'chromium', 'Enough to run in one browser');
+		const jSchoolLoginSteps = new JSchoolLoginSteps(page);
+		const blueprintsSteps = new BlueprintsSteps(page);
+		const blueprintTemplatePageSteps = new BlueprintTemplatePageSteps(page);
+		const blueprintDetailPageSteps = new BlueprintDetailPageSteps(page);
+		const navigationSteps = new NavigationSteps(page);
+		const jSchoolApiSteps = new JSchoolApiSteps(baseUrl);
+		const mimicSteps = new MimicSteps();
 
-	const udid = await jSchoolApiSteps.getMobileDeviceUdid();
+		const udid = await jSchoolApiSteps.getMobileDeviceUdid();
 
-	await jSchoolLoginSteps.loginToJamfSchool(baseUrl);
+		await jSchoolLoginSteps.loginToJamfSchool(baseUrl);
 
-	await navigationSteps.adminOpensBlueprintsViaJamfSchoolNavigation();
-	await blueprintsSteps.blueprintsPageIsOpen();
+		await navigationSteps.adminOpensBlueprintsViaJamfSchoolNavigation();
+		await blueprintsSteps.blueprintsPageIsOpen();
 
-	await blueprintsSteps.adminsClicksOnQuickStart();
+		await blueprintsSteps.adminsClicksOnQuickStart();
 
-	await blueprintTemplatePageSteps.adminOpensTemplateWithName('Set passcode policies');
+		await blueprintTemplatePageSteps.adminOpensTemplateWithName('Set passcode policies');
 
-	await blueprintTemplatePageSteps.generalPageIsOpen();
-	await blueprintTemplatePageSteps.adminFillsNameOfBlueprint('Passcode_' + id);
+		await blueprintTemplatePageSteps.generalPageIsOpen();
+		await blueprintTemplatePageSteps.adminFillsNameOfBlueprint('Passcode_' + id);
 
-	await blueprintTemplatePageSteps.adminFillsDescriptionOfBlueprint('Some description');
-	await blueprintTemplatePageSteps.adminClicksNextButton();
+		await blueprintTemplatePageSteps.adminFillsDescriptionOfBlueprint('Some description');
+		await blueprintTemplatePageSteps.adminClicksNextButton();
 
-	await blueprintTemplatePageSteps.scopingPageIsOpen();
-	await blueprintTemplatePageSteps.adminSelectsGroupWithNameInScope('mimic device');
-	await blueprintTemplatePageSteps.adminClicksNextButton();
+		await blueprintTemplatePageSteps.scopingPageIsOpen();
+		await blueprintTemplatePageSteps.adminSelectsGroupWithNameInScope('mimic device');
+		await blueprintTemplatePageSteps.adminClicksNextButton();
 
-	await blueprintTemplatePageSteps.passcodePolicyPageIsOpen();
-	await blueprintTemplatePageSteps.adminSelectsPasswordToBeRequired();
-	const blueprintId = await blueprintTemplatePageSteps.adminsSavesBlueprint();
+		await blueprintTemplatePageSteps.passcodePolicyPageIsOpen();
+		await blueprintTemplatePageSteps.adminSelectsPasswordToBeRequired();
+		const blueprintId = await blueprintTemplatePageSteps.adminsSavesBlueprint();
 
-	await blueprintDetailPageSteps.blueprintWithNameIsOpened('Passcode_' + id);
+		await blueprintDetailPageSteps.blueprintWithNameIsOpened('Passcode_' + id);
 
-	await blueprintDetailPageSteps.adminWaitsForToastToDisappear('Blueprint created');
+		await blueprintDetailPageSteps.adminWaitsForToastToDisappear('Blueprint created');
 
-	await navigationSteps.adminGoesBackToBlueprintsListViaBreadCrumbsInJamfSchool();
-	await blueprintsSteps.thereIsBlueprintWithName('Passcode_' + id);
-	await blueprintsSteps.adminOpensBlueprintWithName('Passcode_' + id);
+		await navigationSteps.adminGoesBackToBlueprintsListViaBreadCrumbsInJamfSchool();
+		await blueprintsSteps.thereIsBlueprintWithName('Passcode_' + id);
+		await blueprintsSteps.adminOpensBlueprintWithName('Passcode_' + id);
 
-	await blueprintDetailPageSteps.adminDeploysBlueprint();
+		await blueprintDetailPageSteps.adminDeploysBlueprint();
 
-	await mimicSteps.blueprintIsDeployedToMimicDeviceViaJamfSchool(
-		blueprintId,
-		udid,
-		'com.apple.configuration.passcode.settings'
-	);
+		await mimicSteps.blueprintIsDeployedToMimicDeviceViaJamfSchool(
+			blueprintId,
+			udid,
+			'com.apple.configuration.passcode.settings'
+		);
 
-	await blueprintDetailPageSteps.adminReloadsTheBlueprintDetailsPage();
+		await blueprintDetailPageSteps.adminReloadsTheBlueprintDetailsPage();
 
-	await blueprintDetailPageSteps.blueprintWithNameIsOpened('Passcode_' + id);
+		await blueprintDetailPageSteps.blueprintWithNameIsOpened('Passcode_' + id);
 
-	await blueprintDetailPageSteps.thereAreDeployedDevicesInAnalytics(1);
+		await blueprintDetailPageSteps.thereAreDeployedDevicesInAnalytics(1);
 
-	await blueprintDetailPageSteps.adminDeletesBlueprint();
-	await blueprintsSteps.thereIsNoBlueprintWithName('Passcode_' + id);
-});
+		await blueprintDetailPageSteps.adminDeletesBlueprint();
+		await blueprintsSteps.thereIsNoBlueprintWithName('Passcode_' + id);
+	}
+);
