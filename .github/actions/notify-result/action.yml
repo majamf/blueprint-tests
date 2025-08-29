@@ -14,6 +14,9 @@ inputs:
   skipped:
     description: Number of skipped tests
     required: true
+  durationMs:
+    description: Duration of the tests in milliseconds
+    required: true
   result:
     description: The result of tests
     required: true
@@ -35,6 +38,17 @@ runs:
   steps:
   - shell: sh
     run: |
+      DURATION_MS="${{ inputs.durationMs }}"
+      INT_MS=${DURATION_MS%.*}
+      if ! echo "$INT_MS" | grep -Eq '^[0-9]+$'; then
+        echo "Error: DURATION_MS is not a valid number: $DURATION_MS"
+        exit 1
+      fi
+      MINUTES=$((INT_MS / 60000))
+      SECONDS=$(((INT_MS % 60000) / 1000))
+      MILLIS=$((INT_MS % 1000))
+      FORMATTED_DURATION="${MINUTES}m ${SECONDS}s ${MILLIS}ms"
+      echo "FORMATTED_DURATION=$FORMATTED_DURATION" >> "$GITHUB_ENV"
       echo "WORKFLOW_RUN_URL=${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" >> "$GITHUB_ENV"
   - name: Post to a Slack channel
     uses: slackapi/slack-github-action@v2
@@ -66,7 +80,7 @@ runs:
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "*Result:* ${{ inputs.result}}"
+                    "text": "*Result:* ${{ inputs.result }} within ${{ env.FORMATTED_DURATION }}"
                   }
                 },
                 {

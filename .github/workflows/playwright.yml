@@ -123,6 +123,7 @@ jobs:
       flaky: ${{ steps.extract.outputs.FLAKY }}
       failed: ${{ steps.extract.outputs.FAILED }}
       skipped: ${{ steps.extract.outputs.SKIPPED }}
+      durationMs: ${{ steps.extract.outputs.DURATION_MS }}
     steps:
     - uses: actions/download-artifact@v5
       with:
@@ -134,10 +135,12 @@ jobs:
         FLAKY=$(jq -r '.stats.flaky' results.json)
         FAILED=$(jq -r '.stats.unexpected' results.json)
         SKIPPED=$(jq -r '.stats.skipped' results.json)
+        DURATION_MS=$(jq -r '.stats.duration' results.json)
         echo "PASSED=$PASSED" >> $GITHUB_OUTPUT
         echo "FLAKY=$FLAKY" >> $GITHUB_OUTPUT
         echo "FAILED=$FAILED" >> $GITHUB_OUTPUT
         echo "SKIPPED=$SKIPPED" >> $GITHUB_OUTPUT
+        echo "DURATION_MS=$DURATION_MS" >> $GITHUB_OUTPUT
 
   notify-success:
     name: Notify Tests Success
@@ -152,6 +155,7 @@ jobs:
           flaky: ${{ needs.extract-results.outputs.flaky }}
           failed: ${{ needs.extract-results.outputs.failed }}
           skipped: ${{ needs.extract-results.outputs.skipped }}
+          durationMs: ${{ needs.extract-results.outputs.durationMs }}
           result: 'PASSED'
           rp_link: ${{ needs.test.outputs.reportportal_url }}
           bg_color: '#36a64f'
@@ -171,6 +175,7 @@ jobs:
           flaky: ${{ needs.extract-results.outputs.flaky }}
           failed: ${{ needs.extract-results.outputs.failed }}
           skipped: ${{ needs.extract-results.outputs.skipped }}
+          durationMs: ${{ needs.extract-results.outputs.durationMs }}
           result: 'FAILED'
           rp_link: ${{ needs.test.outputs.reportportal_url }}
           bg_color: '#FF0000'
