@@ -46,20 +46,26 @@ export default defineConfig({
 		trace: 'retain-on-failure',
 		screenshot: 'on',
 		video: 'on-first-retry',
+		actionTimeout: 10_000,
+		navigationTimeout: 15_000,
 	},
 	/* Timeout for each test */
-	timeout: process.env.CI ? 5 * 60 * 1000 : 2 * 60 * 1000,
+	timeout: 2 * 60 * 1000,
 
 	/* Configure projects for major browsers */
 	projects: [
 		{
 			name: 'chromium',
-			use: { ...devices['Desktop Chrome'] },
+			use: {
+				...devices['Desktop Chrome'],
+				viewport: { width: 1400, height: 900 },
+			},
 		},
 		{
 			name: 'firefox',
 			use: {
 				...devices['Desktop Firefox'],
+				viewport: { width: 1400, height: 900 },
 				launchOptions: {
 					firefoxUserPrefs: {
 						'network.http.fast-fallback-to-IPv4': false,
@@ -69,7 +75,10 @@ export default defineConfig({
 		},
 		{
 			name: 'webkit',
-			use: { ...devices['Desktop Safari'] },
+			use: {
+				...devices['Desktop Safari'],
+				viewport: { width: 1400, height: 900 },
+			},
 		},
 	],
 });

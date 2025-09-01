@@ -1,12 +1,12 @@
-FROM mcr.microsoft.com/playwright:v1.54.2
+FROM mcr.microsoft.com/playwright:v1.55.0
 
 RUN corepack enable pnpm
 
 WORKDIR /app
 
-COPY package.json package.json
+COPY package.json pnpm-lock.yaml ./
 
-RUN pnpm install
+RUN pnpm install --frozen-lockfile
 
 COPY . .
 
