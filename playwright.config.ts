@@ -48,6 +48,7 @@ export default defineConfig({
 		video: 'on-first-retry',
 		actionTimeout: 10_000,
 		navigationTimeout: 15_000,
+		viewport: { width: 1400, height: 900 },
 	},
 	/* Timeout for each test */
 	timeout: 2 * 60 * 1000,
