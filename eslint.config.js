@@ -7,7 +7,7 @@ import typescriptParser from '@typescript-eslint/parser';
 export default defineConfig([
 	{
 		...playwrightConfig.configs['flat/recommended'],
-		files: ['tests/**.*', 'tests/**/**.*'],
+		files: ['tests/ocean/**.*', 'tests/goldminers/**.*'],
 		rules: {
 			...playwrightConfig.configs['flat/recommended'].rules,
 			'playwright/expect-expect': ['off'],
