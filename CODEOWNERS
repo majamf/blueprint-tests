@@ -1,2 +1,2 @@
 * @jamf/ocean-write
-*goldminers* @jamf/goldminers-write
+/tests/configuration-profiles/* @jamf/goldminers-write

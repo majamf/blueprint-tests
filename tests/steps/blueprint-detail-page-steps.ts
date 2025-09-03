@@ -215,7 +215,7 @@ export default class BlueprintDetailPageSteps {
 		await externalStorageCheckbox.click({ force: true });
 	}
 
-	@Step('Admin clicks on given checkbox in Config Profiles component')
+	@Step('Admin clicks on given checkbox inside a component')
 	async adminClicksOnGivenCheckbox(checkboxName: string) {
 		const checkbox = this.page.locator(blueprintCheckboxLocator).and(this.page.locator(`[value="${checkboxName}"]`));
 

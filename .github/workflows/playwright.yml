@@ -31,7 +31,7 @@ on:
         type: string
       test_folder:
         description: 'Select which folder to run tests from'
-        default: 'ocean'
+        default: 'core-blueprints'
         type: string
 
 jobs:
@@ -44,7 +44,7 @@ jobs:
       slack_channel: ${{ github.event.inputs.slack_channel || 'ocean-tests' }}
       notify_success: ${{ github.event.inputs.notify_success || 'true' }}
       notify_failure: ${{ github.event.inputs.notify_failure || 'true' }}
-      test_folder: ${{ github.event.inputs.test_folder || 'ocean' }}
+      test_folder: ${{ github.event.inputs.test_folder || 'core-blueprints' }}
     secrets:
       JAMF_ACCOUNT_STAGE_USER_MAIL: ${{ secrets.JAMF_ACCOUNT_STAGE_USER_MAIL }}
       JAMF_ACCOUNT_STAGE_USER_PASSWORD: ${{ secrets.JAMF_ACCOUNT_STAGE_USER_PASSWORD }}
