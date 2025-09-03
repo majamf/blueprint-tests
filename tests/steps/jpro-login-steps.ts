@@ -17,7 +17,7 @@ export default class JProLoginSteps {
 
 		const emailInput = this.page.getByLabel('Email');
 		const continueButton = this.page.getByRole('button', { name: 'Continue' });
-		const passwordInput = this.page.getByLabel('Password');
+		const passwordInput = this.page.getByRole('textbox', { name: 'Password' });
 		const loginButton = this.page.getByRole('button', { name: 'Log in using Jamf ID' });
 		const continueToJProButton = this.page.getByRole('button', { name: 'Continue to Jamf Pro' });
 		const blueprintsNavItem = this.page.locator('jamf-nav-single-item#blueprints-nav-item');
