@@ -17,7 +17,7 @@ export default class JSchoolLoginSteps {
 
 		const emailInput = this.page.getByLabel('Email');
 		const continueButton = this.page.getByRole('button', { name: 'Login' });
-		const passwordInput = this.page.getByLabel('Password');
+		const passwordInput = this.page.getByRole('textbox', { name: 'Password' });
 		const loginButton = this.page.getByRole('button', { name: 'Log in using Jamf ID' });
 
 		await this.utilsSteps.disableAnimations();
