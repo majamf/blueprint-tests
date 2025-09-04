@@ -26,6 +26,9 @@ inputs:
   bg_color:
     description: The background color of the message
     required: true
+  slack_channel:
+    description: The Slack channel where message is posted
+    required: true
   slack_token:
     description: The Slack app token to use
     required: true
@@ -57,7 +60,7 @@ runs:
       method: chat.postMessage
       payload: |
         {
-          "channel": "ocean-tests",
+          "channel": "${{ inputs.slack_channel }}",
           "attachments": [
             {
               "color": "${{ inputs.bg_color}}",

@@ -1,12 +1,12 @@
 import { test } from '@playwright/test';
 import { v4 as uuidv4 } from 'uuid';
-import BlueprintsSteps from './steps/blueprints-steps';
-import MimicSteps from './steps/mimic-steps';
-import JSchoolLoginSteps from './steps/jschool-login-steps';
-import JSchoolApiSteps from './steps/jschool-api-steps';
-import BlueprintTemplatePageSteps from './steps/blueprint-template-page-steps';
-import BlueprintDetailPageSteps from './steps/blueprint-detail-page-steps';
-import NavigationSteps from './steps/navigation-steps';
+import BlueprintsSteps from '../steps/blueprints-steps';
+import MimicSteps from '../steps/mimic-steps';
+import JSchoolLoginSteps from '../steps/jschool-login-steps';
+import JSchoolApiSteps from '../steps/jschool-api-steps';
+import BlueprintTemplatePageSteps from '../steps/blueprint-template-page-steps';
+import BlueprintDetailPageSteps from '../steps/blueprint-detail-page-steps';
+import NavigationSteps from '../steps/navigation-steps';
 
 const baseUrl = 'https://oceanplaywrightstage.dev.jamfnimbus.cloud/';
 

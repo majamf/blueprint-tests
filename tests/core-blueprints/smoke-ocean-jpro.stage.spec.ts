@@ -1,10 +1,10 @@
 import { test } from '@playwright/test';
 import { v4 as uuidv4 } from 'uuid';
-import JProLoginSteps from './steps/jpro-login-steps';
-import BlueprintsSteps from './steps/blueprints-steps';
-import BlueprintTemplatePageSteps from './steps/blueprint-template-page-steps';
-import BlueprintDetailPageSteps from './steps/blueprint-detail-page-steps';
-import NavigationSteps from './steps/navigation-steps';
+import JProLoginSteps from '../steps/jpro-login-steps';
+import BlueprintsSteps from '../steps/blueprints-steps';
+import BlueprintTemplatePageSteps from '../steps/blueprint-template-page-steps';
+import BlueprintDetailPageSteps from '../steps/blueprint-detail-page-steps';
+import NavigationSteps from '../steps/navigation-steps';
 
 const baseUrl = process.env.JAMF_PRO_BASE_URL || 'https://vhdpsvhf.pyro.jamf.build/';
 

@@ -4,6 +4,9 @@ import NavigationSteps from './navigation-steps';
 
 const blueprintCardLocator = '*[wa-component="nebula--card"]';
 const blueprintTextInputLocator = '*[wa-component="nebula--text-input"]';
+const blueprintIdUrlRegExp = new RegExp(
+	/^.*\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[1-5][a-fA-F0-9]{3}-[89abAB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}$/
+);
 
 export default class BlueprintsSteps {
 	private navigationSteps: NavigationSteps;
@@ -152,7 +155,11 @@ export default class BlueprintsSteps {
 
 		const blueprintCreatePromise = this.waitForBlueprintsCreateResponse();
 		await createButton.click();
-		await blueprintCreatePromise;
+		await this.page.waitForURL(blueprintIdUrlRegExp);
+
+		const { data } = await blueprintCreatePromise;
+
+		return data.id;
 	}
 
 	@Step('Blueprints page is opened')

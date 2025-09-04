@@ -1,11 +1,11 @@
 import { test } from '@playwright/test';
 import { v4 as uuidv4 } from 'uuid';
 
-import SboxSetupSteps from './steps/sbox-setup-steps';
-import BlueprintsSteps from './steps/blueprints-steps';
-import BlueprintTemplatePageSteps from './steps/blueprint-template-page-steps';
-import BlueprintDetailPageSteps from './steps/blueprint-detail-page-steps';
-import NavigationSteps from './steps/navigation-steps';
+import SboxSetupSteps from '../steps/sbox-setup-steps';
+import BlueprintsSteps from '../steps/blueprints-steps';
+import BlueprintTemplatePageSteps from '../steps/blueprint-template-page-steps';
+import BlueprintDetailPageSteps from '../steps/blueprint-detail-page-steps';
+import NavigationSteps from '../steps/navigation-steps';
 
 const baseUrl = process.env.SBOX_BASE_URL || 'https://blueprints.sbox-mfe.jamf.io';
 const clusterUrl = 'https://tyk.sbox.ocean.jamf.build';

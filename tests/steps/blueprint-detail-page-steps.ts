@@ -15,6 +15,14 @@ const builderComponentMap: componentsMap = {
 	'Safari Extensions': 'com.jamf.ddm.safari-extensions',
 	'Service configuration': 'com.jamf.ddm.service-configuration-files',
 	'Service background tasks': 'com.jamf.ddm.service-background-tasks',
+	'Airprint': 'com.apple.airprint',
+	'Conference Room Display': 'com.apple.conferenceroomdisplay',
+	'Domains': 'com.apple.domains',
+	'Lock Screen Message': 'com.apple.shareddeviceconfiguration',
+	'Parental Controls: Dictionary': 'com.apple.Dictionary',
+	'Restrictions': 'com.apple.applicationaccess',
+	'Screensaver User': 'com.apple.screensaver.user',
+	'Single App Mode': 'com.apple.app.lock',
 };
 
 const blueprintCardLocator = '*[wa-component="nebula--card"]';
@@ -22,6 +30,7 @@ const blueprintCheckboxLocator = '*[wa-component="nebula--checkbox"]';
 const blueprintDrawerLocator = '*[wa-component="nebula--drawer"]';
 const blueprintTextInputLocator = '*[wa-component="nebula--text-input"]';
 const blueprintDropdownLocator = '*[wa-component="nebula--dropdown"]';
+const blueprintToggleGroupLocator = '*[wa-component="nebula--toggle-group"]';
 
 export default class BlueprintDetailPageSteps {
 	private readonly blueprintsSteps: BlueprintsSteps;
@@ -70,13 +79,9 @@ export default class BlueprintDetailPageSteps {
 
 	@Step('Admin opens scope drawer')
 	async adminOpensScopeDrawer() {
-		const scopeCard = this.page
-			.locator('[class*="details-card"]')
-			.locator('[class*="clickable"]')
-			.locator('h5')
-			.getByText('Scope');
+		const scopeCardLink = this.page.getByTestId('scope-card');
 
-		await scopeCard.click();
+		await scopeCardLink.click();
 	}
 
 	@Step('Admin selects first group in scope modal')
@@ -89,6 +94,13 @@ export default class BlueprintDetailPageSteps {
 			.first();
 
 		await firstGroup.click();
+	}
+
+	@Step('Admin selects group in scope modal with name "$0"')
+	async adminSelectsGroupWithNameInScope(name: string) {
+		const selectedGroup = this.page.locator('[name="groupsInScope"]').locator(blueprintCheckboxLocator).getByText(name);
+
+		await selectedGroup.click();
 	}
 
 	@Step('Admin selects group in scope modal at index "$0"')
@@ -127,6 +139,20 @@ export default class BlueprintDetailPageSteps {
 		await searchInput.fill(componentName);
 	}
 
+	@Step('Admin searches for a payload key with title "$0" inside a component')
+	async adminSearchesForKeyInsideComponent(payloadKey: string) {
+		const searchInput = this.page.getByTestId('payloadKeySearchBarTestId').getByRole('textbox');
+
+		await searchInput.fill(payloadKey);
+	}
+
+	@Step('Admin fills given config profile component key input field "$0" with text')
+	async adminFillsKeyInputFieldWithText(componentKey: string, inputText: string) {
+		const searchInput = this.page.getByTestId(`${componentKey}`).getByRole('textbox');
+
+		await searchInput.fill(inputText);
+	}
+
 	@Step('Only one blueprint component is displayed and contains title "$0"')
 	async onlyOneBlueprintComponentIsDisplayedWithTitle(componentTitle: string) {
 		await expect(this.page.getByTestId('component-list').locator(blueprintCardLocator).locator('h2')).toHaveCount(1);
@@ -135,9 +161,38 @@ export default class BlueprintDetailPageSteps {
 		);
 	}
 
+	@Step('Only one config profile component key with title "$0" is displayed inside a component')
+	async onlyOneKeyIsDisplayedInsideComponent(componentTitle: string) {
+		const appleKeysWrapper = this.page
+			.getByTestId('payload-settings-wrapper')
+			.locator('div[class="w-full"]')
+			.locator('h5');
+		await expect(appleKeysWrapper).toHaveCount(1);
+		await expect(appleKeysWrapper).toHaveText(componentTitle);
+	}
+
+	@Step('Given number of keys "$0" are displayed inside a component')
+	async givenNumberOfKeysAreDisplayedInsideComponent(numberOfKeys: number) {
+		await expect(
+			this.page.getByTestId('payload-settings-wrapper').locator('div[class="w-full"]').locator('h5')
+		).toHaveCount(numberOfKeys);
+	}
+
 	@Step('Disk management option with name "$0" is checked')
 	async selectedDiskManagementIsChecked(name: string) {
 		await expect(this.page.locator(blueprintCheckboxLocator, { hasText: name }).locator('input').first()).toBeChecked();
+	}
+
+	@Step('Selected option with name "$0" is checked')
+	async selectedCheckboxIsChecked(payloadKey: string) {
+		await expect(this.page.getByTestId(`${payloadKey}`).locator('input').first()).toBeChecked();
+	}
+
+	@Step('No config profile component payload key matches given filter option')
+	async noPayloadKeyMatchesGivenFilterOption() {
+		await expect(this.page.getByTestId('payload-settings-wrapper')).toHaveText(
+			'No results found. Refine your search or filter criteria.'
+		);
 	}
 
 	@Step('Admin clicks on external storage checkbox')
@@ -160,6 +215,13 @@ export default class BlueprintDetailPageSteps {
 		await externalStorageCheckbox.click({ force: true });
 	}
 
+	@Step('Admin clicks on given checkbox inside a component')
+	async adminClicksOnGivenCheckbox(checkboxName: string) {
+		const checkbox = this.page.locator(blueprintCheckboxLocator).and(this.page.locator(`[value="${checkboxName}"]`));
+
+		await checkbox.click({ force: true });
+	}
+
 	@Step('Admin saves scope')
 	async adminSavesScope() {
 		const saveButton = this.page
@@ -177,6 +239,29 @@ export default class BlueprintDetailPageSteps {
 		const cancelButton = this.page.locator(blueprintDrawerLocator).getByRole('button', { name: 'Cancel' });
 
 		await cancelButton.click();
+	}
+
+	@Step('Admin clicks on close button')
+	async adminsClicksOnCloseButton() {
+		const closeButton = this.page.locator(blueprintDrawerLocator).getByRole('button', { name: 'Close' });
+
+		await closeButton.click();
+	}
+
+	@Step('Admin clicks on filters button')
+	async adminsClicksOnFiltersButton() {
+		const filtersButton = this.page.getByTestId('filter-button');
+
+		await filtersButton.click();
+	}
+
+	@Step('Admin selects filter with name "$0" from Filters dropdown')
+	async adminSelectsFilterFromFiltersDropdown(filterName: string) {
+		const filterOption = this.page
+			.locator(blueprintToggleGroupLocator)
+			.locator(blueprintCheckboxLocator, { hasText: filterName });
+
+		await filterOption.click();
 	}
 
 	@Step('Admin deploys blueprint')
@@ -312,6 +397,14 @@ export default class BlueprintDetailPageSteps {
 		await expect(formLocator).toBeVisible();
 	}
 
+	@Step('Config profile component drawer named "$0" is opened')
+	async configProfileComponentDrawerIsOpened(configProfileComponent: string) {
+		const componentSettingsWrapper = this.page.getByTestId('payload-settings-wrapper');
+
+		await this.drawerWithHeadingIsOpen(configProfileComponent);
+		await expect(componentSettingsWrapper).toBeVisible({ timeout: 10000 });
+	}
+
 	@Step('Disk management add modal is opened')
 	async diskManagementAddModalIsOpened() {
 		const formLocator = this.page.locator("[id*='com.jamf.ddm.disk-management-configuration']");
@@ -326,6 +419,14 @@ export default class BlueprintDetailPageSteps {
 
 		await this.drawerWithHeadingIsOpen('Passcode Policy');
 		await expect(formLocator).toBeVisible();
+	}
+
+	@Step('Config profile component add modal named "$0" is opened')
+	async configProfileComponentAddModalIsOpened(configProfileComponent: string) {
+		const componentSettingsWrapper = this.page.getByTestId('payload-settings-wrapper');
+
+		await this.drawerWithHeadingIsOpen(configProfileComponent);
+		await expect(componentSettingsWrapper).toBeVisible({ timeout: 10000 });
 	}
 
 	@Step('Scoping drawer is opened')
@@ -433,5 +534,27 @@ export default class BlueprintDetailPageSteps {
 		const failedDevices = this.page.getByTestId('failed-devices');
 
 		await expect(failedDevices).toContainText(numberOfDevices.toString());
+	}
+
+	@Step('Blueprint state in Analytics card is Ready for deployment')
+	async blueprintIsReadyForDeploymentInAnalyticsCard() {
+		const analyticsCard = this.page.getByTestId('analytics');
+
+		const analyticsSkeleton = analyticsCard.locator('[class*="skeleton"]');
+
+		await expect(analyticsSkeleton).not.toBeVisible();
+		await expect(analyticsCard).toContainText('Not deployed');
+		await expect(analyticsCard).toContainText('Blueprint ready for deployment');
+	}
+
+	@Step('Blueprint state in Analytics card is Not ready for deployment')
+	async blueprintIsNotReadyForDeploymentInAnalyticsCard() {
+		const analyticsCard = this.page.getByTestId('analytics');
+
+		const analyticsSkeleton = analyticsCard.locator('[class*="skeleton"]');
+
+		await expect(analyticsSkeleton).not.toBeVisible();
+		await expect(analyticsCard).toContainText('Incomplete');
+		await expect(analyticsCard).toContainText('Define scope');
 	}
 }
