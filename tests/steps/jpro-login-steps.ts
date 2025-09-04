@@ -31,7 +31,7 @@ export default class JProLoginSteps {
 		await continueButton.click();
 		await passwordInput.fill(process.env.JAMF_ACCOUNT_STAGE_USER_PASSWORD);
 		await loginButton.click();
-		await continueToJProButton.click();
+		await continueToJProButton.click({ timeout: 15_000 });
 
 		await blueprintsNavItem.waitFor();
 
