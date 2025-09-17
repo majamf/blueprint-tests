@@ -1,6 +1,6 @@
 // withJamfProInstances.ts
-import { test as base } from '@playwright/test';
-import { jamfProInstances, JamfProInstanceKey } from './jamfProInstances';
+import { type BrowserContext, type Page, test as base, type TestInfo } from '@playwright/test';
+import { jamfProInstances, type JamfProInstanceKey } from './jamfProInstances';
 
 type TestOptions = { tag?: string[] };
 
@@ -8,11 +8,11 @@ export function forEachJamfProInstance(
 	testName: string,
 	options: TestOptions,
 	testFn: (
-		fixtures: { page: any; browserName: string; context: any } & {
+		fixtures: { page: Page; browserName: string; context: BrowserContext } & {
 			baseUrl: string;
 			instanceKey: JamfProInstanceKey;
 		},
-		testInfo: any
+		testInfo: TestInfo
 	) => Promise<void>
 ) {
 	Object.entries(jamfProInstances).forEach(([key, baseUrl]) => {

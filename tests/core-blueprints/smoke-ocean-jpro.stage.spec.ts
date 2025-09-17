@@ -7,8 +7,6 @@ import BlueprintDetailPageSteps from '../steps/blueprint-detail-page-steps';
 import NavigationSteps from '../steps/navigation-steps';
 import { forEachJamfProInstance } from '../utils/withJamfProInstances';
 
-// const baseUrl = process.env.JAMF_PRO_BASE_URL || 'https://vhdpsvhf.pyro.jamf.build/';
-
 let id = uuidv4();
 
 test.beforeEach(async () => {
@@ -81,9 +79,8 @@ forEachJamfProInstance(
 forEachJamfProInstance(
 	'Blueprint can be added via builder and removed in Jamf Pro',
 	{ tag: ['@stage'] },
-	async ({ page, browserName, baseUrl, instanceKey }) => {
+	async ({ page, browserName, baseUrl }) => {
 		test.fixme(browserName !== 'chromium', 'https://jamfpdd.atlassian.net/browse/JSC-62590');
-		test.fixme(instanceKey !== 'current_n_1', 'https://jamfpdd.atlassian.net/browse/JSC-62590');
 		const jproLoginSteps = new JProLoginSteps(page);
 		const blueprintsSteps = new BlueprintsSteps(page);
 		const blueprintDetailPageSteps = new BlueprintDetailPageSteps(page);
