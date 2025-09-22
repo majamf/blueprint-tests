@@ -1,4 +1,4 @@
-import { expect, type Page } from '@playwright/test';
+import { expect, type Locator, type Page } from '@playwright/test';
 import { Step } from '../utils/utils';
 import NavigationSteps from './navigation-steps';
 import BlueprintsSteps from './blueprints-steps';
@@ -280,12 +280,7 @@ export default class BlueprintDetailPageSteps {
 		const declarationGroup = this.page.getByTestId('step-0');
 		const componentInDeclarationGroup = declarationGroup.locator(blueprintCardLocator, { hasText: componentTitle });
 
-		await componentInDeclarationGroup.hover();
-
-		const configureButton = componentInDeclarationGroup.getByTestId('configure-component-button');
-
-		await configureButton.focus();
-		await configureButton.click();
+		await componentInDeclarationGroup.click();
 	}
 
 	@Step('Admin saves configuration of component')
@@ -314,33 +309,9 @@ export default class BlueprintDetailPageSteps {
 		const subjectElement = this.page.locator(subjectSelector);
 		const targetElement = this.page.locator(targetSelector);
 
-		await targetElement.scrollIntoViewIfNeeded();
-		await subjectElement.scrollIntoViewIfNeeded();
-
-		await subjectElement.hover();
-		await this.page.mouse.down();
-
-		const subjectElementBound = await subjectElement.boundingBox();
-
-		if (!subjectElementBound) {
-			throw new Error(`Bounding box for element "${subjectSelector}" is null.`);
-		}
-
-		const targetElementBound = await targetElement.boundingBox();
-
-		if (!targetElementBound) {
-			throw new Error(`Bounding box for element "${targetSelector}" is null.`);
-		}
-
-		await this.page.mouse.move(
-			targetElementBound.x + targetElementBound.width / 2,
-			targetElementBound.y + targetElementBound.height / 2,
-			{ steps: 10 }
-		);
-
 		const blueprintUpdatePromise = this.waitForBlueprintsUpdateResponse();
 
-		await this.page.mouse.up();
+		await this.dragAndDropElement(subjectElement, targetElement);
 
 		const componentInDeclarationGroup = targetElement.locator(blueprintCardLocator, { hasText: componentTitle });
 
@@ -370,14 +341,11 @@ export default class BlueprintDetailPageSteps {
 		const declarationGroup = this.page.getByTestId('step-0');
 
 		const componentInDeclarationGroup = declarationGroup.locator(blueprintCardLocator, { hasText: componentTitle });
-		await componentInDeclarationGroup.hover();
-
-		const deleteButton = componentInDeclarationGroup.getByTestId('delete-component-button');
-		await deleteButton.focus();
+		const libraryDropzone = this.page.getByTestId('remove-fragment-dropzone');
 
 		const blueprintUpdatePromise = this.waitForBlueprintsUpdateResponse();
 
-		await deleteButton.click();
+		await this.dragAndDropElement(componentInDeclarationGroup, libraryDropzone);
 
 		await blueprintUpdatePromise;
 	}
@@ -556,5 +524,27 @@ export default class BlueprintDetailPageSteps {
 		await expect(analyticsSkeleton).not.toBeVisible();
 		await expect(analyticsCard).toContainText('Incomplete');
 		await expect(analyticsCard).toContainText('Define scope');
+	}
+
+	private async dragAndDropElement(subjectLocator: Locator, targetLocator: Locator) {
+		await targetLocator.scrollIntoViewIfNeeded();
+		await subjectLocator.scrollIntoViewIfNeeded();
+
+		await subjectLocator.hover();
+		await this.page.mouse.down();
+
+		const targetElementBound = await targetLocator.boundingBox();
+
+		if (!targetElementBound) {
+			throw new Error(`Bounding box for element "${targetLocator}" is null.`);
+		}
+
+		await this.page.mouse.move(
+			targetElementBound.x + targetElementBound.width / 2,
+			targetElementBound.y + targetElementBound.height / 2,
+			{ steps: 10 }
+		);
+
+		await this.page.mouse.up();
 	}
 }
