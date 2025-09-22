@@ -1,5 +1,5 @@
 import * as process from 'node:process';
-import type { Page } from '@playwright/test';
+import { expect, type Page } from '@playwright/test';
 import UtilsSteps from './utils-steps';
 import { assertEnvironmentVariable, Step } from '../utils/utils';
 
@@ -20,6 +20,8 @@ export default class JProLoginSteps {
 		const passwordInput = this.page.getByRole('textbox', { name: 'Password' });
 		const loginButton = this.page.getByRole('button', { name: 'Log in using Jamf ID' });
 		const continueToJProButton = this.page.getByRole('button', { name: 'Continue to Jamf Pro' });
+		const rejectAllCookiesButton = this.page.getByRole('button', { name: 'Reject All' });
+		const jamfProVersion = this.page.locator('[data-test-id="jamf-pro-version"]');
 		const blueprintsNavItem = this.page.locator('jamf-nav-single-item#blueprints-nav-item');
 		const slasaAgreeButton = this.page.locator('[data-test-id="slasa-agree-button"] > jamf-button');
 
@@ -29,9 +31,23 @@ export default class JProLoginSteps {
 
 		await emailInput.fill(process.env.JAMF_ACCOUNT_STAGE_USER_MAIL);
 		await continueButton.click();
+
+		await this.page.waitForLoadState('load');
+
 		await passwordInput.fill(process.env.JAMF_ACCOUNT_STAGE_USER_PASSWORD);
 		await loginButton.click();
+
+		await this.page.waitForLoadState('load');
+
+		if (await rejectAllCookiesButton.isVisible()) {
+			await rejectAllCookiesButton.click();
+		}
+
 		await continueToJProButton.click({ timeout: 15_000 });
+
+		await this.page.waitForLoadState('load');
+
+		await expect(jamfProVersion).toBeVisible();
 
 		await blueprintsNavItem.waitFor();
 

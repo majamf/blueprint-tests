@@ -4,12 +4,13 @@ import { Step } from '../utils/utils';
 export default class NavigationSteps {
 	constructor(private readonly page: Page) {}
 
-	public waitForBlueprintsResponse() {
+	public waitForBlueprintsResponse(options?: { timeout: number }) {
 		return this.page.waitForResponse(
 			(response) =>
 				response.url().includes('/blueprints/management/v1/blueprints') &&
 				response.status() === 200 &&
-				response.request().method() === 'GET'
+				response.request().method() === 'GET',
+			options
 		);
 	}
 
@@ -58,7 +59,7 @@ export default class NavigationSteps {
 	async adminOpensBlueprintsViaJamfProNavigation() {
 		const blueprintsNavigation = this.page.locator('jamf-nav-side-container').getByText('Blueprints');
 
-		const blueprintGetPromise = this.waitForBlueprintsResponse();
+		const blueprintGetPromise = this.waitForBlueprintsResponse({ timeout: 30_000 });
 
 		await blueprintsNavigation.click();
 
