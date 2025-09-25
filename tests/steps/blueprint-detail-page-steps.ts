@@ -245,9 +245,9 @@ export default class BlueprintDetailPageSteps {
 	@Step('Admin clicks on discard changes button')
 	async adminsClicksOnDiscardChangesButton() {
 		//TODO add data-testid to Drawer.tsx
-		const closeButton = this.page.locator(blueprintDrawerLocator).getByRole('button', { name: 'Discard changes' });
+		const discardChangesButton = this.page.locator(blueprintDrawerLocator).getByRole('button', { name: 'Discard changes' });
 
-		await closeButton.click();
+		await discardChangesButton.click();
 	}
 
 	@Step('Admin clicks on filters button')
