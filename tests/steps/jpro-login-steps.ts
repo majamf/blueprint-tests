@@ -1,7 +1,8 @@
 import * as process from 'node:process';
-import { expect, type Page } from '@playwright/test';
+import { expect, type Locator, type Page } from '@playwright/test';
 import UtilsSteps from './utils-steps';
 import { assertEnvironmentVariable, Step } from '../utils/utils';
+import fs from 'fs/promises';
 
 export default class JProLoginSteps {
 	private readonly utilsSteps: UtilsSteps;
@@ -61,6 +62,86 @@ export default class JProLoginSteps {
 			}
 
 			await slasaAgreeButton.click();
+		}
+	}
+
+	@Step('Login to Jamf Pro at "$0" with stored auth state')
+	public async loginToJamfProCached(baseUrl: string) {
+		assertEnvironmentVariable(process.env.JAMF_ACCOUNT_STAGE_USER_MAIL, 'JAMF_ACCOUNT_STAGE_USER_MAIL');
+		assertEnvironmentVariable(process.env.JAMF_ACCOUNT_STAGE_USER_PASSWORD, 'JAMF_ACCOUNT_STAGE_USER_PASSWORD');
+
+		await this.utilsSteps.disableAnimations();
+
+		const authRestored = await this.tryRestoreSession();
+
+		if (authRestored) {
+			await this.page.goto(baseUrl);
+			await this.page.waitForLoadState('load');
+
+			const blueprintsNavItem = this.page.locator('jamf-nav-single-item#blueprints-nav-item');
+
+			if (await this.pollElementIsVisible(blueprintsNavItem)) {
+				return;
+			}
+		}
+
+		// If session restoration failed, perform a fresh login
+		await this.loginToJamfPro(baseUrl);
+
+		const authStateFile = 'playwright/.auth.json';
+		await this.page.context().storageState({ path: authStateFile });
+	}
+
+	private async pollElementIsVisible(blueprintsNavItem: Locator): Promise<boolean> {
+		try {
+			await expect(blueprintsNavItem).toBeVisible();
+			return true;
+		} catch {
+			return false;
+		}
+	}
+
+	private async fileExists(filePath: string): Promise<boolean> {
+		try {
+			await fs.access(filePath);
+			return true;
+		} catch {
+			return false;
+		}
+	}
+
+	private async tryRestoreSession(): Promise<boolean> {
+		const authStateFile = 'playwright/.auth.json';
+
+		if (!(await this.fileExists(authStateFile))) {
+			return false;
+		}
+
+		try {
+			const storageState = JSON.parse(await fs.readFile(authStateFile, 'utf-8'));
+
+			if (storageState.cookies) {
+				await this.page.context().addCookies(storageState.cookies);
+			}
+
+			if (storageState.origins) {
+				for (const origin of storageState.origins) {
+					await this.page.goto(origin.origin);
+					for (const item of origin.localStorage) {
+						await this.page.evaluate(
+							([key, value]) => {
+								localStorage.setItem(key, value);
+							},
+							[item.name, item.value]
+						);
+					}
+				}
+			}
+
+			return true;
+		} catch (error) {
+			console.log('Failed to restore session:', error);
+			return false;
 		}
 	}
 }
