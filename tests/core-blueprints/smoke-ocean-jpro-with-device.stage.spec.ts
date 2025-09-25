@@ -33,7 +33,7 @@ test('Deploy blueprint to mimic device in Jamf Pro', { tag: ['@stage', '@mimic']
 
 	const udid = await jproApiSteps.getMobileDeviceUdid();
 
-	await jproLoginSteps.loginToJamfPro(baseUrl);
+	await jproLoginSteps.loginToJamfProCached(baseUrl);
 
 	await navigationSteps.adminOpensBlueprintsViaJamfProNavigation();
 	await blueprintsSteps.blueprintsPageIsOpen();

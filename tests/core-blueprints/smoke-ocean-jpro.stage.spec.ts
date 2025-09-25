@@ -23,7 +23,7 @@ test('Blueprints list is loaded in Jamf Pro', { tag: ['@stage'] }, async ({ page
 	const blueprintsSteps = new BlueprintsSteps(page);
 	const navigationSteps = new NavigationSteps(page);
 
-	await jproLoginSteps.loginToJamfPro(baseUrl);
+	await jproLoginSteps.loginToJamfProCached(baseUrl);
 
 	await navigationSteps.adminOpensBlueprintsViaJamfProNavigation();
 	await blueprintsSteps.blueprintsPageIsOpen();
@@ -38,7 +38,7 @@ test('Blueprint can be added via templates and removed in Jamf Pro', { tag: ['@s
 	const blueprintDetailPageSteps = new BlueprintDetailPageSteps(page);
 	const navigationSteps = new NavigationSteps(page);
 
-	await jproLoginSteps.loginToJamfPro(baseUrl);
+	await jproLoginSteps.loginToJamfProCached(baseUrl);
 
 	await navigationSteps.adminOpensBlueprintsViaJamfProNavigation();
 	await blueprintsSteps.blueprintsPageIsOpen();
@@ -83,7 +83,7 @@ test(
 		const blueprintDetailPageSteps = new BlueprintDetailPageSteps(page);
 		const navigationSteps = new NavigationSteps(page);
 
-		await jproLoginSteps.loginToJamfPro(baseUrl);
+		await jproLoginSteps.loginToJamfProCached(baseUrl);
 
 		await navigationSteps.adminOpensBlueprintsViaJamfProNavigation();
 		await blueprintsSteps.blueprintsPageIsOpen();
@@ -137,7 +137,7 @@ test('Templates are properly loaded', { tag: ['@stage'] }, async ({ page }) => {
 	const blueprintsSteps = new BlueprintsSteps(page);
 	const navigationSteps = new NavigationSteps(page);
 
-	await jproLoginSteps.loginToJamfPro(baseUrl);
+	await jproLoginSteps.loginToJamfProCached(baseUrl);
 
 	await navigationSteps.adminOpensBlueprintsViaJamfProNavigation();
 	await blueprintsSteps.blueprintsPageIsOpen();
@@ -152,7 +152,7 @@ test('Searching in scope works', { tag: ['@stage'] }, async ({ page }) => {
 	const blueprintDetailPageSteps = new BlueprintDetailPageSteps(page);
 	const navigationSteps = new NavigationSteps(page);
 
-	await jproLoginSteps.loginToJamfPro(baseUrl);
+	await jproLoginSteps.loginToJamfProCached(baseUrl);
 
 	await navigationSteps.adminOpensBlueprintsViaJamfProNavigation();
 	await blueprintsSteps.blueprintsPageIsOpen();
