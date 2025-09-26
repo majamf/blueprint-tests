@@ -70,6 +70,9 @@ export default class JProLoginSteps {
 		assertEnvironmentVariable(process.env.JAMF_ACCOUNT_STAGE_USER_MAIL, 'JAMF_ACCOUNT_STAGE_USER_MAIL');
 		assertEnvironmentVariable(process.env.JAMF_ACCOUNT_STAGE_USER_PASSWORD, 'JAMF_ACCOUNT_STAGE_USER_PASSWORD');
 
+		const continueToJProButton = this.page.getByRole('button', { name: 'Continue to Jamf Pro' });
+		const rejectAllCookiesButton = this.page.getByRole('button', { name: 'Reject All' });
+
 		await this.utilsSteps.disableAnimations();
 
 		const authRestored = await this.tryRestoreSession();
@@ -79,6 +82,11 @@ export default class JProLoginSteps {
 			await this.page.waitForLoadState('load');
 
 			const blueprintsNavItem = this.page.locator('jamf-nav-single-item#blueprints-nav-item');
+
+			if (await this.pollElementIsVisible(rejectAllCookiesButton)) {
+				await rejectAllCookiesButton.click();
+				await continueToJProButton.click({ timeout: 15_000 });
+			}
 
 			if (await this.pollElementIsVisible(blueprintsNavItem)) {
 				return;
