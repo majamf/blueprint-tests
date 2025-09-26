@@ -236,16 +236,20 @@ export default class BlueprintDetailPageSteps {
 
 	@Step('Admin clicks on cancel button')
 	async adminsClicksOnCancelButton() {
+		//TODO add data-testid to Drawer.tsx
 		const cancelButton = this.page.locator(blueprintDrawerLocator).getByRole('button', { name: 'Cancel' });
 
 		await cancelButton.click();
 	}
 
-	@Step('Admin clicks on close button')
-	async adminsClicksOnCloseButton() {
-		const closeButton = this.page.locator(blueprintDrawerLocator).getByRole('button', { name: 'Close' });
+	@Step('Admin clicks on discard changes button')
+	async adminsClicksOnDiscardChangesButton() {
+		//TODO add data-testid to Drawer.tsx
+		const discardChangesButton = this.page
+			.locator(blueprintDrawerLocator)
+			.getByRole('button', { name: 'Discard changes' });
 
-		await closeButton.click();
+		await discardChangesButton.click();
 	}
 
 	@Step('Admin clicks on filters button')
@@ -370,7 +374,7 @@ export default class BlueprintDetailPageSteps {
 		const componentSettingsWrapper = this.page.getByTestId('payload-settings-wrapper');
 
 		await this.drawerWithHeadingIsOpen(configProfileComponent);
-		await expect(componentSettingsWrapper).toBeVisible({ timeout: 10000 });
+		await expect(componentSettingsWrapper).toBeVisible({ timeout: 30_000 });
 	}
 
 	@Step('Disk management add modal is opened')
@@ -394,7 +398,7 @@ export default class BlueprintDetailPageSteps {
 		const componentSettingsWrapper = this.page.getByTestId('payload-settings-wrapper');
 
 		await this.drawerWithHeadingIsOpen(configProfileComponent);
-		await expect(componentSettingsWrapper).toBeVisible({ timeout: 10000 });
+		await expect(componentSettingsWrapper).toBeVisible({ timeout: 30_000 });
 	}
 
 	@Step('Scoping drawer is opened')

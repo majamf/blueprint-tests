@@ -94,7 +94,7 @@ test('Config profile component can be updated', { tag: ['@stage'] }, async ({ pa
 	await blueprintDetailPageSteps.configProfileComponentDrawerIsOpened('Lock Screen Message');
 	await blueprintDetailPageSteps.selectedCheckboxIsChecked('AssetTagInformation');
 	await blueprintDetailPageSteps.selectedCheckboxIsChecked('IfLostReturnToMessage');
-	await blueprintDetailPageSteps.adminsClicksOnCloseButton();
+	await blueprintDetailPageSteps.adminsClicksOnDiscardChangesButton();
 
 	await blueprintDetailPageSteps.adminDeletesBlueprint();
 	await blueprintsSteps.thereIsNoBlueprintWithName(blueprintName);
