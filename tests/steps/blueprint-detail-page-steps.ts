@@ -70,6 +70,15 @@ export default class BlueprintDetailPageSteps {
 		);
 	}
 
+	private waitForBlueprintsComponentsLibraryResponse() {
+		return this.page.waitForResponse(
+			(response) =>
+				/blueprints\/components-registry\/v1\/fragments\?search=[^&]+&page/.test(response.url()) &&
+				response.status() === 200 &&
+				response.request().method() === 'GET'
+		);
+	}
+
 	@Step('Blueprint with name "$0" is opened')
 	async blueprintWithNameIsOpened(name: string) {
 		const blueprintHeading = this.page.getByRole('heading', { name: name });
@@ -136,7 +145,11 @@ export default class BlueprintDetailPageSteps {
 	@Step('Admin searches for component with name "$0"')
 	async adminSearchesForComponent(componentName: string) {
 		const searchInput = this.page.locator(blueprintTextInputLocator).locator('input[placeholder="Search"]');
+		const blueprintsComponentsLibraryPromise = this.waitForBlueprintsComponentsLibraryResponse();
+
 		await searchInput.fill(componentName);
+
+		await blueprintsComponentsLibraryPromise;
 	}
 
 	@Step('Admin searches for a payload key with title "$0" inside a component')
