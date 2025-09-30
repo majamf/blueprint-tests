@@ -1,7 +1,7 @@
 {
 	"compilerOptions": {
 		/* Base Options: */
-        "allowImportingTsExtensions": true,
+		"allowImportingTsExtensions": true,
 		"esModuleInterop": true,
 		"skipLibCheck": true,
 		"target": "es2022",
