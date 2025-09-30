@@ -12,7 +12,7 @@ export default class SboxSetupSteps {
 	@Step('Set up SBOX with mFE URL "$0" and cluster URL "$1"')
 	public async sboxIsSetUp(mFEUrl: string, clusterUrl: string) {
 		const baseUrl = mFEUrl + '/?clusterUrl=' + clusterUrl;
-		const tenantId = '4879d91a-1cc7-4638-ad0e-0d9e32399760';
+		const tenantId = 'df980465-f368-49d8-856c-7937d05e9d48';
 		const localSettingsButton = this.page.locator('span').filter({ hasText: 'Local settings' }).getByRole('img');
 		const tenantIdInput = this.page.getByLabel('Tenant ID');
 		const applyButton = this.page.getByRole('button', { name: 'Apply' });
