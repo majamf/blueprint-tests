@@ -75,7 +75,7 @@ export default class JProLoginSteps {
 
 		await this.utilsSteps.disableAnimations();
 
-		const hostname = URL.parse(baseUrl)?.hostname;
+		const hostname = new URL(baseUrl).hostname;
 		const authFile = 'playwright/' + hostname + '.auth.json';
 
 		const authRestored = await this.tryRestoreSession(authFile);
