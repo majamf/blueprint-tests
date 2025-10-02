@@ -28,7 +28,7 @@ test(
 		const navigationSteps = new NavigationSteps(page);
 		const blueprintName = `Blueprint_with_CP_e2e_${id}`;
 
-		await jproLoginSteps.loginToJamfPro(baseUrl);
+		await jproLoginSteps.loginToJamfProCached(baseUrl);
 		await navigationSteps.adminOpensBlueprintsViaJamfProNavigation();
 		await blueprintsSteps.blueprintsPageIsOpen();
 		await blueprintsSteps.adminOpensBlueprintBuilder();
@@ -69,7 +69,7 @@ test('Config profile component can be updated', { tag: ['@stage'] }, async ({ pa
 	const navigationSteps = new NavigationSteps(page);
 	const blueprintName = `Blueprint_with_CP_e2e_${id}`;
 
-	await jproLoginSteps.loginToJamfPro(baseUrl);
+	await jproLoginSteps.loginToJamfProCached(baseUrl);
 	await navigationSteps.adminOpensBlueprintsViaJamfProNavigation();
 	await blueprintsSteps.blueprintsPageIsOpen();
 	await blueprintsSteps.adminOpensBlueprintBuilder();
