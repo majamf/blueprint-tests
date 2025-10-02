@@ -22,7 +22,9 @@ test.beforeEach(async () => {
 test(
 	'Deploy blueprint containing config profile component to mimic device in Jamf Pro',
 	{ tag: ['@stage', '@mimic'] },
-	async ({ page }) => {
+	async ({ page, browserName }) => {
+		// eslint-disable-next-line playwright/no-skipped-test
+		test.skip(browserName !== 'chromium', 'Enough to run in one browser');
 		const jproLoginSteps = new JProLoginSteps(page);
 		const blueprintsSteps = new BlueprintsSteps(page);
 		const blueprintDetailPageSteps = new BlueprintDetailPageSteps(page);
@@ -33,7 +35,7 @@ test(
 		const udid = await jproApiSteps.getMobileDeviceUdid();
 		const blueprintName = `Blueprint_with_CP_e2e_${id}`;
 
-		await jproLoginSteps.loginToJamfPro(baseUrl);
+		await jproLoginSteps.loginToJamfProCached(baseUrl);
 		await navigationSteps.adminOpensBlueprintsViaJamfProNavigation();
 		await blueprintsSteps.blueprintsPageIsOpen();
 		await blueprintsSteps.adminOpensBlueprintBuilder();
