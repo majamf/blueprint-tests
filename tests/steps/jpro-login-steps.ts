@@ -75,7 +75,10 @@ export default class JProLoginSteps {
 
 		await this.utilsSteps.disableAnimations();
 
-		const authRestored = await this.tryRestoreSession();
+		const hostname = new URL(baseUrl).hostname;
+		const authFile = 'playwright/' + hostname + '.auth.json';
+
+		const authRestored = await this.tryRestoreSession(authFile);
 
 		if (authRestored) {
 			await this.page.goto(baseUrl);
@@ -96,8 +99,7 @@ export default class JProLoginSteps {
 		// If session restoration failed, perform a fresh login
 		await this.loginToJamfPro(baseUrl);
 
-		const authStateFile = 'playwright/.auth.json';
-		await this.page.context().storageState({ path: authStateFile });
+		await this.page.context().storageState({ path: authFile });
 	}
 
 	private async pollElementIsVisible(blueprintsNavItem: Locator): Promise<boolean> {
@@ -118,9 +120,7 @@ export default class JProLoginSteps {
 		}
 	}
 
-	private async tryRestoreSession(): Promise<boolean> {
-		const authStateFile = 'playwright/.auth.json';
-
+	private async tryRestoreSession(authStateFile: string): Promise<boolean> {
 		if (!(await this.fileExists(authStateFile))) {
 			return false;
 		}

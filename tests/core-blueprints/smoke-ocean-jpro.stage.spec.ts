@@ -5,8 +5,7 @@ import BlueprintsSteps from '../steps/blueprints-steps';
 import BlueprintTemplatePageSteps from '../steps/blueprint-template-page-steps';
 import BlueprintDetailPageSteps from '../steps/blueprint-detail-page-steps';
 import NavigationSteps from '../steps/navigation-steps';
-
-const baseUrl = process.env.JAMF_PRO_BASE_URL || 'https://vhdpsvhf.pyro.jamf.build/';
+import { forEachJamfProInstance } from '../utils/withJamfProInstances';
 
 let id = uuidv4();
 
@@ -18,7 +17,7 @@ test.beforeEach(async () => {
 	id = uuidv4();
 });
 
-test('Blueprints list is loaded in Jamf Pro', { tag: ['@stage'] }, async ({ page }) => {
+forEachJamfProInstance('Blueprints list is loaded in Jamf Pro', { tag: ['@stage'] }, async ({ page, baseUrl }) => {
 	const jproLoginSteps = new JProLoginSteps(page);
 	const blueprintsSteps = new BlueprintsSteps(page);
 	const navigationSteps = new NavigationSteps(page);
@@ -31,52 +30,56 @@ test('Blueprints list is loaded in Jamf Pro', { tag: ['@stage'] }, async ({ page
 	await blueprintsSteps.thereIsAtLeastOneCard();
 });
 
-test('Blueprint can be added via templates and removed in Jamf Pro', { tag: ['@stage'] }, async ({ page }) => {
-	const jproLoginSteps = new JProLoginSteps(page);
-	const blueprintsSteps = new BlueprintsSteps(page);
-	const blueprintTemplatePageSteps = new BlueprintTemplatePageSteps(page);
-	const blueprintDetailPageSteps = new BlueprintDetailPageSteps(page);
-	const navigationSteps = new NavigationSteps(page);
+forEachJamfProInstance(
+	'Blueprint can be added via templates and removed in Jamf Pro',
+	{ tag: ['@stage'] },
+	async ({ page, baseUrl }) => {
+		const jproLoginSteps = new JProLoginSteps(page);
+		const blueprintsSteps = new BlueprintsSteps(page);
+		const blueprintTemplatePageSteps = new BlueprintTemplatePageSteps(page);
+		const blueprintDetailPageSteps = new BlueprintDetailPageSteps(page);
+		const navigationSteps = new NavigationSteps(page);
 
-	await jproLoginSteps.loginToJamfProCached(baseUrl);
+		await jproLoginSteps.loginToJamfProCached(baseUrl);
 
-	await navigationSteps.adminOpensBlueprintsViaJamfProNavigation();
-	await blueprintsSteps.blueprintsPageIsOpen();
+		await navigationSteps.adminOpensBlueprintsViaJamfProNavigation();
+		await blueprintsSteps.blueprintsPageIsOpen();
 
-	await blueprintsSteps.adminsClicksOnQuickStart();
+		await blueprintsSteps.adminsClicksOnQuickStart();
 
-	await blueprintTemplatePageSteps.adminOpensTemplateWithName('Set passcode policies');
+		await blueprintTemplatePageSteps.adminOpensTemplateWithName('Set passcode policies');
 
-	await blueprintTemplatePageSteps.generalPageIsOpen();
-	await blueprintTemplatePageSteps.adminFillsNameOfBlueprint('Passcode_' + id);
+		await blueprintTemplatePageSteps.generalPageIsOpen();
+		await blueprintTemplatePageSteps.adminFillsNameOfBlueprint('Passcode_' + id);
 
-	await blueprintTemplatePageSteps.adminFillsDescriptionOfBlueprint('Some description');
-	await blueprintTemplatePageSteps.adminClicksNextButton();
+		await blueprintTemplatePageSteps.adminFillsDescriptionOfBlueprint('Some description');
+		await blueprintTemplatePageSteps.adminClicksNextButton();
 
-	await blueprintTemplatePageSteps.scopingPageIsOpen();
-	await blueprintTemplatePageSteps.adminSelectsFirstGroupInScope();
-	await blueprintTemplatePageSteps.adminClicksNextButton();
+		await blueprintTemplatePageSteps.scopingPageIsOpen();
+		await blueprintTemplatePageSteps.adminSelectsFirstGroupInScope();
+		await blueprintTemplatePageSteps.adminClicksNextButton();
 
-	await blueprintTemplatePageSteps.passcodePolicyPageIsOpen();
-	await blueprintTemplatePageSteps.adminSelectsPasswordToBeRequired();
-	await blueprintTemplatePageSteps.adminsSavesBlueprint();
+		await blueprintTemplatePageSteps.passcodePolicyPageIsOpen();
+		await blueprintTemplatePageSteps.adminSelectsPasswordToBeRequired();
+		await blueprintTemplatePageSteps.adminsSavesBlueprint();
 
-	await blueprintDetailPageSteps.blueprintWithNameIsOpened('Passcode_' + id);
+		await blueprintDetailPageSteps.blueprintWithNameIsOpened('Passcode_' + id);
 
-	await blueprintDetailPageSteps.adminWaitsForToastToDisappear('Blueprint created');
+		await blueprintDetailPageSteps.adminWaitsForToastToDisappear('Blueprint created');
 
-	await navigationSteps.adminGoesBackToBlueprintsListViaBreadCrumbsInJPro();
-	await blueprintsSteps.thereIsBlueprintWithName('Passcode_' + id);
-	await blueprintsSteps.adminOpensBlueprintWithName('Passcode_' + id);
+		await navigationSteps.adminGoesBackToBlueprintsListViaBreadCrumbsInJPro();
+		await blueprintsSteps.thereIsBlueprintWithName('Passcode_' + id);
+		await blueprintsSteps.adminOpensBlueprintWithName('Passcode_' + id);
 
-	await blueprintDetailPageSteps.adminDeletesBlueprint();
-	await blueprintsSteps.thereIsNoBlueprintWithName('Passcode_' + id);
-});
+		await blueprintDetailPageSteps.adminDeletesBlueprint();
+		await blueprintsSteps.thereIsNoBlueprintWithName('Passcode_' + id);
+	}
+);
 
-test(
+forEachJamfProInstance(
 	'Blueprint can be added via builder and removed in Jamf Pro',
 	{ tag: ['@stage'] },
-	async ({ page, browserName }) => {
+	async ({ page, browserName, baseUrl }) => {
 		test.fixme(browserName !== 'chromium', 'https://jamfpdd.atlassian.net/browse/JSC-62590');
 		const jproLoginSteps = new JProLoginSteps(page);
 		const blueprintsSteps = new BlueprintsSteps(page);
@@ -132,7 +135,7 @@ test(
 	}
 );
 
-test('Templates are properly loaded', { tag: ['@stage'] }, async ({ page }) => {
+forEachJamfProInstance('Templates are properly loaded', { tag: ['@stage'] }, async ({ page, baseUrl }) => {
 	const jproLoginSteps = new JProLoginSteps(page);
 	const blueprintsSteps = new BlueprintsSteps(page);
 	const navigationSteps = new NavigationSteps(page);
@@ -146,7 +149,7 @@ test('Templates are properly loaded', { tag: ['@stage'] }, async ({ page }) => {
 	await blueprintsSteps.verifyExpectedTemplates('Set passcode policies');
 });
 
-test('Searching in scope works', { tag: ['@stage'] }, async ({ page }) => {
+forEachJamfProInstance('Searching in scope works', { tag: ['@stage'] }, async ({ page, baseUrl }) => {
 	const jproLoginSteps = new JProLoginSteps(page);
 	const blueprintsSteps = new BlueprintsSteps(page);
 	const blueprintDetailPageSteps = new BlueprintDetailPageSteps(page);
