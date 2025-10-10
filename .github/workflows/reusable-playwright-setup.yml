@@ -159,7 +159,7 @@ jobs:
       skipped: ${{ steps.extract.outputs.SKIPPED }}
       durationMs: ${{ steps.extract.outputs.DURATION_MS }}
     steps:
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v5
         with:
           name: results.json
       - id: extract
