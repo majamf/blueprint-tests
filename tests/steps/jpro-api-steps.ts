@@ -1,19 +1,12 @@
-import * as process from 'node:process';
-import { assertEnvironmentVariable, Step } from '../utils/utils';
+import { type ApiCredentials, Step } from '../utils/utils';
 import JproClient from '../api/jpro-client';
 import { expect } from '@playwright/test';
 
 export default class JProApiSteps {
 	private readonly jproClient: JproClient;
 
-	constructor(private readonly baseUrl: string) {
-		assertEnvironmentVariable(process.env.JAMF_PRO_STAGE_API_USERNAME, 'JAMF_PRO_STAGE_API_USERNAME');
-		assertEnvironmentVariable(process.env.JAMF_PRO_STAGE_API_PASSWORD, 'JAMF_PRO_STAGE_API_PASSWORD');
-		this.jproClient = new JproClient(
-			baseUrl,
-			process.env.JAMF_PRO_STAGE_API_USERNAME,
-			process.env.JAMF_PRO_STAGE_API_PASSWORD
-		);
+	constructor(baseUrl: string, { username, password }: ApiCredentials) {
+		this.jproClient = new JproClient(baseUrl, username, password);
 	}
 
 	@Step('Get mobile device udid')

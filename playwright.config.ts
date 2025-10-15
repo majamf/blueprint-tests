@@ -1,6 +1,21 @@
-import { defineConfig, devices } from '@playwright/test';
+import {
+	defineConfig,
+	devices,
+	type PlaywrightTestArgs,
+	type PlaywrightTestOptions,
+	type PlaywrightWorkerArgs,
+	type PlaywrightWorkerOptions,
+	type Project,
+} from '@playwright/test';
 import 'dotenv/config';
 import type { ReportPortalConfig } from '@reportportal/agent-js-playwright/build/models';
+import { type TestOptions } from './tests/utils/utils';
+import {
+	type Environment,
+	environments,
+	type StandardEnvironment,
+	standardEnvironmentTypes,
+} from './tests/utils/environments';
 
 /**
  * See https://playwright.dev/docs/test-configuration.
@@ -15,6 +30,164 @@ const RPconfig: ReportPortalConfig = {
 	includeTestSteps: true,
 };
 
+function tagsToGrep(tags: string[][]): RegExp {
+	return new RegExp(
+		tags
+			.filter((group) => group.length !== 0)
+			.map((group) => `(?=.*(?:${group.join('|')}))`)
+			.join('')
+	);
+}
+
+function* generateProjects(): Generator<Project<PlaywrightTestOptions & TestOptions>, void, unknown> {
+	const browsers: {
+		name: string;
+		tags?: string[];
+		use: Partial<PlaywrightTestArgs & PlaywrightTestOptions> & Partial<PlaywrightWorkerArgs & PlaywrightWorkerOptions>;
+	}[] = [
+		{
+			name: 'Chrome',
+			tags: ['', '@all-browsers', '@chrome'],
+			use: {
+				...devices['Desktop Chrome'],
+				viewport: { width: 1400, height: 900 },
+			},
+		},
+		{
+			name: 'Firefox',
+			tags: ['@all-browsers', '@firefox'],
+			use: {
+				...devices['Desktop Firefox'],
+				viewport: { width: 1400, height: 900 },
+				launchOptions: {
+					firefoxUserPrefs: {
+						'network.http.fast-fallback-to-IPv4': false,
+					},
+				},
+			},
+		},
+		{
+			name: 'Safari',
+			tags: ['@all-browsers', '@safari'],
+			use: {
+				...devices['Desktop Safari'],
+				viewport: { width: 1400, height: 900 },
+			},
+		},
+	];
+
+	const populateCustomTemplates = !process.env.CI;
+	const customTemplates: {
+		name: string;
+		tags: string[];
+		environment?: Environment;
+	}[] = populateCustomTemplates
+		? [
+				{
+					name: 'Jamf School',
+					tags: ['@school'],
+					environment: environments.custom?.school,
+				},
+				{
+					name: 'Jamf Pro',
+					tags: ['@pro'],
+					environment: environments.custom?.pro,
+				},
+			]
+		: [];
+
+	for (const customTemplate of customTemplates) {
+		if (customTemplate.environment == null) {
+			continue;
+		}
+
+		for (const browser of browsers) {
+			yield {
+				name: `${customTemplate.name} - ${browser.name}`,
+				grep: tagsToGrep([customTemplate.tags]),
+				use: {
+					...browser.use,
+					baseURL: customTemplate.environment.url,
+					accountCredentials: customTemplate.environment.accountCredentials,
+					apiCredentials: customTemplate.environment.apiCredentials,
+				},
+			};
+		}
+	}
+
+	if (environments.sbox?.standalone != null) {
+		for (const browser of browsers) {
+			yield {
+				name: `SBOX - Standalone - ${browser.name}`,
+				grep: tagsToGrep([browser.tags ?? [], ['@sbox']]),
+				use: {
+					...browser.use,
+					baseURL: environments.sbox?.standalone?.url,
+				},
+			};
+		}
+	}
+
+	const standardEnvironmentTemplates: {
+		name: string;
+		tags: string[];
+		environmentSelector: (environments: StandardEnvironment) => Environment | undefined;
+	}[] = [
+		{
+			name: 'Jamf School',
+			tags: ['@school'],
+			environmentSelector: (environments) => environments.school,
+		},
+		{
+			name: 'Jamf Pro - Current',
+			tags: ['@pro'],
+			environmentSelector: (environments) => environments.pro?.current,
+		},
+		{
+			name: 'Jamf Pro - Async deployments',
+			tags: ['@pro'],
+			environmentSelector: (environments) => environments.pro?.asyncDeployment,
+		},
+		{
+			name: 'Jamf Pro - n-1',
+			tags: ['@pro-legacy'],
+			environmentSelector: (environments) => environments.pro?.n1,
+		},
+		{
+			name: 'Jamf Pro - n-2',
+			tags: ['@pro-legacy'],
+			environmentSelector: (environments) => environments.pro?.n2,
+		},
+	];
+
+	for (const standardEnvironmentType of standardEnvironmentTypes) {
+		const standardEnvironment = environments[standardEnvironmentType];
+		if (standardEnvironment == null) {
+			continue;
+		}
+
+		for (const template of standardEnvironmentTemplates) {
+			const environment = template.environmentSelector(standardEnvironment);
+			if (environment == null) {
+				continue;
+			}
+
+			for (const browser of browsers) {
+				yield {
+					name: `${standardEnvironmentType.toUpperCase()} - ${template.name} - ${browser.name}`,
+					grep: tagsToGrep([browser.tags ?? [], template.tags]),
+					use: {
+						...browser.use,
+						baseURL: environment.url,
+						accountCredentials: environment.accountCredentials,
+						apiCredentials: environment.apiCredentials,
+					},
+				};
+			}
+		}
+	}
+}
+
 export default defineConfig({
 	testDir: './tests',
 	/* Run tests in files in parallel */
@@ -28,57 +201,26 @@ export default defineConfig({
 	/* Reporter to use. See https://playwright.dev/docs/test-reporters */
 	reporter: [
 		['html', { open: 'never' }],
-		[process.env.CI ? 'dot' : 'list'],
 		...(process.env.CI
 			? ([
+					['dot'],
 					['@reportportal/agent-js-playwright', RPconfig],
 					['json', { outputFile: process.env.PLAYWRIGHT_JSON_OUTPUT_NAME ?? 'result/result.json' }],
 				] as const)
-			: []),
+			: [['list'] as const]),
 		...(process.env.GITHUB_ACTIONS ? ([['github']] as const) : []),
 	],
 	/* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
 	use: {
-		/* Base URL to use in actions like `await page.goto('/')`. */
-		// baseURL: 'http://127.0.0.1:3000',
-
 		/* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
 		trace: 'retain-on-failure',
 		screenshot: 'on',
 		video: 'on-first-retry',
-		actionTimeout: 10_000,
-		navigationTimeout: 15_000,
+		actionTimeout: 10 * 1000,
+		navigationTimeout: 15 * 1000,
 	},
 	/* Timeout for each test */
 	timeout: 2 * 60 * 1000,
 
-	/* Configure projects for major browsers */
-	projects: [
-		{
-			name: 'chromium',
-			use: {
-				...devices['Desktop Chrome'],
-				viewport: { width: 1400, height: 900 },
-			},
-		},
-		{
-			name: 'firefox',
-			use: {
-				...devices['Desktop Firefox'],
-				viewport: { width: 1400, height: 900 },
-				launchOptions: {
-					firefoxUserPrefs: {
-						'network.http.fast-fallback-to-IPv4': false,
-					},
-				},
-			},
-		},
-		{
-			name: 'webkit',
-			use: {
-				...devices['Desktop Safari'],
-				viewport: { width: 1400, height: 900 },
-			},
-		},
-	],
+	projects: [...generateProjects()],
 });

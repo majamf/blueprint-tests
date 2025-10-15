@@ -1,8 +1,7 @@
-import * as process from 'node:process';
 import { expect, type Locator, type Page } from '@playwright/test';
 import UtilsSteps from './utils-steps';
-import { assertEnvironmentVariable, Step } from '../utils/utils';
-import fs from 'fs/promises';
+import { type AccountCredentials, Step } from '../utils/utils';
+import fs from 'node:fs/promises';
 
 export default class JProLoginSteps {
 	private readonly utilsSteps: UtilsSteps;
@@ -12,10 +11,7 @@ export default class JProLoginSteps {
 	}
 
 	@Step('Login to Jamf Pro at "$0"')
-	public async loginToJamfPro(baseUrl: string) {
-		assertEnvironmentVariable(process.env.JAMF_ACCOUNT_STAGE_USER_MAIL, 'JAMF_ACCOUNT_STAGE_USER_MAIL');
-		assertEnvironmentVariable(process.env.JAMF_ACCOUNT_STAGE_USER_PASSWORD, 'JAMF_ACCOUNT_STAGE_USER_PASSWORD');
-
+	public async loginToJamfPro(baseUrl: string, { email, password }: AccountCredentials) {
 		const emailInput = this.page.getByLabel('Email');
 		const continueButton = this.page.getByRole('button', { name: 'Continue' });
 		const passwordInput = this.page.getByRole('textbox', { name: 'Password' });
@@ -30,12 +26,12 @@ export default class JProLoginSteps {
 		await this.page.goto(baseUrl);
 		await this.page.waitForLoadState('load');
 
-		await emailInput.fill(process.env.JAMF_ACCOUNT_STAGE_USER_MAIL);
+		await emailInput.fill(email);
 		await continueButton.click();
 
 		await this.page.waitForLoadState('load');
 
-		await passwordInput.fill(process.env.JAMF_ACCOUNT_STAGE_USER_PASSWORD);
+		await passwordInput.fill(password);
 		await loginButton.click();
 
 		await this.page.waitForLoadState('load');
@@ -66,10 +62,7 @@ export default class JProLoginSteps {
 	}
 
 	@Step('Login to Jamf Pro at "$0" with stored auth state')
-	public async loginToJamfProCached(baseUrl: string) {
-		assertEnvironmentVariable(process.env.JAMF_ACCOUNT_STAGE_USER_MAIL, 'JAMF_ACCOUNT_STAGE_USER_MAIL');
-		assertEnvironmentVariable(process.env.JAMF_ACCOUNT_STAGE_USER_PASSWORD, 'JAMF_ACCOUNT_STAGE_USER_PASSWORD');
-
+	public async loginToJamfProCached(baseUrl: string, accountCredentials: AccountCredentials) {
 		const continueToJProButton = this.page.getByRole('button', { name: 'Continue to Jamf Pro' });
 		const rejectAllCookiesButton = this.page.getByRole('button', { name: 'Reject All' });
 
@@ -97,7 +90,7 @@ export default class JProLoginSteps {
 		}
 
 		// If session restoration failed, perform a fresh login
-		await this.loginToJamfPro(baseUrl);
+		await this.loginToJamfPro(baseUrl, accountCredentials);
 
 		await this.page.context().storageState({ path: authFile });
 	}

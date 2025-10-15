@@ -1,12 +1,9 @@
-import { test } from '@playwright/test';
 import { v4 as uuidv4 } from 'uuid';
-
 import BlueprintsSteps from '../steps/blueprints-steps';
 import BlueprintDetailPageSteps from '../steps/blueprint-detail-page-steps';
 import NavigationSteps from '../steps/navigation-steps';
 import JProLoginSteps from '../steps/jpro-login-steps';
-
-const baseUrl = process.env.JAMF_PRO_BASE_URL || 'https://vhdpsvhf.pyro.jamf.build/';
+import { test } from '../utils/utils';
 
 let id = uuidv4();
 
@@ -20,15 +17,15 @@ test.beforeEach(async () => {
 
 test(
 	'Config profile component can be filtered by component name, key name and OS type',
-	{ tag: ['@stage'] },
-	async ({ page }) => {
+	{ tag: ['@all-browsers', '@stage', '@pro'] },
+	async ({ page, baseURL, accountCredentials }) => {
 		const jproLoginSteps = new JProLoginSteps(page);
 		const blueprintsSteps = new BlueprintsSteps(page);
 		const blueprintDetailPageSteps = new BlueprintDetailPageSteps(page);
 		const navigationSteps = new NavigationSteps(page);
 		const blueprintName = `Blueprint_with_CP_e2e_${id}`;
 
-		await jproLoginSteps.loginToJamfProCached(baseUrl);
+		await jproLoginSteps.loginToJamfProCached(baseURL!, accountCredentials!);
 		await navigationSteps.adminOpensBlueprintsViaJamfProNavigation();
 		await blueprintsSteps.blueprintsPageIsOpen();
 		await blueprintsSteps.adminOpensBlueprintBuilder();
@@ -62,40 +59,44 @@ test(
 	}
 );
 
-test('Config profile component can be updated', { tag: ['@stage'] }, async ({ page }) => {
-	const jproLoginSteps = new JProLoginSteps(page);
-	const blueprintsSteps = new BlueprintsSteps(page);
-	const blueprintDetailPageSteps = new BlueprintDetailPageSteps(page);
-	const navigationSteps = new NavigationSteps(page);
-	const blueprintName = `Blueprint_with_CP_e2e_${id}`;
+test(
+	'Config profile component can be updated',
+	{ tag: ['@all-browsers', '@stage', '@pro'] },
+	async ({ page, baseURL, accountCredentials }) => {
+		const jproLoginSteps = new JProLoginSteps(page);
+		const blueprintsSteps = new BlueprintsSteps(page);
+		const blueprintDetailPageSteps = new BlueprintDetailPageSteps(page);
+		const navigationSteps = new NavigationSteps(page);
+		const blueprintName = `Blueprint_with_CP_e2e_${id}`;
 
-	await jproLoginSteps.loginToJamfProCached(baseUrl);
-	await navigationSteps.adminOpensBlueprintsViaJamfProNavigation();
-	await blueprintsSteps.blueprintsPageIsOpen();
-	await blueprintsSteps.adminOpensBlueprintBuilder();
-	await navigationSteps.newBlueprintModalIsOpen();
-	await blueprintsSteps.adminFillsNameOfBlueprint(blueprintName);
-	await blueprintsSteps.adminFillsDescriptionOfBlueprint('e2e automated test');
-	await blueprintsSteps.adminClicksCreateBlueprintButton();
+		await jproLoginSteps.loginToJamfProCached(baseURL!, accountCredentials!);
+		await navigationSteps.adminOpensBlueprintsViaJamfProNavigation();
+		await blueprintsSteps.blueprintsPageIsOpen();
+		await blueprintsSteps.adminOpensBlueprintBuilder();
+		await navigationSteps.newBlueprintModalIsOpen();
+		await blueprintsSteps.adminFillsNameOfBlueprint(blueprintName);
+		await blueprintsSteps.adminFillsDescriptionOfBlueprint('e2e automated test');
+		await blueprintsSteps.adminClicksCreateBlueprintButton();
 
-	await blueprintDetailPageSteps.adminOpensAddModalOfComponent('Lock Screen Message');
-	await blueprintDetailPageSteps.configProfileComponentAddModalIsOpened('Lock Screen Message');
-	await blueprintDetailPageSteps.adminClicksOnGivenCheckbox('AssetTagInformation');
-	await blueprintDetailPageSteps.adminFillsKeyInputFieldWithText('AssetTagInformation', 'firstInputTest');
-	await blueprintDetailPageSteps.adminAddsConfigurationOfComponent();
-	await blueprintDetailPageSteps.adminOpensConfigurationOfComponent('Lock Screen Message');
-	await blueprintDetailPageSteps.configProfileComponentDrawerIsOpened('Lock Screen Message');
-	await blueprintDetailPageSteps.selectedCheckboxIsChecked('AssetTagInformation');
-	await blueprintDetailPageSteps.adminClicksOnGivenCheckbox('IfLostReturnToMessage');
-	await blueprintDetailPageSteps.adminFillsKeyInputFieldWithText('IfLostReturnToMessage', 'secondInputTest');
-	await blueprintDetailPageSteps.adminSavesConfigurationOfComponent();
+		await blueprintDetailPageSteps.adminOpensAddModalOfComponent('Lock Screen Message');
+		await blueprintDetailPageSteps.configProfileComponentAddModalIsOpened('Lock Screen Message');
+		await blueprintDetailPageSteps.adminClicksOnGivenCheckbox('AssetTagInformation');
+		await blueprintDetailPageSteps.adminFillsKeyInputFieldWithText('AssetTagInformation', 'firstInputTest');
+		await blueprintDetailPageSteps.adminAddsConfigurationOfComponent();
+		await blueprintDetailPageSteps.adminOpensConfigurationOfComponent('Lock Screen Message');
+		await blueprintDetailPageSteps.configProfileComponentDrawerIsOpened('Lock Screen Message');
+		await blueprintDetailPageSteps.selectedCheckboxIsChecked('AssetTagInformation');
+		await blueprintDetailPageSteps.adminClicksOnGivenCheckbox('IfLostReturnToMessage');
+		await blueprintDetailPageSteps.adminFillsKeyInputFieldWithText('IfLostReturnToMessage', 'secondInputTest');
+		await blueprintDetailPageSteps.adminSavesConfigurationOfComponent();
 
-	await blueprintDetailPageSteps.adminOpensConfigurationOfComponent('Lock Screen Message');
-	await blueprintDetailPageSteps.configProfileComponentDrawerIsOpened('Lock Screen Message');
-	await blueprintDetailPageSteps.selectedCheckboxIsChecked('AssetTagInformation');
-	await blueprintDetailPageSteps.selectedCheckboxIsChecked('IfLostReturnToMessage');
-	await blueprintDetailPageSteps.adminsClicksOnDiscardChangesButton();
+		await blueprintDetailPageSteps.adminOpensConfigurationOfComponent('Lock Screen Message');
+		await blueprintDetailPageSteps.configProfileComponentDrawerIsOpened('Lock Screen Message');
+		await blueprintDetailPageSteps.selectedCheckboxIsChecked('AssetTagInformation');
+		await blueprintDetailPageSteps.selectedCheckboxIsChecked('IfLostReturnToMessage');
+		await blueprintDetailPageSteps.adminsClicksOnDiscardChangesButton();
 
-	await blueprintDetailPageSteps.adminDeletesBlueprint();
-	await blueprintsSteps.thereIsNoBlueprintWithName(blueprintName);
-});
+		await blueprintDetailPageSteps.adminDeletesBlueprint();
+		await blueprintsSteps.thereIsNoBlueprintWithName(blueprintName);
+	}
+);

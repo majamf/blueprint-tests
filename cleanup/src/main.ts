@@ -1,5 +1,6 @@
 import 'jsr:@std/dotenv/load';
-import { jamfProInstances } from '../../tests/utils/jamfProInstances.ts';
+import { type Environment, environments } from '../../tests/utils/environments.ts';
+
 type TenantResponse = {
 	tenantId: string;
 };
@@ -17,15 +18,13 @@ type TokenResponse = {
 	access_token: string;
 };
 
-const JPRO_USERNAME = Deno.env.get('JAMF_PRO_STAGE_API_USERNAME');
-const JPRO_PASSWORD = Deno.env.get('JAMF_PRO_STAGE_API_PASSWORD');
 // it is not possible to retrieve tenantId from Jamf School API
 // tenantID related to instance: https://oceanplaywrightstage.dev.jamfnimbus.cloud
 const JSCHOOL_TENANTID = 'e4f64d69-fca7-4e72-ac8d-80a0c0c3d832';
-const TYK_URL = 'https://tyk-gateway.stage.apigw.jamfnebula.com';
+
+const TYK_URL = 'https://us.int.stage.apigw.jamfnebula.com';
 const TYK_CLIENT_ID = Deno.env.get('API_GATEWAY_STAGE_CLIENT_ID');
 const TYK_CLIENT_SECRET = Deno.env.get('API_GATEWAY_STAGE_CLIENT_SECRET');
-const BLUEPRINT_URL = 'https://us.int.stage.apigw.jamfnebula.com';
 
 class APIClient {
 	private async handleRequest<T>(request: Promise<Response>, errorContext: string): Promise<T> {
@@ -50,11 +49,11 @@ class APIClient {
 		return data as T;
 	}
 
-	async getJProAuthToken(jamfProUrl: string): Promise<string> {
+	async getJProAuthToken({ url, apiCredentials: { username, password } }: Environment): Promise<string> {
 		console.log('Attempting to authenticate with Jamf Pro...');
-		const authUrl = `${jamfProUrl}/api/v1/auth/token`;
+		const authUrl = `${url}/api/v1/auth/token`;
 
-		const authString = `${JPRO_USERNAME}:${JPRO_PASSWORD}`;
+		const authString = `${username}:${password}`;
 		const encodedAuth = btoa(authString);
 
 		console.log('Using API URL:', authUrl);
@@ -102,9 +101,9 @@ class APIClient {
 		return response.access_token;
 	}
 
-	async getJProTenantId(jamfProUrl: string, token: string): Promise<string> {
+	async getJProTenantId({ url }: Environment, token: string): Promise<string> {
 		const response = await this.handleRequest<TenantResponse>(
-			fetch(`${jamfProUrl}/api/v1/csa/tenant-id`, {
+			fetch(`${url}/api/v1/csa/tenant-id`, {
 				headers: {
 					Accept: 'application/json',
 					Authorization: `Bearer ${token}`,
@@ -122,7 +121,7 @@ class APIClient {
 
 	async getBlueprints(token: string): Promise<Blueprint[]> {
 		const response = await this.handleRequest<BlueprintsResponse>(
-			fetch(`${BLUEPRINT_URL}/blueprints/management/v1/blueprints?page=0&page-size=10000`, {
+			fetch(`${TYK_URL}/blueprints/management/v1/blueprints?page=0&page-size=10000`, {
 				headers: {
 					Accept: 'application/json',
 					Authorization: `Bearer ${token}`,
@@ -137,7 +136,7 @@ class APIClient {
 	async deleteBlueprint(token: string, blueprintId: string): Promise<void> {
 		console.log(`Attempting to delete blueprint: ${blueprintId}`);
 		await this.handleRequest(
-			fetch(`${BLUEPRINT_URL}/blueprints/management/v1/blueprints/${blueprintId}`, {
+			fetch(`${TYK_URL}/blueprints/management/v1/blueprints/${blueprintId}`, {
 				method: 'DELETE',
 				headers: {
 					Accept: 'application/json',
@@ -157,11 +156,17 @@ class BlueprintManager {
 		this.api = api;
 	}
 
-	static getOldBlueprints(blueprints: Blueprint[], daysOld: number): string[] {
+	private static getOldBlueprints(blueprints: Blueprint[], daysOld: number): string[] {
 		const filterDate = new Date();
 		filterDate.setDate(filterDate.getDate() - daysOld);
 
 		return blueprints.filter((blueprint) => new Date(blueprint.updated) < filterDate).map((blueprint) => blueprint.id);
+	}
+
+	private static getJamfProEnvironments() {
+		return Object.entries(environments.stage.pro)
+			.map(([key, value]) => [key, value] as const)
+			.filter(([, env]) => !!env?.url);
 	}
 
 	private async cleanupOldBlueprints(tykToken: string, daysOld: number): Promise<void> {
@@ -198,10 +203,10 @@ class BlueprintManager {
 
 	async cleanupOldBlueprintsInJamfPro(daysOld = 7): Promise<void> {
 		console.log('Starting Jamf Pro blueprint cleanup...');
-		for (const [key, baseUrl] of Object.entries(jamfProInstances)) {
-			console.log(`Processing Jamf Pro instance: ${key} (${baseUrl})`);
-			const jproToken = await this.api.getJProAuthToken(baseUrl);
-			const tenantId = await this.api.getJProTenantId(baseUrl, jproToken);
+		for (const [key, env] of BlueprintManager.getJamfProEnvironments()) {
+			console.log(`Processing Jamf Pro instance: ${key} (${env.url})`);
+			const jproToken = await this.api.getJProAuthToken(env);
+			const tenantId = await this.api.getJProTenantId(env, jproToken);
 			const tykToken = await this.api.getTykAuthToken(tenantId);
 
 			await this.cleanupOldBlueprints(tykToken, daysOld);
