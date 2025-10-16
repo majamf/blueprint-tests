@@ -76,8 +76,8 @@ function makeStandaloneEnvironment(envPrefix: string): StandaloneEnvironment | u
 	}
 
 	return {
-		url
-	}
+		url,
+	};
 }
 
 const proPrefix = 'JAMF_PRO';

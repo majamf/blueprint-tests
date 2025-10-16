@@ -19,7 +19,7 @@ test.beforeEach(async () => {
 
 test(
 	'Deploy blueprint containing config profile component to mimic device in Jamf Pro',
-	{ tag: ['@stage', '@pro', '@mimic'] },
+	{ tag: ['@chrome', '@stage', '@pro', '@mimic'] },
 	async ({ page, baseURL, accountCredentials, apiCredentials }) => {
 		const jproLoginSteps = new JProLoginSteps(page);
 		const blueprintsSteps = new BlueprintsSteps(page);

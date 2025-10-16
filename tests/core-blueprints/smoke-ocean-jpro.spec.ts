@@ -18,7 +18,7 @@ test.beforeEach(async () => {
 
 test(
 	'Blueprints list is loaded in Jamf Pro',
-	{ tag: ['@all-browsers', '@dev', '@stage', '@prod', '@pro', '@pro-legacy'] },
+	{ tag: ['@all-browsers', '@dev', '@stage', '@prod', '@pro'] },
 	async ({ page, baseURL, accountCredentials }) => {
 		const jproLoginSteps = new JProLoginSteps(page);
 		const blueprintsSteps = new BlueprintsSteps(page);
@@ -81,7 +81,7 @@ test(
 
 test(
 	'Blueprint can be added via builder and removed in Jamf Pro',
-	{ tag: ['@dev', '@stage', '@pro'] },
+	{ tag: ['@chrome', '@dev', '@stage', '@pro'] },
 	async ({ page, baseURL, accountCredentials }) => {
 		const jproLoginSteps = new JProLoginSteps(page);
 		const blueprintsSteps = new BlueprintsSteps(page);

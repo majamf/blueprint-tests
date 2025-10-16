@@ -81,7 +81,7 @@ test(
 
 test(
 	'Blueprint can be added via builder and removed in Jamf School',
-	{ tag: ['@stage', '@school'] },
+	{ tag: ['@chrome', '@stage', '@school'] },
 	async ({ page, baseURL, accountCredentials }) => {
 		const jSchoolLoginSteps = new JSchoolLoginSteps(page);
 		const blueprintsSteps = new BlueprintsSteps(page);

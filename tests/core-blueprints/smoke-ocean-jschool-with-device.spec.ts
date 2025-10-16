@@ -20,7 +20,7 @@ test.beforeEach(async () => {
 
 test(
 	'Deploy blueprint to mimic device in Jamf School',
-	{ tag: ['@stage', '@school', '@mimic'] },
+	{ tag: ['@chrome', '@stage', '@school', '@mimic'] },
 	async ({ page, baseURL, accountCredentials, apiCredentials }) => {
 		const jSchoolLoginSteps = new JSchoolLoginSteps(page);
 		const blueprintsSteps = new BlueprintsSteps(page);
