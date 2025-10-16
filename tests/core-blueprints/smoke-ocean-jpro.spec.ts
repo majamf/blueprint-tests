@@ -18,7 +18,7 @@ test.beforeEach(async () => {
 
 test(
 	'Blueprints list is loaded in Jamf Pro',
-	{ tag: ['@all-browsers', '@dev', '@stage', '@pro', '@pro-legacy'] },
+	{ tag: ['@all-browsers', '@dev', '@stage', '@prod', '@pro', '@pro-legacy'] },
 	async ({ page, baseURL, accountCredentials }) => {
 		const jproLoginSteps = new JProLoginSteps(page);
 		const blueprintsSteps = new BlueprintsSteps(page);

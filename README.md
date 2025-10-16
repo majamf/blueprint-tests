@@ -1,22 +1,27 @@
-# blueprint-tests
+# Blueprint Tests
 
 Repository for E2E test of blueprint features
 
-### Env variables
+### Environment variables
 
-#### Envs in code
-
-Env files are stored in the root folder \*eg: `.env.example.stage` files.
-To start using the envs variable you need to copy and rename the example file to `.env`.
+To start using the environment variables you need to copy and rename the example file to `.env`.
 `.env` file is ignored by git, so you can do whatever changes you'd like.
 
 ```sh
 # copy and rename example .env to .env
-cp .env.example.stage .env;
+cp .env.example .env
 ```
 
-`JAMF_ACCOUNT_STAGE_USER_NAME` - you can use your own SSO credentials or use **Ocean Stage Account** from 1Password
+| Variable                                                      | Description                         | 
+|---------------------------------------------------------------|-------------------------------------|
+| `STANDALONE_SBOX_BASE_URL`                                    | Standalone environment base URL     |
+| `{JAMF_PRO\|JAMF_SCHOOL}_{DEV\|STAGE\|PROD}_BASE_URL`         | Jamf Pro / Jamf School base URL     |
+| `{JAMF_PRO\|JAMF_SCHOOL}_{DEV\|STAGE\|PROD}_API_USERNAME`     | Jamf Pro / Jamf School API username |
+| `{JAMF_PRO\|JAMF_SCHOOL}_{DEV\|STAGE\|PROD}_API_PASSWORD`     | Jamf Pro / Jamf School API password |
+| `{JAMF_PRO\|JAMF_SCHOOL}_{DEV\|STAGE\|PROD}_ACCOUNT_EMAIL`    | Jamf Account email                  |
+| `{JAMF_PRO\|JAMF_SCHOOL}_{DEV\|STAGE\|PROD}_ACCOUNT_PASSWORD` | Jamf Account password               |
+| `RP_URL`                                                      | Report Portal URL                   |
+| `RP_PROJECT`                                                  | Report Portal project name          |
+| `RP_API_KEY`                                                  | Report Portal API key               |
 
-`JAMF_PRO_STAGE_API_USERNAME` - use **Jamf Pro Stage API** from 1Password
-
-`JAMF_SCHOOL_STAGE_API_USERNAME` - use **Jamf School Stage API** from 1Password
+For Stage environments you can use credentials from 1Password (**Ocean Stage Account**, **Jamf Pro Stage API**, **Jamf School Stage API**).

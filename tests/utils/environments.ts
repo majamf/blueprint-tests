@@ -26,10 +26,12 @@ export type CustomEnvironment = {
 	school?: Environment;
 };
 
+export type StandaloneEnvironment = {
+	url: string;
+};
+
 export type SboxEnvironment = {
-	standalone?: {
-		url: string;
-	};
+	standalone?: StandaloneEnvironment;
 };
 
 export type Environments = {
@@ -76,15 +78,24 @@ function makeEnvironment(envPrefix: string, defaults?: DeepPartial<Environment>)
 	};
 }
 
+function makeStandalone(envPrefix: string): StandaloneEnvironment | undefined {
+	const url = process.env[`${envPrefix}_BASE_URL`];
+	if (url == null) {
+		return undefined;
+	}
+
+	return {
+		url
+	}
+}
+
 export const environments: Environments = {
 	custom: {
 		school: makeEnvironment('JAMF_SCHOOL_CUSTOM'),
 		pro: makeEnvironment('JAMF_PRO_CUSTOM'),
 	},
 	sbox: {
-		standalone: {
-			url: getEnvVariable('SBOX_BASE_URL', 'https://blueprints.sbox-mfe.jamf.io'),
-		},
+		standalone: makeStandalone('STANDALONE_SBOX'),
 	},
 	dev: {
 		school: makeEnvironment('JAMF_SCHOOL_DEV'),
@@ -96,32 +107,10 @@ export const environments: Environments = {
 		},
 	},
 	stage: {
-		school: makeEnvironment('JAMF_SCHOOL_STAGE', {
-			url: 'https://oceanplaywrightstage.dev.jamfnimbus.cloud/',
-			accountCredentials: {
-				email: process.env.JAMF_ACCOUNT_STAGE_USER_MAIL,
-				password: process.env.JAMF_ACCOUNT_STAGE_USER_PASSWORD,
-			},
-		}),
+		school: makeEnvironment('JAMF_SCHOOL_STAGE'),
 		pro: {
-			current: makeEnvironment('JAMF_PRO_STAGE', {
-				url: 'https://vhdpsvhf.pyro.jamf.build/',
-				accountCredentials: {
-					email: process.env.JAMF_ACCOUNT_STAGE_USER_MAIL,
-					password: process.env.JAMF_ACCOUNT_STAGE_USER_PASSWORD,
-				},
-			}),
-			asyncDeployment: makeEnvironment('JAMF_PRO_ASYNC_DEPLOYMENT_STAGE', {
-				url: 'https://chgkmtjr.pyro.jamf.build/',
-				apiCredentials: {
-					username: process.env.JAMF_PRO_STAGE_API_USERNAME,
-					password: process.env.JAMF_PRO_STAGE_API_PASSWORD,
-				},
-				accountCredentials: {
-					email: process.env.JAMF_ACCOUNT_STAGE_USER_MAIL,
-					password: process.env.JAMF_ACCOUNT_STAGE_USER_PASSWORD,
-				},
-			}),
+			current: makeEnvironment('JAMF_PRO_STAGE'),
+			asyncDeployment: makeEnvironment('JAMF_PRO_ASYNC_DEPLOYMENT_STAGE'),
 			n1: makeEnvironment('JAMF_PRO_N1_STAGE'),
 			n2: makeEnvironment('JAMF_PRO_N2_STAGE'),
 		},

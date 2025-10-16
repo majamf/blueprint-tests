@@ -175,7 +175,7 @@ function* generateProjects(): Generator<Project<PlaywrightTestOptions & TestOpti
 			for (const browser of browsers) {
 				yield {
 					name: `${standardEnvironmentType.toUpperCase()} - ${template.name} - ${browser.name}`,
-					grep: tagsToGrep([browser.tags ?? [], template.tags]),
+					grep: tagsToGrep([browser.tags ?? [], template.tags, ['@all-environments', `@${standardEnvironmentType}`]]),
 					use: {
 						...browser.use,
 						baseURL: environment.url,
