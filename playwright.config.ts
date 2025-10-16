@@ -103,7 +103,7 @@ function* generateProjects(): Generator<Project<PlaywrightTestOptions & TestOpti
 
 		for (const browser of browsers) {
 			yield {
-				name: `${customTemplate.name} - ${browser.name}`,
+				name: `CUSTOM - ${customTemplate.name} - ${browser.name}`,
 				grep: tagsToGrep([customTemplate.tags]),
 				use: {
 					...browser.use,
@@ -139,9 +139,9 @@ function* generateProjects(): Generator<Project<PlaywrightTestOptions & TestOpti
 			environmentSelector: (environments) => environments.school,
 		},
 		{
-			name: 'Jamf Pro - Current',
+			name: 'Jamf Pro - Latest Develop',
 			tags: ['@pro'],
-			environmentSelector: (environments) => environments.pro?.current,
+			environmentSelector: (environments) => environments.pro?.develop,
 		},
 		{
 			name: 'Jamf Pro - Async deployments',
@@ -149,14 +149,24 @@ function* generateProjects(): Generator<Project<PlaywrightTestOptions & TestOpti
 			environmentSelector: (environments) => environments.pro?.asyncDeployment,
 		},
 		{
-			name: 'Jamf Pro - n-1',
+			name: 'Jamf Pro - Latest RC',
 			tags: ['@pro-legacy'],
-			environmentSelector: (environments) => environments.pro?.n1,
+			environmentSelector: (environments) => environments.pro?.rc,
 		},
 		{
-			name: 'Jamf Pro - n-2',
+			name: 'Jamf Pro - Latest GA',
 			tags: ['@pro-legacy'],
-			environmentSelector: (environments) => environments.pro?.n2,
+			environmentSelector: (environments) => environments.pro?.ga,
+		},
+		{
+			name: 'Jamf Pro - GA-1',
+			tags: ['@pro-legacy'],
+			environmentSelector: (environments) => environments.pro?.['ga-1'],
+		},
+		{
+			name: 'Jamf Pro - GA-2',
+			tags: ['@pro-legacy'],
+			environmentSelector: (environments) => environments.pro?.['ga-2'],
 		},
 	];
 

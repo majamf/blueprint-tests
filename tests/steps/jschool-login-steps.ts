@@ -46,7 +46,7 @@ export default class JSchoolLoginSteps {
 		await passwordInput.fill(password);
 		await loginButton.click();
 
-		await this.page.waitForURL(baseUrl + '**');
+		await this.page.waitForURL(baseUrl + '/**');
 
 		if (this.page.url().startsWith(baseUrl + 'agreement')) {
 			await this.page.getByRole('link', { name: 'Continue' }).click();

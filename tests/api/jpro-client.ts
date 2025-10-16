@@ -54,7 +54,7 @@ export default class JproClient {
 	}
 
 	public async getMobileDevicesDetails(section: Section = 'GENERAL'): Promise<ListResponse<MobileDeviceDetails>> {
-		const apiUrl = encodeURI(`${this.baseUrl}api/v2/mobile-devices/detail?section=${section}`);
+		const apiUrl = encodeURI(`${this.baseUrl}/api/v2/mobile-devices/detail?section=${section}`);
 		return await this.fetchData(apiUrl);
 	}
 }
