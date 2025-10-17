@@ -87,7 +87,7 @@ function makeProEnvironments(standardEnv: StandardEnvironmentType): ProEnvironme
 	const suffix = standardEnv.toUpperCase();
 
 	return {
-		develop: makeEnvironment(`${proPrefix}_${suffix}`),
+		develop: makeEnvironment(`${proPrefix}_DEVELOP_${suffix}`),
 		rc: makeEnvironment(`${proPrefix}_RC_${suffix}`),
 		ga: makeEnvironment(`${proPrefix}_GA_${suffix}`),
 		'ga-1': makeEnvironment(`${proPrefix}_GA_1_${suffix}`),
