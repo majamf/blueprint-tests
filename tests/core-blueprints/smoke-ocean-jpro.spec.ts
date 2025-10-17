@@ -18,7 +18,7 @@ test.beforeEach(async () => {
 
 test(
 	'Blueprints list is loaded in Jamf Pro',
-	{ tag: ['@all-browsers', '@dev', '@stage', '@prod', '@pro'] },
+	{ tag: ['@all-browsers', '@dev', '@stage', '@pro'] },
 	async ({ page, baseURL, accountCredentials }) => {
 		const jproLoginSteps = new JProLoginSteps(page);
 		const blueprintsSteps = new BlueprintsSteps(page);
@@ -82,10 +82,11 @@ test(
 test(
 	'Blueprint can be added via builder and removed in Jamf Pro',
 	{
-		tag: ['@chrome', '@dev', '@stage', '@pro'],
-		annotation: { type: 'issue', description: 'https://jamfpdd.atlassian.net/browse/JSC-62590' },
+		tag: ['@chrome', '@dev', '@stage', '@pro', '@pro-legacy'],
 	},
-	async ({ page, baseURL, accountCredentials }) => {
+	async ({ page, browserName, baseURL, accountCredentials }) => {
+		test.fixme(browserName === 'webkit' || browserName === 'firefox', 'https://jamfpdd.atlassian.net/browse/JSC-62590');
+
 		const jproLoginSteps = new JProLoginSteps(page);
 		const blueprintsSteps = new BlueprintsSteps(page);
 		const blueprintDetailPageSteps = new BlueprintDetailPageSteps(page);
@@ -160,7 +161,7 @@ test(
 
 test(
 	'Searching in scope works',
-	{ tag: ['@all-browsers', '@dev', '@stage', '@pro'] },
+	{ tag: ['@all-browsers', '@dev', '@stage', '@pro', '@pro-legacy'] },
 	async ({ page, baseURL, accountCredentials }) => {
 		const jproLoginSteps = new JProLoginSteps(page);
 		const blueprintsSteps = new BlueprintsSteps(page);

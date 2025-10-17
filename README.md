@@ -12,7 +12,7 @@ cp .env.example .env
 ```
 
 | Variable                                                                                       | Description                     |
-|------------------------------------------------------------------------------------------------|---------------------------------|
+| ---------------------------------------------------------------------------------------------- | ------------------------------- |
 | `STANDALONE_SBOX_BASE_URL`                                                                     | Standalone environment base URL |
 | `JAMF_SCHOOL_{DEV\|STAGE\|PROD}_BASE_URL`                                                      | Jamf School base URL            |
 | `JAMF_SCHOOL_{DEV\|STAGE\|PROD}_API_USERNAME`                                                  | Jamf School API username        |

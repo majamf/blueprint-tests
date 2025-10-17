@@ -83,9 +83,10 @@ test(
 	'Blueprint can be added via builder and removed in Jamf School',
 	{
 		tag: ['@chrome', '@stage', '@school'],
-		annotation: { type: 'issue', description: 'https://jamfpdd.atlassian.net/browse/JSC-62590' },
 	},
-	async ({ page, baseURL, accountCredentials }) => {
+	async ({ page, browserName, baseURL, accountCredentials }) => {
+		test.fixme(browserName === 'webkit' || browserName === 'firefox', 'https://jamfpdd.atlassian.net/browse/JSC-62590');
+
 		const jSchoolLoginSteps = new JSchoolLoginSteps(page);
 		const blueprintsSteps = new BlueprintsSteps(page);
 		const blueprintDetailPageSteps = new BlueprintDetailPageSteps(page);
