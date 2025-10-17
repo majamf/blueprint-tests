@@ -20,7 +20,13 @@ test.beforeEach(async () => {
 
 test(
 	'Deploy blueprint to mimic device in Jamf Pro',
-	{ tag: ['@chrome', '@dev', '@stage', '@pro', '@pro-legacy', '@mimic'] },
+	{
+		tag: ['@chrome', '@dev', '@stage', '@pro', '@pro-legacy', '@mimic'],
+		annotation: {
+			type: 'note',
+			description: 'Not executed in all browsers due to nature of the test and high flakiness caused by mimic',
+		},
+	},
 	async ({ page, baseURL, accountCredentials, apiCredentials }) => {
 		const jproLoginSteps = new JProLoginSteps(page);
 		const blueprintsSteps = new BlueprintsSteps(page);

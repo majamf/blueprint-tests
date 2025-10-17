@@ -124,43 +124,49 @@ test('Configuration of component can be updated', { tag: ['@all-browsers', '@sbo
 	await blueprintDetailPageSteps.adminDeletesBlueprint();
 });
 
-test('Components of blueprint can be updated', { tag: ['@chrome', '@sbox'] }, async ({ page, baseURL }) => {
-	const sboxSteps = new SboxSetupSteps(page);
-	const blueprintSteps = new BlueprintsSteps(page);
-	const blueprintDetailPageSteps = new BlueprintDetailPageSteps(page);
-	const navigationSteps = new NavigationSteps(page);
-	await sboxSteps.sboxIsSetUp(baseURL!, clusterUrl);
+test(
+	'Components of blueprint can be updated',
+	{ tag: ['@all-browsers', '@sbox'] },
+	async ({ page, browserName, baseURL }) => {
+		test.fixme(browserName === 'webkit', 'To unblock releases for now');
 
-	await blueprintSteps.adminOpensBlueprintBuilder();
+		const sboxSteps = new SboxSetupSteps(page);
+		const blueprintSteps = new BlueprintsSteps(page);
+		const blueprintDetailPageSteps = new BlueprintDetailPageSteps(page);
+		const navigationSteps = new NavigationSteps(page);
+		await sboxSteps.sboxIsSetUp(baseURL!, clusterUrl);
 
-	await navigationSteps.newBlueprintModalIsOpen();
-	await blueprintSteps.adminFillsNameOfBlueprint('Disk_' + id);
-	await blueprintSteps.adminFillsDescriptionOfBlueprint('Some description');
-	await blueprintSteps.adminClicksCreateBlueprintButton();
+		await blueprintSteps.adminOpensBlueprintBuilder();
 
-	await blueprintDetailPageSteps.adminSearchesForComponent('Disk management');
-	await blueprintDetailPageSteps.onlyOneBlueprintComponentIsDisplayedWithTitle('Disk Management Policy');
+		await navigationSteps.newBlueprintModalIsOpen();
+		await blueprintSteps.adminFillsNameOfBlueprint('Disk_' + id);
+		await blueprintSteps.adminFillsDescriptionOfBlueprint('Some description');
+		await blueprintSteps.adminClicksCreateBlueprintButton();
 
-	await blueprintDetailPageSteps.adminOpensAddModalOfComponent('Disk management');
-	await blueprintDetailPageSteps.diskManagementDrawerIsOpened();
+		await blueprintDetailPageSteps.adminSearchesForComponent('Disk management');
+		await blueprintDetailPageSteps.onlyOneBlueprintComponentIsDisplayedWithTitle('Disk Management Policy');
 
-	await blueprintDetailPageSteps.adminAddsConfigurationOfComponent();
+		await blueprintDetailPageSteps.adminOpensAddModalOfComponent('Disk management');
+		await blueprintDetailPageSteps.diskManagementDrawerIsOpened();
 
-	await navigationSteps.adminsOpensBlueprintsRoute();
-	await blueprintSteps.adminOpensBlueprintWithName('Disk_' + id);
+		await blueprintDetailPageSteps.adminAddsConfigurationOfComponent();
 
-	await blueprintDetailPageSteps.adminSearchesForComponent('Passcode Policy');
-	await blueprintDetailPageSteps.onlyOneBlueprintComponentIsDisplayedWithTitle('Passcode Policy');
+		await navigationSteps.adminsOpensBlueprintsRoute();
+		await blueprintSteps.adminOpensBlueprintWithName('Disk_' + id);
 
-	await blueprintDetailPageSteps.adminOpensAddModalOfComponent('Passcode Policy');
+		await blueprintDetailPageSteps.adminSearchesForComponent('Passcode Policy');
+		await blueprintDetailPageSteps.onlyOneBlueprintComponentIsDisplayedWithTitle('Passcode Policy');
 
-	await blueprintDetailPageSteps.passcodeAddModalIsOpened();
-	await blueprintDetailPageSteps.adminAddsConfigurationOfComponent();
+		await blueprintDetailPageSteps.adminOpensAddModalOfComponent('Passcode Policy');
 
-	await blueprintDetailPageSteps.adminDeletesComponent('Disk management');
+		await blueprintDetailPageSteps.passcodeAddModalIsOpened();
+		await blueprintDetailPageSteps.adminAddsConfigurationOfComponent();
 
-	await blueprintDetailPageSteps.adminDeletesBlueprint();
-});
+		await blueprintDetailPageSteps.adminDeletesComponent('Disk management');
+
+		await blueprintDetailPageSteps.adminDeletesBlueprint();
+	}
+);
 
 test('Blueprint templates can be filtered', { tag: ['@all-browsers', '@sbox'] }, async ({ page, baseURL }) => {
 	const sboxSteps = new SboxSetupSteps(page);

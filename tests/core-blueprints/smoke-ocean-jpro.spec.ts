@@ -81,7 +81,10 @@ test(
 
 test(
 	'Blueprint can be added via builder and removed in Jamf Pro',
-	{ tag: ['@chrome', '@dev', '@stage', '@pro'] },
+	{
+		tag: ['@chrome', '@dev', '@stage', '@pro'],
+		annotation: { type: 'issue', description: 'https://jamfpdd.atlassian.net/browse/JSC-62590' },
+	},
 	async ({ page, baseURL, accountCredentials }) => {
 		const jproLoginSteps = new JProLoginSteps(page);
 		const blueprintsSteps = new BlueprintsSteps(page);
