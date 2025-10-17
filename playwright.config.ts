@@ -47,7 +47,7 @@ function* generateProjects(): Generator<Project<PlaywrightTestOptions & TestOpti
 	}[] = [
 		{
 			name: 'Chrome',
-			tags: ['', '@all-browsers', '@chrome'],
+			tags: ['@all-browsers', '@chrome'],
 			use: {
 				...devices['Desktop Chrome'],
 				viewport: { width: 1400, height: 900 },

@@ -2,7 +2,29 @@
 
 Repository for E2E test of blueprint features
 
-### Environment variables
+## Test tagging
+
+You can tag tests with various tags to run specific tests. The tags are:
+
+| Tag             | Description                                                 |
+| --------------- | ----------------------------------------------------------- |
+| `@stanalone`    | Run against stanadalone Blueprints mFE                      |
+| `@school`       | Run against Jamf School                                     |
+| `@pro`          | Run against Jamf Pro - latest develop                       |
+| `@pro-legacy`   | Run against older versions of Jamf Pro (RC, GA, GA-1, GA-2) |
+| `@sbox`         | Run in SBOX environment                                     |
+| `@dev`          | Run in DEV environment                                      |
+| `@stage`        | Run in STAGE environment                                    |
+| `@prod`         | Run in PROD environment                                     |
+| `@all-browsers` | Run in all available browsers (Chrome, Firefox, Safari)     |
+| `@chrome`       | Run in Chrome (chromium)                                    |
+| `@firefox`      | Run in Firefox                                              |
+| `@safari`       | Run in Safari (webkit)                                      |
+| `@mimic`        | Marks tests using Mimic devices, no effect on execution     |
+
+For test to be run, it must have at least one of the host tags, one of the environment tags and one of the browser tags.
+
+## Environment variables
 
 To start using the environment variables you need to copy and rename the example file to `.env`.
 `.env` file is ignored by git, so you can do whatever changes you'd like.

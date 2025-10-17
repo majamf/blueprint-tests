@@ -21,7 +21,7 @@ test.beforeEach(async () => {
 
 test(
 	'Blueprint can be added via templates and removed',
-	{ tag: ['@all-browsers', '@sbox'] },
+	{ tag: ['@all-browsers', '@sbox', '@standalone'] },
 	async ({ page, baseURL }) => {
 		const sboxSteps = new SboxSetupSteps(page);
 		const blueprintSteps = new BlueprintsSteps(page);
@@ -62,7 +62,7 @@ test(
 
 test(
 	'Name and description of blueprint can be updated',
-	{ tag: ['@all-browsers', '@sbox'] },
+	{ tag: ['@all-browsers', '@sbox', '@standalone'] },
 	async ({ page, baseURL }) => {
 		const sboxSteps = new SboxSetupSteps(page);
 		const blueprintSteps = new BlueprintsSteps(page);
@@ -90,43 +90,47 @@ test(
 	}
 );
 
-test('Configuration of component can be updated', { tag: ['@all-browsers', '@sbox'] }, async ({ page, baseURL }) => {
-	const sboxSteps = new SboxSetupSteps(page);
-	const blueprintSteps = new BlueprintsSteps(page);
-	const blueprintDetailPageSteps = new BlueprintDetailPageSteps(page);
-	const navigationSteps = new NavigationSteps(page);
-	await sboxSteps.sboxIsSetUp(baseURL!, clusterUrl);
+test(
+	'Configuration of component can be updated',
+	{ tag: ['@all-browsers', '@sbox', '@standalone'] },
+	async ({ page, baseURL }) => {
+		const sboxSteps = new SboxSetupSteps(page);
+		const blueprintSteps = new BlueprintsSteps(page);
+		const blueprintDetailPageSteps = new BlueprintDetailPageSteps(page);
+		const navigationSteps = new NavigationSteps(page);
+		await sboxSteps.sboxIsSetUp(baseURL!, clusterUrl);
 
-	await blueprintSteps.adminOpensBlueprintBuilder();
+		await blueprintSteps.adminOpensBlueprintBuilder();
 
-	await navigationSteps.newBlueprintModalIsOpen();
+		await navigationSteps.newBlueprintModalIsOpen();
 
-	await blueprintSteps.adminFillsNameOfBlueprint('Disk_' + id);
-	await blueprintSteps.adminFillsDescriptionOfBlueprint('Some description');
-	await blueprintSteps.adminClicksCreateBlueprintButton();
+		await blueprintSteps.adminFillsNameOfBlueprint('Disk_' + id);
+		await blueprintSteps.adminFillsDescriptionOfBlueprint('Some description');
+		await blueprintSteps.adminClicksCreateBlueprintButton();
 
-	await blueprintDetailPageSteps.adminOpensAddModalOfComponent('Disk management');
+		await blueprintDetailPageSteps.adminOpensAddModalOfComponent('Disk management');
 
-	await blueprintDetailPageSteps.diskManagementAddModalIsOpened();
-	await blueprintDetailPageSteps.adminClicksOnExternalStorageCheckbox();
-	await blueprintDetailPageSteps.adminAddsConfigurationOfComponent();
+		await blueprintDetailPageSteps.diskManagementAddModalIsOpened();
+		await blueprintDetailPageSteps.adminClicksOnExternalStorageCheckbox();
+		await blueprintDetailPageSteps.adminAddsConfigurationOfComponent();
 
-	await blueprintDetailPageSteps.adminOpensConfigurationOfComponent('Disk management');
-	await blueprintDetailPageSteps.diskManagementDrawerIsOpened();
-	await blueprintDetailPageSteps.adminClicksOnNetworkStorageCheckbox();
-	await blueprintDetailPageSteps.adminSavesConfigurationOfComponent();
+		await blueprintDetailPageSteps.adminOpensConfigurationOfComponent('Disk management');
+		await blueprintDetailPageSteps.diskManagementDrawerIsOpened();
+		await blueprintDetailPageSteps.adminClicksOnNetworkStorageCheckbox();
+		await blueprintDetailPageSteps.adminSavesConfigurationOfComponent();
 
-	await blueprintDetailPageSteps.adminOpensConfigurationOfComponent('Disk management');
-	await blueprintDetailPageSteps.diskManagementDrawerIsOpened();
-	await blueprintDetailPageSteps.selectedDiskManagementIsChecked('Network storage');
-	await blueprintDetailPageSteps.adminsClicksOnCancelButton();
+		await blueprintDetailPageSteps.adminOpensConfigurationOfComponent('Disk management');
+		await blueprintDetailPageSteps.diskManagementDrawerIsOpened();
+		await blueprintDetailPageSteps.selectedDiskManagementIsChecked('Network storage');
+		await blueprintDetailPageSteps.adminsClicksOnCancelButton();
 
-	await blueprintDetailPageSteps.adminDeletesBlueprint();
-});
+		await blueprintDetailPageSteps.adminDeletesBlueprint();
+	}
+);
 
 test(
 	'Components of blueprint can be updated',
-	{ tag: ['@all-browsers', '@sbox'] },
+	{ tag: ['@all-browsers', '@sbox', '@standalone'] },
 	async ({ page, browserName, baseURL }) => {
 		test.fixme(browserName === 'webkit', 'To unblock releases for now');
 
@@ -168,24 +172,28 @@ test(
 	}
 );
 
-test('Blueprint templates can be filtered', { tag: ['@all-browsers', '@sbox'] }, async ({ page, baseURL }) => {
-	const sboxSteps = new SboxSetupSteps(page);
-	const blueprintSteps = new BlueprintsSteps(page);
-	const blueprintTemplatePageSteps = new BlueprintTemplatePageSteps(page);
-	const navigationSteps = new NavigationSteps(page);
-	await sboxSteps.sboxIsSetUp(baseURL!, clusterUrl);
+test(
+	'Blueprint templates can be filtered',
+	{ tag: ['@all-browsers', '@sbox', '@standalone'] },
+	async ({ page, baseURL }) => {
+		const sboxSteps = new SboxSetupSteps(page);
+		const blueprintSteps = new BlueprintsSteps(page);
+		const blueprintTemplatePageSteps = new BlueprintTemplatePageSteps(page);
+		const navigationSteps = new NavigationSteps(page);
+		await sboxSteps.sboxIsSetUp(baseURL!, clusterUrl);
 
-	await navigationSteps.adminsOpensTemplatesRoute();
-	await blueprintSteps.moreThanOneBlueprintTemplateIsDisplayed();
+		await navigationSteps.adminsOpensTemplatesRoute();
+		await blueprintSteps.moreThanOneBlueprintTemplateIsDisplayed();
 
-	await blueprintSteps.adminSearchesForBlueprintTemplate('Set passcode policies');
-	await blueprintSteps.onlyOneBlueprintTemplateIsDisplayedWithTitle('Set passcode policies');
+		await blueprintSteps.adminSearchesForBlueprintTemplate('Set passcode policies');
+		await blueprintSteps.onlyOneBlueprintTemplateIsDisplayedWithTitle('Set passcode policies');
 
-	await blueprintTemplatePageSteps.adminOpensTemplateWithName('Set passcode policies');
-	await blueprintTemplatePageSteps.generalPageIsOpen();
-});
+		await blueprintTemplatePageSteps.adminOpensTemplateWithName('Set passcode policies');
+		await blueprintTemplatePageSteps.generalPageIsOpen();
+	}
+);
 
-test('Blueprints can be filtered', { tag: ['@all-browsers', '@sbox'] }, async ({ page, baseURL }) => {
+test('Blueprints can be filtered', { tag: ['@all-browsers', '@sbox', '@standalone'] }, async ({ page, baseURL }) => {
 	const sboxSteps = new SboxSetupSteps(page);
 	const blueprintSteps = new BlueprintsSteps(page);
 	const navigationSteps = new NavigationSteps(page);
@@ -211,7 +219,7 @@ test('Blueprints can be filtered', { tag: ['@all-browsers', '@sbox'] }, async ({
 
 test(
 	'Available components of blueprint can be filtered',
-	{ tag: ['@all-browsers', '@sbox'] },
+	{ tag: ['@all-browsers', '@sbox', '@standalone'] },
 	async ({ page, baseURL }) => {
 		const sboxSteps = new SboxSetupSteps(page);
 		const blueprintSteps = new BlueprintsSteps(page);
