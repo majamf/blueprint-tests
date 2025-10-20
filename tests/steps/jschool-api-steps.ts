@@ -1,5 +1,4 @@
-import * as process from 'node:process';
-import { assertEnvironmentVariable, Step } from '../utils/utils';
+import { type ApiCredentials, Step } from '../utils/utils';
 import JSchoolClient from '../api/jschool-client';
 import { expect } from '@playwright/test';
 
@@ -9,14 +8,8 @@ const pollTimeout: number = 60_000;
 export default class JSchoolApiSteps {
 	private readonly jSchoolClient: JSchoolClient;
 
-	constructor(private readonly baseUrl: string) {
-		assertEnvironmentVariable(process.env.JAMF_SCHOOL_STAGE_API_USERNAME, 'JAMF_SCHOOL_STAGE_API_USERNAME');
-		assertEnvironmentVariable(process.env.JAMF_SCHOOL_STAGE_API_PASSWORD, 'JAMF_SCHOOL_STAGE_API_PASSWORD');
-		this.jSchoolClient = new JSchoolClient(
-			baseUrl,
-			process.env.JAMF_SCHOOL_STAGE_API_USERNAME,
-			process.env.JAMF_SCHOOL_STAGE_API_PASSWORD
-		);
+	constructor(baseUrl: string, { username, password }: ApiCredentials) {
+		this.jSchoolClient = new JSchoolClient(baseUrl, username, password);
 	}
 
 	@Step('Get mobile device udid')

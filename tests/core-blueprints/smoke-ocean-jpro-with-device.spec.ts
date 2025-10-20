@@ -1,14 +1,12 @@
-import { test } from '@playwright/test';
 import { v4 as uuidv4 } from 'uuid';
+import JProLoginSteps from '../steps/jpro-login-steps';
 import BlueprintsSteps from '../steps/blueprints-steps';
+import JProApiSteps from '../steps/jpro-api-steps';
 import MimicSteps from '../steps/mimic-steps';
-import JSchoolLoginSteps from '../steps/jschool-login-steps';
-import JSchoolApiSteps from '../steps/jschool-api-steps';
 import BlueprintTemplatePageSteps from '../steps/blueprint-template-page-steps';
 import BlueprintDetailPageSteps from '../steps/blueprint-detail-page-steps';
 import NavigationSteps from '../steps/navigation-steps';
-
-const baseUrl = 'https://oceanplaywrightstage.dev.jamfnimbus.cloud/';
+import { test } from '../utils/utils';
 
 let id = uuidv4();
 
@@ -21,24 +19,28 @@ test.beforeEach(async () => {
 });
 
 test(
-	'Deploy blueprint to mimic device in Jamf School',
-	{ tag: ['@stage', '@school', '@mimic'] },
-	async ({ page, browserName }) => {
-		// eslint-disable-next-line playwright/no-skipped-test
-		test.skip(browserName !== 'chromium', 'Enough to run in one browser');
-		const jSchoolLoginSteps = new JSchoolLoginSteps(page);
+	'Deploy blueprint to mimic device in Jamf Pro',
+	{
+		tag: ['@chrome', '@dev', '@stage', '@pro', '@pro-legacy', '@mimic'],
+		annotation: {
+			type: 'note',
+			description: 'Not executed in all browsers due to nature of the test and high flakiness caused by mimic',
+		},
+	},
+	async ({ page, baseURL, accountCredentials, apiCredentials }) => {
+		const jproLoginSteps = new JProLoginSteps(page);
 		const blueprintsSteps = new BlueprintsSteps(page);
 		const blueprintTemplatePageSteps = new BlueprintTemplatePageSteps(page);
 		const blueprintDetailPageSteps = new BlueprintDetailPageSteps(page);
 		const navigationSteps = new NavigationSteps(page);
-		const jSchoolApiSteps = new JSchoolApiSteps(baseUrl);
+		const jproApiSteps = new JProApiSteps(baseURL!, apiCredentials!);
 		const mimicSteps = new MimicSteps();
 
-		const udid = await jSchoolApiSteps.getMobileDeviceUdid();
+		const udid = await jproApiSteps.getMobileDeviceUdid();
 
-		await jSchoolLoginSteps.loginToJamfSchool(baseUrl);
+		await jproLoginSteps.loginToJamfProCached(baseURL!, accountCredentials!);
 
-		await navigationSteps.adminOpensBlueprintsViaJamfSchoolNavigation();
+		await navigationSteps.adminOpensBlueprintsViaJamfProNavigation();
 		await blueprintsSteps.blueprintsPageIsOpen();
 
 		await blueprintsSteps.adminsClicksOnQuickStart();
@@ -63,13 +65,13 @@ test(
 
 		await blueprintDetailPageSteps.adminWaitsForToastToDisappear('Blueprint created');
 
-		await navigationSteps.adminGoesBackToBlueprintsListViaBreadCrumbsInJamfSchool();
+		await navigationSteps.adminGoesBackToBlueprintsListViaBreadCrumbsInJPro();
 		await blueprintsSteps.thereIsBlueprintWithName('Passcode_' + id);
 		await blueprintsSteps.adminOpensBlueprintWithName('Passcode_' + id);
 
 		await blueprintDetailPageSteps.adminDeploysBlueprint();
 
-		await mimicSteps.blueprintIsDeployedToMimicDeviceViaJamfSchool(
+		await mimicSteps.blueprintIsDeployedToMimicDeviceViaJamfPro(
 			blueprintId,
 			udid,
 			'com.apple.configuration.passcode.settings'

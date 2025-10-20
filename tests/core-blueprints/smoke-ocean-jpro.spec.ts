@@ -1,11 +1,10 @@
-import { test } from '@playwright/test';
 import { v4 as uuidv4 } from 'uuid';
 import JProLoginSteps from '../steps/jpro-login-steps';
 import BlueprintsSteps from '../steps/blueprints-steps';
 import BlueprintTemplatePageSteps from '../steps/blueprint-template-page-steps';
 import BlueprintDetailPageSteps from '../steps/blueprint-detail-page-steps';
 import NavigationSteps from '../steps/navigation-steps';
-import { forEachJamfProInstance } from '../utils/withJamfProInstances';
+import { test } from '../utils/utils';
 
 let id = uuidv4();
 
@@ -17,30 +16,34 @@ test.beforeEach(async () => {
 	id = uuidv4();
 });
 
-forEachJamfProInstance('Blueprints list is loaded in Jamf Pro', { tag: ['@stage'] }, async ({ page, baseUrl }) => {
-	const jproLoginSteps = new JProLoginSteps(page);
-	const blueprintsSteps = new BlueprintsSteps(page);
-	const navigationSteps = new NavigationSteps(page);
+test(
+	'Blueprints list is loaded in Jamf Pro',
+	{ tag: ['@all-browsers', '@dev', '@stage', '@pro'] },
+	async ({ page, baseURL, accountCredentials }) => {
+		const jproLoginSteps = new JProLoginSteps(page);
+		const blueprintsSteps = new BlueprintsSteps(page);
+		const navigationSteps = new NavigationSteps(page);
 
-	await jproLoginSteps.loginToJamfProCached(baseUrl);
+		await jproLoginSteps.loginToJamfProCached(baseURL!, accountCredentials!);
 
-	await navigationSteps.adminOpensBlueprintsViaJamfProNavigation();
-	await blueprintsSteps.blueprintsPageIsOpen();
+		await navigationSteps.adminOpensBlueprintsViaJamfProNavigation();
+		await blueprintsSteps.blueprintsPageIsOpen();
 
-	await blueprintsSteps.thereIsAtLeastOneCard();
-});
+		await blueprintsSteps.thereIsAtLeastOneCard();
+	}
+);
 
-forEachJamfProInstance(
+test(
 	'Blueprint can be added via templates and removed in Jamf Pro',
-	{ tag: ['@stage'] },
-	async ({ page, baseUrl }) => {
+	{ tag: ['@all-browsers', '@dev', '@stage', '@pro'] },
+	async ({ page, baseURL, accountCredentials }) => {
 		const jproLoginSteps = new JProLoginSteps(page);
 		const blueprintsSteps = new BlueprintsSteps(page);
 		const blueprintTemplatePageSteps = new BlueprintTemplatePageSteps(page);
 		const blueprintDetailPageSteps = new BlueprintDetailPageSteps(page);
 		const navigationSteps = new NavigationSteps(page);
 
-		await jproLoginSteps.loginToJamfProCached(baseUrl);
+		await jproLoginSteps.loginToJamfProCached(baseURL!, accountCredentials!);
 
 		await navigationSteps.adminOpensBlueprintsViaJamfProNavigation();
 		await blueprintsSteps.blueprintsPageIsOpen();
@@ -76,17 +79,20 @@ forEachJamfProInstance(
 	}
 );
 
-forEachJamfProInstance(
+test(
 	'Blueprint can be added via builder and removed in Jamf Pro',
-	{ tag: ['@stage'] },
-	async ({ page, browserName, baseUrl }) => {
-		test.fixme(browserName !== 'chromium', 'https://jamfpdd.atlassian.net/browse/JSC-62590');
+	{
+		tag: ['@chrome', '@dev', '@stage', '@pro', '@pro-legacy'],
+	},
+	async ({ page, browserName, baseURL, accountCredentials }) => {
+		test.fixme(browserName === 'webkit' || browserName === 'firefox', 'https://jamfpdd.atlassian.net/browse/JSC-62590');
+
 		const jproLoginSteps = new JProLoginSteps(page);
 		const blueprintsSteps = new BlueprintsSteps(page);
 		const blueprintDetailPageSteps = new BlueprintDetailPageSteps(page);
 		const navigationSteps = new NavigationSteps(page);
 
-		await jproLoginSteps.loginToJamfProCached(baseUrl);
+		await jproLoginSteps.loginToJamfProCached(baseURL!, accountCredentials!);
 
 		await navigationSteps.adminOpensBlueprintsViaJamfProNavigation();
 		await blueprintsSteps.blueprintsPageIsOpen();
@@ -135,45 +141,53 @@ forEachJamfProInstance(
 	}
 );
 
-forEachJamfProInstance('Templates are properly loaded', { tag: ['@stage'] }, async ({ page, baseUrl }) => {
-	const jproLoginSteps = new JProLoginSteps(page);
-	const blueprintsSteps = new BlueprintsSteps(page);
-	const navigationSteps = new NavigationSteps(page);
+test(
+	'Templates are properly loaded',
+	{ tag: ['@all-browsers', '@dev', '@stage', '@pro'] },
+	async ({ page, baseURL, accountCredentials }) => {
+		const jproLoginSteps = new JProLoginSteps(page);
+		const blueprintsSteps = new BlueprintsSteps(page);
+		const navigationSteps = new NavigationSteps(page);
 
-	await jproLoginSteps.loginToJamfProCached(baseUrl);
+		await jproLoginSteps.loginToJamfProCached(baseURL!, accountCredentials!);
 
-	await navigationSteps.adminOpensBlueprintsViaJamfProNavigation();
-	await blueprintsSteps.blueprintsPageIsOpen();
+		await navigationSteps.adminOpensBlueprintsViaJamfProNavigation();
+		await blueprintsSteps.blueprintsPageIsOpen();
 
-	await blueprintsSteps.adminsClicksOnQuickStart();
-	await blueprintsSteps.verifyExpectedTemplates('Set passcode policies');
-});
+		await blueprintsSteps.adminsClicksOnQuickStart();
+		await blueprintsSteps.verifyExpectedTemplates('Set passcode policies');
+	}
+);
 
-forEachJamfProInstance('Searching in scope works', { tag: ['@stage'] }, async ({ page, baseUrl }) => {
-	const jproLoginSteps = new JProLoginSteps(page);
-	const blueprintsSteps = new BlueprintsSteps(page);
-	const blueprintDetailPageSteps = new BlueprintDetailPageSteps(page);
-	const navigationSteps = new NavigationSteps(page);
+test(
+	'Searching in scope works',
+	{ tag: ['@all-browsers', '@dev', '@stage', '@pro', '@pro-legacy'] },
+	async ({ page, baseURL, accountCredentials }) => {
+		const jproLoginSteps = new JProLoginSteps(page);
+		const blueprintsSteps = new BlueprintsSteps(page);
+		const blueprintDetailPageSteps = new BlueprintDetailPageSteps(page);
+		const navigationSteps = new NavigationSteps(page);
 
-	await jproLoginSteps.loginToJamfProCached(baseUrl);
+		await jproLoginSteps.loginToJamfProCached(baseURL!, accountCredentials!);
 
-	await navigationSteps.adminOpensBlueprintsViaJamfProNavigation();
-	await blueprintsSteps.blueprintsPageIsOpen();
+		await navigationSteps.adminOpensBlueprintsViaJamfProNavigation();
+		await blueprintsSteps.blueprintsPageIsOpen();
 
-	await blueprintsSteps.adminOpensBlueprintBuilder();
+		await blueprintsSteps.adminOpensBlueprintBuilder();
 
-	await navigationSteps.newBlueprintModalIsOpen();
+		await navigationSteps.newBlueprintModalIsOpen();
 
-	await blueprintsSteps.adminFillsNameOfBlueprint('Search_test' + id);
-	await blueprintsSteps.adminClicksCreateBlueprintButton();
+		await blueprintsSteps.adminFillsNameOfBlueprint('Search_test' + id);
+		await blueprintsSteps.adminClicksCreateBlueprintButton();
 
-	await blueprintDetailPageSteps.adminOpensScopeDrawer();
-	await blueprintDetailPageSteps.scopingDrawerIsOpened();
+		await blueprintDetailPageSteps.adminOpensScopeDrawer();
+		await blueprintDetailPageSteps.scopingDrawerIsOpened();
 
-	await blueprintDetailPageSteps.adminSearchesForGroupInScopeDrawer('All Managed Clients');
+		await blueprintDetailPageSteps.adminSearchesForGroupInScopeDrawer('All Managed Clients');
 
-	await blueprintDetailPageSteps.adminsClicksOnCancelButton();
+		await blueprintDetailPageSteps.adminsClicksOnCancelButton();
 
-	await blueprintDetailPageSteps.adminDeletesBlueprint();
-	await blueprintsSteps.thereIsNoBlueprintWithName('Search_test' + id);
-});
+		await blueprintDetailPageSteps.adminDeletesBlueprint();
+		await blueprintsSteps.thereIsNoBlueprintWithName('Search_test' + id);
+	}
+);

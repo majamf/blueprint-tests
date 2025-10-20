@@ -13,5 +13,8 @@
 	},
 	"compilerOptions": {
 		"strict": true
+	},
+	"imports": {
+		"dotenv": "npm:dotenv@^17.2.3"
 	}
 }

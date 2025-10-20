@@ -1,12 +1,10 @@
-import { test } from '@playwright/test';
 import { v4 as uuidv4 } from 'uuid';
 import BlueprintsSteps from '../steps/blueprints-steps';
 import BlueprintTemplatePageSteps from '../steps/blueprint-template-page-steps';
 import BlueprintDetailPageSteps from '../steps/blueprint-detail-page-steps';
 import NavigationSteps from '../steps/navigation-steps';
 import JSchoolLoginSteps from '../steps/jschool-login-steps';
-
-const baseUrl = 'https://oceanplaywrightstage.dev.jamfnimbus.cloud/';
+import { test } from '../utils/utils';
 
 let id = uuidv4();
 
@@ -18,30 +16,34 @@ test.beforeEach(async () => {
 	id = uuidv4();
 });
 
-test('Blueprints list is loaded in Jamf School', { tag: ['@stage', '@school'] }, async ({ page }) => {
-	const jSchoolLoginSteps = new JSchoolLoginSteps(page);
-	const blueprintsSteps = new BlueprintsSteps(page);
-	const navigationSteps = new NavigationSteps(page);
+test(
+	'Blueprints list is loaded in Jamf School',
+	{ tag: ['@all-browsers', '@stage', '@school'] },
+	async ({ page, baseURL, accountCredentials }) => {
+		const jSchoolLoginSteps = new JSchoolLoginSteps(page);
+		const blueprintsSteps = new BlueprintsSteps(page);
+		const navigationSteps = new NavigationSteps(page);
 
-	await jSchoolLoginSteps.loginToJamfSchool(baseUrl);
+		await jSchoolLoginSteps.loginToJamfSchool(baseURL!, accountCredentials!);
 
-	await navigationSteps.adminOpensBlueprintsViaJamfSchoolNavigation();
-	await blueprintsSteps.blueprintsPageIsOpen();
+		await navigationSteps.adminOpensBlueprintsViaJamfSchoolNavigation();
+		await blueprintsSteps.blueprintsPageIsOpen();
 
-	await blueprintsSteps.thereIsAtLeastOneCard();
-});
+		await blueprintsSteps.thereIsAtLeastOneCard();
+	}
+);
 
 test(
 	'Blueprint can be added via templates and removed in Jamf School',
-	{ tag: ['@stage', '@school'] },
-	async ({ page }) => {
+	{ tag: ['@all-browsers', '@stage', '@school'] },
+	async ({ page, baseURL, accountCredentials }) => {
 		const jSchoolLoginSteps = new JSchoolLoginSteps(page);
 		const blueprintsSteps = new BlueprintsSteps(page);
 		const blueprintTemplatePageSteps = new BlueprintTemplatePageSteps(page);
 		const blueprintDetailPageSteps = new BlueprintDetailPageSteps(page);
 		const navigationSteps = new NavigationSteps(page);
 
-		await jSchoolLoginSteps.loginToJamfSchool(baseUrl);
+		await jSchoolLoginSteps.loginToJamfSchool(baseURL!, accountCredentials!);
 
 		await navigationSteps.adminOpensBlueprintsViaJamfSchoolNavigation();
 		await blueprintsSteps.blueprintsPageIsOpen();
@@ -79,15 +81,18 @@ test(
 
 test(
 	'Blueprint can be added via builder and removed in Jamf School',
-	{ tag: ['@stage', '@school'] },
-	async ({ page, browserName }) => {
-		test.fixme(browserName !== 'chromium', 'https://jamfpdd.atlassian.net/browse/JSC-62590');
+	{
+		tag: ['@chrome', '@stage', '@school'],
+	},
+	async ({ page, browserName, baseURL, accountCredentials }) => {
+		test.fixme(browserName === 'webkit' || browserName === 'firefox', 'https://jamfpdd.atlassian.net/browse/JSC-62590');
+
 		const jSchoolLoginSteps = new JSchoolLoginSteps(page);
 		const blueprintsSteps = new BlueprintsSteps(page);
 		const blueprintDetailPageSteps = new BlueprintDetailPageSteps(page);
 		const navigationSteps = new NavigationSteps(page);
 
-		await jSchoolLoginSteps.loginToJamfSchool(baseUrl);
+		await jSchoolLoginSteps.loginToJamfSchool(baseURL!, accountCredentials!);
 
 		await navigationSteps.adminOpensBlueprintsViaJamfSchoolNavigation();
 		await blueprintsSteps.blueprintsPageIsOpen();
@@ -133,45 +138,53 @@ test(
 	}
 );
 
-test('Templates are properly loaded in Jamf School', { tag: ['@stage', '@school'] }, async ({ page }) => {
-	const jSchoolLoginSteps = new JSchoolLoginSteps(page);
-	const blueprintsSteps = new BlueprintsSteps(page);
-	const navigationSteps = new NavigationSteps(page);
+test(
+	'Templates are properly loaded in Jamf School',
+	{ tag: ['@all-browsers', '@stage', '@school'] },
+	async ({ page, baseURL, accountCredentials }) => {
+		const jSchoolLoginSteps = new JSchoolLoginSteps(page);
+		const blueprintsSteps = new BlueprintsSteps(page);
+		const navigationSteps = new NavigationSteps(page);
 
-	await jSchoolLoginSteps.loginToJamfSchool(baseUrl);
+		await jSchoolLoginSteps.loginToJamfSchool(baseURL!, accountCredentials!);
 
-	await navigationSteps.adminOpensBlueprintsViaJamfSchoolNavigation();
-	await blueprintsSteps.blueprintsPageIsOpen();
+		await navigationSteps.adminOpensBlueprintsViaJamfSchoolNavigation();
+		await blueprintsSteps.blueprintsPageIsOpen();
 
-	await blueprintsSteps.adminsClicksOnQuickStart();
-	await blueprintsSteps.verifyExpectedTemplates('Set passcode policies');
-});
+		await blueprintsSteps.adminsClicksOnQuickStart();
+		await blueprintsSteps.verifyExpectedTemplates('Set passcode policies');
+	}
+);
 
-test('Searching in scope works in Jamf School', { tag: ['@stage', '@school'] }, async ({ page }) => {
-	const jSchoolLoginSteps = new JSchoolLoginSteps(page);
-	const blueprintsSteps = new BlueprintsSteps(page);
-	const blueprintDetailPageSteps = new BlueprintDetailPageSteps(page);
-	const navigationSteps = new NavigationSteps(page);
+test(
+	'Searching in scope works in Jamf School',
+	{ tag: ['@all-browsers', '@stage', '@school'] },
+	async ({ page, baseURL, accountCredentials }) => {
+		const jSchoolLoginSteps = new JSchoolLoginSteps(page);
+		const blueprintsSteps = new BlueprintsSteps(page);
+		const blueprintDetailPageSteps = new BlueprintDetailPageSteps(page);
+		const navigationSteps = new NavigationSteps(page);
 
-	await jSchoolLoginSteps.loginToJamfSchool(baseUrl);
+		await jSchoolLoginSteps.loginToJamfSchool(baseURL!, accountCredentials!);
 
-	await navigationSteps.adminOpensBlueprintsViaJamfSchoolNavigation();
-	await blueprintsSteps.blueprintsPageIsOpen();
+		await navigationSteps.adminOpensBlueprintsViaJamfSchoolNavigation();
+		await blueprintsSteps.blueprintsPageIsOpen();
 
-	await blueprintsSteps.adminOpensBlueprintBuilder();
+		await blueprintsSteps.adminOpensBlueprintBuilder();
 
-	await navigationSteps.newBlueprintModalIsOpen();
+		await navigationSteps.newBlueprintModalIsOpen();
 
-	await blueprintsSteps.adminFillsNameOfBlueprint('Search_test' + id);
-	await blueprintsSteps.adminClicksCreateBlueprintButton();
+		await blueprintsSteps.adminFillsNameOfBlueprint('Search_test' + id);
+		await blueprintsSteps.adminClicksCreateBlueprintButton();
 
-	await blueprintDetailPageSteps.adminOpensScopeDrawer();
-	await blueprintDetailPageSteps.scopingDrawerIsOpened();
+		await blueprintDetailPageSteps.adminOpensScopeDrawer();
+		await blueprintDetailPageSteps.scopingDrawerIsOpened();
 
-	await blueprintDetailPageSteps.adminSearchesForGroupInScopeDrawer('mimic device');
+		await blueprintDetailPageSteps.adminSearchesForGroupInScopeDrawer('mimic device');
 
-	await blueprintDetailPageSteps.adminsClicksOnCancelButton();
+		await blueprintDetailPageSteps.adminsClicksOnCancelButton();
 
-	await blueprintDetailPageSteps.adminDeletesBlueprint();
-	await blueprintsSteps.thereIsNoBlueprintWithName('Search_test' + id);
-});
+		await blueprintDetailPageSteps.adminDeletesBlueprint();
+		await blueprintsSteps.thereIsNoBlueprintWithName('Search_test' + id);
+	}
+);

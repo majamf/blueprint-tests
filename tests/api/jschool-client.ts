@@ -34,7 +34,7 @@ export default class JSchoolClient {
 	}
 
 	public async getMobileDevicesDetails(): Promise<ListResponse<MobileDeviceDetails>> {
-		const apiUrl = encodeURI(`${this.baseUrl}api/devices`);
+		const apiUrl = encodeURI(`${this.baseUrl}/api/devices`);
 		return await this.fetchData(apiUrl);
 	}
 }

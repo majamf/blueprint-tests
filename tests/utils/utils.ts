@@ -1,4 +1,24 @@
-import { test } from '@playwright/test';
+import { test as base } from '@playwright/test';
+
+export type ApiCredentials = {
+	username: string;
+	password: string;
+};
+
+export type AccountCredentials = {
+	email: string;
+	password: string;
+};
+
+export type TestOptions = {
+	accountCredentials?: AccountCredentials;
+	apiCredentials?: ApiCredentials;
+};
+
+export const test = base.extend<TestOptions>({
+	accountCredentials: [undefined, { option: true }],
+	apiCredentials: [undefined, { option: true }],
+});
 
 export function Step(titleTemplate: string) {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -9,10 +29,4 @@ export function Step(titleTemplate: string) {
 			return test.step(stepTitle, () => originalMethod.call(this, ...args));
 		};
 	};
-}
-
-export function assertEnvironmentVariable(value: unknown, propertyName?: string): asserts value is string {
-	if (typeof value !== 'string') {
-		throw new Error(`Expected ${propertyName} value to be a string`);
-	}
 }

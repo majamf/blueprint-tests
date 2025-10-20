@@ -1,8 +1,7 @@
-import * as process from 'node:process';
 import { expect, type Locator, type Page } from '@playwright/test';
 import UtilsSteps from './utils-steps';
-import { assertEnvironmentVariable, Step } from '../utils/utils';
-import fs from 'fs/promises';
+import { type AccountCredentials, Step } from '../utils/utils';
+import fs from 'node:fs/promises';
 
 export default class JProLoginSteps {
 	private readonly utilsSteps: UtilsSteps;
@@ -12,16 +11,11 @@ export default class JProLoginSteps {
 	}
 
 	@Step('Login to Jamf Pro at "$0"')
-	public async loginToJamfPro(baseUrl: string) {
-		assertEnvironmentVariable(process.env.JAMF_ACCOUNT_STAGE_USER_MAIL, 'JAMF_ACCOUNT_STAGE_USER_MAIL');
-		assertEnvironmentVariable(process.env.JAMF_ACCOUNT_STAGE_USER_PASSWORD, 'JAMF_ACCOUNT_STAGE_USER_PASSWORD');
-
+	public async loginToJamfPro(baseUrl: string, { email, password }: AccountCredentials) {
 		const emailInput = this.page.getByLabel('Email');
 		const continueButton = this.page.getByRole('button', { name: 'Continue' });
 		const passwordInput = this.page.getByRole('textbox', { name: 'Password' });
 		const loginButton = this.page.getByRole('button', { name: 'Log in using Jamf ID' });
-		const continueToJProButton = this.page.getByRole('button', { name: 'Continue to Jamf Pro' });
-		const rejectAllCookiesButton = this.page.getByRole('button', { name: 'Reject All' });
 		const jamfProVersion = this.page.locator('[data-test-id="jamf-pro-version"]');
 		const blueprintsNavItem = this.page.locator('jamf-nav-single-item#blueprints-nav-item');
 		const slasaAgreeButton = this.page.locator('[data-test-id="slasa-agree-button"] > jamf-button');
@@ -30,23 +24,17 @@ export default class JProLoginSteps {
 		await this.page.goto(baseUrl);
 		await this.page.waitForLoadState('load');
 
-		await emailInput.fill(process.env.JAMF_ACCOUNT_STAGE_USER_MAIL);
+		await emailInput.fill(email);
 		await continueButton.click();
 
 		await this.page.waitForLoadState('load');
 
-		await passwordInput.fill(process.env.JAMF_ACCOUNT_STAGE_USER_PASSWORD);
+		await passwordInput.fill(password);
 		await loginButton.click();
 
 		await this.page.waitForLoadState('load');
 
-		if (await rejectAllCookiesButton.isVisible()) {
-			await rejectAllCookiesButton.click();
-		}
-
-		await continueToJProButton.click({ timeout: 15_000 });
-
-		await this.page.waitForLoadState('load');
+		await this.handleRedirectsToPro(baseUrl);
 
 		await expect(jamfProVersion).toBeVisible();
 
@@ -66,13 +54,7 @@ export default class JProLoginSteps {
 	}
 
 	@Step('Login to Jamf Pro at "$0" with stored auth state')
-	public async loginToJamfProCached(baseUrl: string) {
-		assertEnvironmentVariable(process.env.JAMF_ACCOUNT_STAGE_USER_MAIL, 'JAMF_ACCOUNT_STAGE_USER_MAIL');
-		assertEnvironmentVariable(process.env.JAMF_ACCOUNT_STAGE_USER_PASSWORD, 'JAMF_ACCOUNT_STAGE_USER_PASSWORD');
-
-		const continueToJProButton = this.page.getByRole('button', { name: 'Continue to Jamf Pro' });
-		const rejectAllCookiesButton = this.page.getByRole('button', { name: 'Reject All' });
-
+	public async loginToJamfProCached(baseUrl: string, accountCredentials: AccountCredentials) {
 		await this.utilsSteps.disableAnimations();
 
 		const hostname = new URL(baseUrl).hostname;
@@ -84,12 +66,9 @@ export default class JProLoginSteps {
 			await this.page.goto(baseUrl);
 			await this.page.waitForLoadState('load');
 
-			const blueprintsNavItem = this.page.locator('jamf-nav-single-item#blueprints-nav-item');
+			await this.handleRedirectsToPro(baseUrl);
 
-			if (await this.pollElementIsVisible(rejectAllCookiesButton)) {
-				await rejectAllCookiesButton.click();
-				await continueToJProButton.click({ timeout: 15_000 });
-			}
+			const blueprintsNavItem = this.page.locator('jamf-nav-single-item#blueprints-nav-item');
 
 			if (await this.pollElementIsVisible(blueprintsNavItem)) {
 				return;
@@ -97,14 +76,35 @@ export default class JProLoginSteps {
 		}
 
 		// If session restoration failed, perform a fresh login
-		await this.loginToJamfPro(baseUrl);
+		await this.loginToJamfPro(baseUrl, accountCredentials);
 
 		await this.page.context().storageState({ path: authFile });
 	}
 
-	private async pollElementIsVisible(blueprintsNavItem: Locator): Promise<boolean> {
+	private async handleRedirectsToPro(baseUrl: string) {
+		const continueToJProButton = this.page.getByRole('button', { name: 'Continue to Jamf Pro' });
+		const continueWithoutPasskeyButton = this.page.getByRole('button', { name: 'Continue without passkey' });
+
+		if (this.page.url().startsWith(baseUrl)) {
+			return;
+		}
+
+		if (await this.pollElementIsVisible(continueWithoutPasskeyButton, { timeout: 15_000 })) {
+			await continueWithoutPasskeyButton.click();
+
+			await this.page.waitForLoadState('load');
+		}
+
+		if (await this.pollElementIsVisible(continueToJProButton, { timeout: 15_000 })) {
+			await continueToJProButton.click({ timeout: 15_000 });
+
+			await this.page.waitForLoadState('load');
+		}
+	}
+
+	private async pollElementIsVisible(blueprintsNavItem: Locator, options?: { timeout: number }): Promise<boolean> {
 		try {
-			await expect(blueprintsNavItem).toBeVisible();
+			await expect(blueprintsNavItem).toBeVisible(options);
 			return true;
 		} catch {
 			return false;

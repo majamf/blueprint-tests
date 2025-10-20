@@ -1,7 +1,6 @@
-import * as process from 'node:process';
 import { expect, type Page } from '@playwright/test';
 import UtilsSteps from './utils-steps';
-import { assertEnvironmentVariable, Step } from '../utils/utils';
+import { type AccountCredentials, Step } from '../utils/utils';
 
 export default class JSchoolLoginSteps {
 	private readonly utilsSteps: UtilsSteps;
@@ -11,10 +10,7 @@ export default class JSchoolLoginSteps {
 	}
 
 	@Step('Login to Jamf School at "$0"')
-	public async loginToJamfSchool(baseUrl: string) {
-		assertEnvironmentVariable(process.env.JAMF_ACCOUNT_STAGE_USER_MAIL, 'JAMF_ACCOUNT_STAGE_USER_MAIL');
-		assertEnvironmentVariable(process.env.JAMF_ACCOUNT_STAGE_USER_PASSWORD, 'JAMF_ACCOUNT_STAGE_USER_PASSWORD');
-
+	public async loginToJamfSchool(baseUrl: string, { email, password }: AccountCredentials) {
 		const emailInput = this.page.getByLabel('Email');
 		const continueButton = this.page.getByRole('button', { name: 'Login' });
 		const passwordInput = this.page.getByRole('textbox', { name: 'Password' });
@@ -29,7 +25,7 @@ export default class JSchoolLoginSteps {
 				response.url().includes('/login/password') && response.status() === 200 && response.request().method() === 'GET'
 		);
 
-		await emailInput.fill(process.env.JAMF_ACCOUNT_STAGE_USER_MAIL);
+		await emailInput.fill(email);
 		await continueButton.click();
 
 		await this.page.waitForLoadState('load');
@@ -47,10 +43,10 @@ export default class JSchoolLoginSteps {
 				response.url().includes('/dashboard/') && response.status() === 200 && response.request().method() === 'GET'
 		);
 
-		await passwordInput.fill(process.env.JAMF_ACCOUNT_STAGE_USER_PASSWORD);
+		await passwordInput.fill(password);
 		await loginButton.click();
 
-		await this.page.waitForURL(baseUrl + '**');
+		await this.page.waitForURL(baseUrl + '/**');
 
 		if (this.page.url().startsWith(baseUrl + 'agreement')) {
 			await this.page.getByRole('link', { name: 'Continue' }).click();
