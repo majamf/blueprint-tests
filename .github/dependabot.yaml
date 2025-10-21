@@ -1,4 +1,14 @@
 version: 2
+
+multi-ecosystem-groups:
+  playwright:
+    schedule:
+      interval: weekly
+      day: tuesday
+      time: "07:00"
+    commit-message:
+      prefix: "TRIVIAL "
+
 updates:
 - package-ecosystem: github-actions
   directories:
@@ -12,21 +22,25 @@ updates:
     prefix: "TRIVIAL "
 - package-ecosystem: npm
   directory: "/"
-  schedule:
-    interval: weekly
-    day: tuesday
-    time: "07:00"
-  groups:
-    other-dependencies:
-      exclude-patterns:
-      - "@playwright*"
-  commit-message:
-    prefix: "TRIVIAL "
-- package-ecosystem: docker
+  patterns:
+  - "@playwright*"
+  multi-ecosystem-group: "playwright"
+- package-ecosystem: npm
   directory: "/"
   schedule:
     interval: weekly
     day: tuesday
     time: "07:00"
+  ignore:
+  - dependency-name: "@playwright*"
+  groups:
+    other-dependencies:
+      patterns:
+      - "*"
   commit-message:
     prefix: "TRIVIAL "
+- package-ecosystem: docker
+  directory: "/"
+  patterns:
+  - "playwright"
+  multi-ecosystem-group: "playwright"
