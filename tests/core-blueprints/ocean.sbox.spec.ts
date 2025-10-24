@@ -121,7 +121,7 @@ test(
 
 		await blueprintDetailPageSteps.adminOpensConfigurationOfComponent('Disk management');
 		await blueprintDetailPageSteps.diskManagementDrawerIsOpened();
-		await blueprintDetailPageSteps.selectedDiskManagementIsChecked('Network storage');
+		await blueprintDetailPageSteps.selectedDiskManagementIsChecked('NetworkStorage.Included');
 		await blueprintDetailPageSteps.adminsClicksOnCancelButton();
 
 		await blueprintDetailPageSteps.adminDeletesBlueprint();
