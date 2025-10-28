@@ -81,9 +81,22 @@ export default class BlueprintDetailPageSteps {
 
 	@Step('Blueprint with name "$0" is opened')
 	async blueprintWithNameIsOpened(name: string) {
-		const blueprintHeading = this.page.getByRole('heading', { name: name });
+		const headings = this.page.getByRole('heading', { name }).filter({ hasText: name });
 
-		await expect(blueprintHeading).toBeVisible();
+		await expect(headings.first()).toBeVisible();
+	}
+
+	@Step('Change blueprint name to "$0"')
+	async changeBlueprintName(newName: string) {
+		await this.page.getByTestId('edit-blueprint-name').click();
+
+		const nameInput = this.page.locator('input[name="name"]');
+		await nameInput.fill(newName);
+
+		await nameInput.press('Enter');
+
+		const updatedHeading = this.page.getByRole('heading', { name: newName });
+		await expect(updatedHeading.first()).toBeVisible();
 	}
 
 	@Step('Admin opens scope drawer')
