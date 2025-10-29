@@ -172,10 +172,7 @@ test(
 
 		await blueprintsSteps.adminOpensBlueprintBuilder();
 
-		await navigationSteps.newBlueprintModalIsOpen();
-
-		await blueprintsSteps.adminFillsNameOfBlueprint('Search_test' + id);
-		await blueprintsSteps.adminClicksCreateBlueprintButton();
+		await blueprintDetailPageSteps.changeBlueprintName('Search_test' + id);
 
 		await blueprintDetailPageSteps.adminOpensScopeDrawer();
 		await blueprintDetailPageSteps.scopingDrawerIsOpened();
