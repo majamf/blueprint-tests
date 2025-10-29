@@ -99,6 +99,19 @@ export default class BlueprintDetailPageSteps {
 		await expect(updatedHeading.first()).toBeVisible();
 	}
 
+	@Step('Change blueprint description to "$0"')
+	async changeBlueprintDescription(newDescription: string) {
+		const descrtiptionElement = this.page.getByTestId('blueprint-description');
+		await descrtiptionElement.click();
+
+		const descriptionInput = this.page.locator('input[name=description]');
+		await descriptionInput.fill(newDescription);
+
+		await descriptionInput.press('Enter');
+
+		await expect(descrtiptionElement).toHaveText(newDescription);
+	}
+
 	@Step('Admin opens scope drawer')
 	async adminOpensScopeDrawer() {
 		const scopeCardLink = this.page.getByTestId('scope-card');
