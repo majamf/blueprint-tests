@@ -97,15 +97,11 @@ test(
 		await navigationSteps.adminOpensBlueprintsViaJamfSchoolNavigation();
 		await blueprintsSteps.blueprintsPageIsOpen();
 
-		await blueprintsSteps.adminOpensBlueprintBuilder();
-
-		await navigationSteps.newBlueprintModalIsOpen();
-
-		await blueprintsSteps.adminFillsNameOfBlueprint('Disk_' + id);
-
-		await blueprintsSteps.adminFillsDescriptionOfBlueprint('Some description');
-
 		await blueprintsSteps.adminClicksCreateBlueprintButton();
+
+		await blueprintDetailPageSteps.changeBlueprintName('Disk_' + id);
+
+		await blueprintDetailPageSteps.changeBlueprintDescription('Some description');
 
 		await blueprintDetailPageSteps.blueprintWithNameIsOpened('Disk_' + id);
 
@@ -170,7 +166,7 @@ test(
 		await navigationSteps.adminOpensBlueprintsViaJamfSchoolNavigation();
 		await blueprintsSteps.blueprintsPageIsOpen();
 
-		await blueprintsSteps.adminOpensBlueprintBuilder();
+		await blueprintsSteps.adminClicksCreateBlueprintButton();
 
 		await blueprintDetailPageSteps.changeBlueprintName('Search_test' + id);
 

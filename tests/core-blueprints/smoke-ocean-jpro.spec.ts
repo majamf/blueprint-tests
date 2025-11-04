@@ -97,7 +97,7 @@ test(
 		await navigationSteps.adminOpensBlueprintsViaJamfProNavigation();
 		await blueprintsSteps.blueprintsPageIsOpen();
 
-		await blueprintsSteps.adminOpensBlueprintBuilder();
+		await blueprintsSteps.adminClicksCreateBlueprintButton();
 
 		await blueprintDetailPageSteps.blueprintWithNameIsOpened('Untitled blueprint');
 
@@ -167,7 +167,7 @@ test(
 		await navigationSteps.adminOpensBlueprintsViaJamfProNavigation();
 		await blueprintsSteps.blueprintsPageIsOpen();
 
-		await blueprintsSteps.adminOpensBlueprintBuilder();
+		await blueprintsSteps.adminClicksCreateBlueprintButton();
 
 		await blueprintDetailPageSteps.changeBlueprintName('Search_test' + id);
 

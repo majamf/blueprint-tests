@@ -88,11 +88,17 @@ export default class BlueprintsSteps {
 		await expect(cardWithName).toBeHidden();
 	}
 
-	@Step('Admin opens blueprint builder')
-	async adminOpensBlueprintBuilder() {
+	@Step('Admin clicks create blueprint button')
+	async adminClicksCreateBlueprintButton() {
 		const createBlueprintButton = this.page.getByRole('button', { name: 'Create blueprint' });
 
+		const blueprintCreatePromise = this.waitForBlueprintsCreateResponse();
 		await createBlueprintButton.click();
+		await this.page.waitForURL(blueprintIdUrlRegExp);
+
+		const { data } = await blueprintCreatePromise;
+
+		return data.id;
 	}
 
 	@Step('Admin opens blueprint with name "$0"')
@@ -147,19 +153,6 @@ export default class BlueprintsSteps {
 	async onlyOneBlueprintIsDisplayedWithName(blueprintName: string) {
 		await expect(this.page.locator(blueprintCardLocator).locator('h5')).toHaveCount(1);
 		await expect(this.page.locator(blueprintCardLocator).locator('h5')).toHaveText(blueprintName);
-	}
-
-	@Step('Admin clicks create blueprint button')
-	async adminClicksCreateBlueprintButton() {
-		const createButton = this.page.getByTestId('create-blueprint-button').getByRole('button', { name: 'Create' });
-
-		const blueprintCreatePromise = this.waitForBlueprintsCreateResponse();
-		await createButton.click();
-		await this.page.waitForURL(blueprintIdUrlRegExp);
-
-		const { data } = await blueprintCreatePromise;
-
-		return data.id;
 	}
 
 	@Step('Blueprints page is opened')

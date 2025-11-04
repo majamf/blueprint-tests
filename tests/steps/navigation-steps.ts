@@ -109,11 +109,6 @@ export default class NavigationSteps {
 		await expect(modal).toBeInViewport();
 	}
 
-	@Step('New blueprint modal is opened')
-	async newBlueprintModalIsOpen() {
-		await this.modalWithHeadingIsOpen('New blueprint');
-	}
-
 	@Step('Admin closes Jamf Pro navigation')
 	async adminClosesJamfProNavigation() {
 		const closeButton = this.page.locator('[data-test-id="nav-follow-button"]');

@@ -69,7 +69,7 @@ test(
 		const blueprintDetailPageSteps = new BlueprintDetailPageSteps(page);
 		await sboxSteps.sboxIsSetUp(baseURL!, clusterUrl);
 
-		await blueprintSteps.adminOpensBlueprintBuilder();
+		await blueprintSteps.adminClicksCreateBlueprintButton();
 
 		await blueprintDetailPageSteps.changeBlueprintName('Disk_' + id);
 		await blueprintDetailPageSteps.changeBlueprintDescription('Some description');
@@ -106,7 +106,7 @@ test(
 		const navigationSteps = new NavigationSteps(page);
 		await sboxSteps.sboxIsSetUp(baseURL!, clusterUrl);
 
-		await blueprintSteps.adminOpensBlueprintBuilder();
+		await blueprintSteps.adminClicksCreateBlueprintButton();
 
 		await blueprintDetailPageSteps.changeBlueprintName('Disk_' + id);
 		await blueprintDetailPageSteps.changeBlueprintDescription('Some description');
@@ -164,12 +164,12 @@ test('Blueprints can be filtered', { tag: ['@all-browsers', '@sbox', '@standalon
 	const blueprintDetailPageSteps = new BlueprintDetailPageSteps(page);
 	await sboxSteps.sboxIsSetUp(baseURL!, clusterUrl);
 
-	await blueprintSteps.adminOpensBlueprintBuilder();
+	await blueprintSteps.adminClicksCreateBlueprintButton();
 
 	await blueprintDetailPageSteps.changeBlueprintName('Blueprint_' + id);
 
 	await navigationSteps.adminsOpensBlueprintsRoute();
-	await blueprintSteps.adminOpensBlueprintBuilder();
+	await blueprintSteps.adminClicksCreateBlueprintButton();
 
 	await blueprintDetailPageSteps.changeBlueprintName('Blueprint2_' + id);
 
@@ -188,7 +188,7 @@ test(
 		const blueprintDetailPageSteps = new BlueprintDetailPageSteps(page);
 		await sboxSteps.sboxIsSetUp(baseURL!, clusterUrl);
 
-		await blueprintSteps.adminOpensBlueprintBuilder();
+		await blueprintSteps.adminClicksCreateBlueprintButton();
 
 		await blueprintDetailPageSteps.changeBlueprintName('Blueprint_' + id);
 		await blueprintDetailPageSteps.adminSearchesForComponent('Passcode');
