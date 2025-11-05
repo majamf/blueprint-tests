@@ -219,7 +219,7 @@ export default class BlueprintDetailPageSteps {
 
 	@Step('Disk management option with name "$0" is checked')
 	async selectedDiskManagementIsChecked(name: string) {
-		await expect(this.page.locator(blueprintCheckboxLocator, { hasText: name }).locator('input').first()).toBeChecked();
+		await expect(this.page.locator(`[name="${name}"]`).locator('input').first()).toBeChecked();
 	}
 
 	@Step('Selected option with name "$0" is checked')
@@ -236,22 +236,16 @@ export default class BlueprintDetailPageSteps {
 
 	@Step('Admin clicks on external storage checkbox')
 	async adminClicksOnExternalStorageCheckbox() {
-		const externalStorageCheckbox = this.page
-			.locator(blueprintCheckboxLocator, { hasText: 'External storage' })
-			.locator('label div')
-			.first();
+		const externalStorageCheckbox = this.page.locator('[name="ExternalStorage.Included"]').first();
 
 		await externalStorageCheckbox.click({ force: true });
 	}
 
 	@Step('Admin clicks on network storage checkbox')
 	async adminClicksOnNetworkStorageCheckbox() {
-		const externalStorageCheckbox = this.page
-			.locator(blueprintCheckboxLocator, { hasText: 'Network storage' })
-			.locator('label div')
-			.first();
+		const networkStorageCheckbox = this.page.locator('[name="NetworkStorage.Included"]').first();
 
-		await externalStorageCheckbox.click({ force: true });
+		await networkStorageCheckbox.click({ force: true });
 	}
 
 	@Step('Admin clicks on given checkbox inside a component')

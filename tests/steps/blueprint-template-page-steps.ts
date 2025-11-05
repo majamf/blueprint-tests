@@ -63,9 +63,11 @@ export default class BlueprintTemplatePageSteps {
 
 	@Step('Admin selects password to be required')
 	async adminSelectsPasswordToBeRequired() {
-		const passwordCheckbox = this.page.getByText('Require passcode on device').locator('label');
+		const trueRadioButton = this.page.locator(
+			'[wa-component="nebula--radio"][name="RequirePasscode.Value"][value="true"]'
+		);
 
-		await passwordCheckbox.click();
+		await trueRadioButton.click();
 	}
 
 	@Step('Admin clicks next button')
@@ -77,7 +79,7 @@ export default class BlueprintTemplatePageSteps {
 
 	@Step('Admin saves blueprint')
 	async adminsSavesBlueprint() {
-		const saveButton = this.page.locator(blueprintButtonLocator).locator('*[type="submit"]');
+		const saveButton = this.page.locator(`${blueprintButtonLocator}[type="submit"]`, { hasText: 'Save' });
 
 		const blueprintCreatePromise = this.blueprintsSteps.waitForBlueprintsCreateResponse();
 
