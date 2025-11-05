@@ -1,0 +1,77 @@
+name: Upgrade Propeller Instances
+on:
+  schedule:
+  - cron: "0 5 * * 6"
+  workflow_dispatch:
+    inputs:
+      develop_instance_url:
+        description: URL of the Develop instance
+        type: string
+      rc_instance_url:
+        description: URL of the RC instance
+        type: string
+      ga_instance_url:
+        description: URL of the GA instance
+        type: string
+      ga_1_instance_url:
+        description: URL of the GA-1 instance
+        type: string
+      ga_2_instance_url:
+        description: URL of the GA-2 instance
+        type: string
+
+jobs:
+  upgrade-instances:
+    runs-on: [self-hosted, jamf-ubuntu-latest]
+    name: Upgrade ${{ matrix.release_track }} Instance
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+        - release_track: Develop
+          instance_url: ${{ (github.event_name == 'schedule' && vars.JAMF_PRO_DEVELOP_STAGE_BASE_URL) || github.event.inputs.develop_instance_url }}
+        - release_track: RC
+          instance_url: ${{ (github.event_name == 'schedule' && vars.JAMF_PRO_RC_STAGE_BASE_URL) || github.event.inputs.rc_instance_url }}
+        - release_track: GA
+          instance_url: ${{ (github.event_name == 'schedule' && vars.JAMF_PRO_GA_STAGE_BASE_URL) || github.event.inputs.ga_instance_url }}
+        - release_track: GA-1
+          instance_url: ${{ (github.event_name == 'schedule' && vars.JAMF_PRO_GA_1_STAGE_BASE_URL) || github.event.inputs.ga_1_instance_url }}
+        - release_track: GA-2
+          instance_url: ${{ (github.event_name == 'schedule' && vars.JAMF_PRO_GA_2_STAGE_BASE_URL) || github.event.inputs.ga_2_instance_url }}
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v5
+
+    - name: Upgrade the ${{ matrix.release_track }} instance
+      uses: ./.github/actions/upgrade-instance
+      if: ${{ matrix.instance_url != '' }}
+      with:
+        release_track: ${{ matrix.release_track }}
+        instance_url: ${{ matrix.instance_url }}
+      env:
+        PROPELLER_API_KEY: ${{ secrets.PROPELLER_API_KEY }}
+
+  notify-failure:
+    needs: upgrade-instances
+    runs-on: [self-hosted, jamf-ubuntu-latest]
+    if: ${{ failure() }}
+    steps:
+    - name: Send Slack notification on failure
+      uses: slackapi/slack-github-action@v2
+      with:
+        token: ${{ secrets.GH_SLACK_TOKEN }}
+        method: chat.postMessage
+        payload: |
+          channel: ocean-tests
+          attachments:
+          - color: "#FF0000"
+            blocks:
+            - type: section
+              text:
+                type: mrkdwn
+                text: "*Blueprint Propeller Instance Upgrade failed*"
+            - type: section
+              text:
+                type: mrkdwn
+                text: "Workflow: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"

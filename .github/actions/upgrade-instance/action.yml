@@ -1,0 +1,119 @@
+name: Upgrade Propeller Instance
+description: Checks for the latest version of the specified release track and upgrades the given instance if not already on that version.
+inputs:
+  release_track:
+    description: Choose which release track to process (RC, Develop, GA, GA-1 or GA-2)
+    required: true
+  instance_url:
+    description: URL of the instance to upgrade
+    required: true
+
+runs:
+  using: composite
+  steps:
+  - name: Setup Environment
+    id: setup-env
+    shell: bash
+    run: |
+      set -eo pipefail
+      
+      propeller_url="https://pro-spinup-api.engops.jamf.build"
+      echo "PROPELLER_URL=$propeller_url" >> $GITHUB_ENV
+      
+      if [[ ! "${{ inputs.release_track }}" =~ ^(RC|Develop|GA|GA-1|GA-2)$ ]]; then
+        echo "Error: Invalid release track specified: ${{ inputs.release_track }}. Must be one of 'RC', 'Develop', 'GA', 'GA-1', or 'GA-2'. Exiting."
+        exit 1
+      fi
+      
+      if [[ "${{ inputs.release_track }}" == "Develop" ]]; then
+        echo "track=Develop" >> $GITHUB_OUTPUT
+      else
+        echo "track=Release" >> $GITHUB_OUTPUT
+      fi
+      
+      if [[ "${{ inputs.release_track }}" == "RC" ]]; then
+        echo "setting_name=jpro.current.rc" >> $GITHUB_OUTPUT
+      elif [[ "${{ inputs.release_track }}" == "GA" ]]; then
+        echo "setting_name=jpro.current.ga" >> $GITHUB_OUTPUT
+      elif [[ "${{ inputs.release_track }}" == "GA-1" ]]; then
+        echo "setting_name=jpro.ga.minus.one" >> $GITHUB_OUTPUT
+      elif [[ "${{ inputs.release_track }}" == "GA-2" ]]; then
+        echo "setting_name=jpro.ga.minus.two" >> $GITHUB_OUTPUT
+      fi
+      
+      echo "Fetching instance ID for instance found at ${{ inputs.instance_url }}."
+      
+      fqdn=$(echo "${{ inputs.instance_url }}" | sed -E 's|^[a-zA-Z]+://||')
+      
+      instance_id=$(
+        curl --fail-with-body \
+              --location "$propeller_url/pro?includeExpired=false" \
+              --header "X-API-KEY: ${{ env.PROPELLER_API_KEY }}" \
+                | jq -r --arg fqdn "$fqdn" '.[] | select(.fqdn == $fqdn) | .id'
+      )
+      
+      if [[ -z "$instance_id" ]]; then
+        echo "Error: Failed to retrieve instance ID for FQDN: $fqdn. Exiting."
+        exit 1
+      fi
+      
+      echo "Fetched instance ID: $instance_id for FQDN: $fqdn."
+      
+      echo "instance_id=$instance_id" >> $GITHUB_OUTPUT
+  - name: Fetch Latest Version
+    id: fetch-latest-version
+    shell: bash
+    run: |
+      set -eo pipefail
+      
+      echo "Fetching the latest version for the ${{ inputs.release_track }} release track."
+      
+      if [[ "${{ inputs.release_track }}" == "Develop" ]]; then
+        latest_full_version=$(
+          curl --fail-with-body \
+                --location "${{ env.PROPELLER_URL }}/pro/versions?track=Develop;instanceType=Atlas" \
+                --header "X-API-KEY: ${{ env.PROPELLER_API_KEY }}" \
+                  | jq -r '.[0]'
+        )
+      else
+        # Settings endpoint may return major.minor.0, even though newer patch versions may exist.
+        latest_version=$(
+          curl --fail-with-body \
+                --location "${{ env.PROPELLER_URL }}/settings/${{ steps.setup-env.outputs.setting_name }}" \
+                --header "X-API-KEY: ${{ env.PROPELLER_API_KEY }}" \
+                  | cut -d'-' -f1 | cut -d'.' -f1,2
+        )
+        echo "Fetched the latest version: $latest_version for the ${{ inputs.release_track }} release track."
+
+        latest_full_version=$(
+          curl --fail-with-body \
+                --location "${{ env.PROPELLER_URL }}/pro/versions?track=Release;instanceType=Atlas" \
+                --header "X-API-KEY: ${{ env.PROPELLER_API_KEY }}" \
+                  | jq -r --arg lv "$latest_version" '[.[] | select(startswith($lv))] | first'
+        )
+      fi
+      
+      echo "Fetched the latest full version: $latest_full_version for the ${{ inputs.release_track }} release track."
+      
+      if [[ -z "$latest_full_version" ]]; then
+        echo "Error: Failed to retrieve the latest full version for the ${{ inputs.release_track }} release track. Exiting."
+        exit 1
+      fi
+      
+      echo "latest_full_version=$latest_full_version" >> $GITHUB_OUTPUT
+  - name: Upgrade Instance
+    shell: bash
+    run: |
+      set -e
+      
+      echo "Initiating upgrade of instance found at ${{ inputs.instance_url }} to version: ${{ steps.fetch-latest-version.outputs.latest_full_version }}."
+      
+      curl --fail-with-body \
+          --location "${{ env.PROPELLER_URL }}/pro/${{ steps.setup-env.outputs.instance_id }}/upgrade" \
+          --request POST \
+          --header "X-API-KEY: ${{ env.PROPELLER_API_KEY }}" \
+          --header "Content-Type: application/json" \
+          --data "{
+              \"track\": \"${{ steps.setup-env.outputs.track }}\",
+              \"version\": \"${{ steps.fetch-latest-version.outputs.latest_full_version }}\"
+          }"
