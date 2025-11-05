@@ -101,7 +101,7 @@ export default class BlueprintDetailPageSteps {
 
 	@Step('Change blueprint description to "$0"')
 	async changeBlueprintDescription(newDescription: string) {
-		const descrtiptionElement = this.page.getByTestId('blueprint-description');
+		const descrtiptionElement = this.page.getByTestId('edit-blueprint-description');
 		await descrtiptionElement.click();
 
 		const descriptionInput = this.page.locator('input[name=description]');
