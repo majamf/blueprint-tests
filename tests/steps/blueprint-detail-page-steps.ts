@@ -79,6 +79,15 @@ export default class BlueprintDetailPageSteps {
 		);
 	}
 
+	private waitForBlueprintDetailsRefreshResponse() {
+		return this.page.waitForResponse((response) => {
+			const url = response.url();
+			const matchesBlueprintDetails = /\/blueprints\/management\/v1\/blueprints\/[0-9a-fA-F-]{36}$/.test(url);
+
+			return matchesBlueprintDetails && response.status() === 200 && response.request().method() === 'GET';
+		});
+	}
+
 	@Step('Blueprint with name "$0" is opened')
 	async blueprintWithNameIsOpened(name: string) {
 		const headings = this.page.getByRole('heading', { name }).filter({ hasText: name });
@@ -88,6 +97,8 @@ export default class BlueprintDetailPageSteps {
 
 	@Step('Change blueprint name to "$0"')
 	async changeBlueprintName(newName: string) {
+		const waitForUpdate = this.waitForBlueprintsUpdateResponse();
+		const waitForRefresh = this.waitForBlueprintDetailsRefreshResponse();
 		await this.page.getByTestId('edit-blueprint-name').click();
 
 		const nameInput = this.page.locator('input[name="name"]');
@@ -95,12 +106,16 @@ export default class BlueprintDetailPageSteps {
 
 		await nameInput.press('Enter');
 
+		await Promise.all([waitForUpdate, waitForRefresh]);
+
 		const updatedHeading = this.page.getByRole('heading', { name: newName });
 		await expect(updatedHeading.first()).toBeVisible();
 	}
 
 	@Step('Change blueprint description to "$0"')
 	async changeBlueprintDescription(newDescription: string) {
+		const waitForUpdate = this.waitForBlueprintsUpdateResponse();
+		const waitForRefresh = this.waitForBlueprintDetailsRefreshResponse();
 		const descrtiptionElement = this.page.getByTestId('edit-blueprint-description');
 		await descrtiptionElement.click();
 
@@ -108,6 +123,7 @@ export default class BlueprintDetailPageSteps {
 		await descriptionInput.fill(newDescription);
 
 		await descriptionInput.press('Enter');
+		await Promise.all([waitForUpdate, waitForRefresh]);
 
 		await expect(descrtiptionElement).toHaveText(newDescription);
 	}
