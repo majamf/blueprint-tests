@@ -104,6 +104,7 @@ test(
 		await blueprintDetailPageSteps.adminWaitsForToastToDisappear('Blueprint created');
 
 		await blueprintDetailPageSteps.changeBlueprintName('Disk_' + id);
+		await blueprintDetailPageSteps.changeBlueprintDescription('Some description');
 
 		await blueprintDetailPageSteps.adminSearchesForComponent('Disk management');
 		await blueprintDetailPageSteps.onlyOneBlueprintComponentIsDisplayedWithTitle('Disk Management Policy');
