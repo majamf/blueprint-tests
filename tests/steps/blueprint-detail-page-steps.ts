@@ -484,31 +484,6 @@ export default class BlueprintDetailPageSteps {
 		await blueprintGetPromise;
 	}
 
-	@Step('Admin saves metadata')
-	async adminSavesMetadata() {
-		const saveButton = this.page.locator(blueprintDrawerLocator).getByRole('button', { name: 'Save' });
-
-		const blueprintUpdatePromise = this.waitForBlueprintsUpdateResponse();
-		await saveButton.click();
-		await blueprintUpdatePromise;
-	}
-
-	@Step('Admin edits details of blueprint with new name "$0" and description "$1"')
-	async adminEditsDetailsOfBlueprint(name: string, description: string) {
-		const dropdown = this.page.locator(blueprintDropdownLocator);
-		const editButton = dropdown.getByText('Edit details');
-
-		await dropdown.focus();
-		await dropdown.click();
-
-		await editButton.focus();
-		await editButton.click();
-
-		await this.blueprintsSteps.adminFillsNameOfBlueprint(name);
-		await this.blueprintsSteps.adminFillsDescriptionOfBlueprint(description);
-		await this.adminSavesMetadata();
-	}
-
 	@Step('Admin reloads the blueprint details page')
 	async adminReloadsTheBlueprintDetailsPage() {
 		const blueprintDeploymentSummaryPromise = this.waitForBlueprintDeploymentSummaryResponse();
