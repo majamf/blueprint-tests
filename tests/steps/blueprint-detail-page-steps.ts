@@ -97,13 +97,13 @@ export default class BlueprintDetailPageSteps {
 
 	@Step('Change blueprint name to "$0"')
 	async changeBlueprintName(newName: string) {
-		const waitForUpdate = this.waitForBlueprintsUpdateResponse();
-		const waitForRefresh = this.waitForBlueprintDetailsRefreshResponse();
 		await this.page.getByTestId('edit-blueprint-name').click();
 
 		const nameInput = this.page.locator('input[name="name"]');
 		await nameInput.fill(newName);
 
+		const waitForUpdate = this.waitForBlueprintsUpdateResponse();
+		const waitForRefresh = this.waitForBlueprintDetailsRefreshResponse();
 		await nameInput.press('Enter');
 
 		await Promise.all([waitForUpdate, waitForRefresh]);
@@ -114,14 +114,14 @@ export default class BlueprintDetailPageSteps {
 
 	@Step('Change blueprint description to "$0"')
 	async changeBlueprintDescription(newDescription: string) {
-		const waitForUpdate = this.waitForBlueprintsUpdateResponse();
-		const waitForRefresh = this.waitForBlueprintDetailsRefreshResponse();
 		const descrtiptionElement = this.page.getByTestId('edit-blueprint-description');
 		await descrtiptionElement.click();
 
 		const descriptionInput = this.page.locator('input[name=description]');
 		await descriptionInput.fill(newDescription);
 
+		const waitForUpdate = this.waitForBlueprintsUpdateResponse();
+		const waitForRefresh = this.waitForBlueprintDetailsRefreshResponse();
 		await descriptionInput.press('Enter');
 		await Promise.all([waitForUpdate, waitForRefresh]);
 
