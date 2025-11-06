@@ -51,6 +51,7 @@ function* generateProjects(): Generator<Project<PlaywrightTestOptions & TestOpti
 			use: {
 				...devices['Desktop Chrome'],
 				viewport: { width: 1400, height: 900 },
+				permissions: ['local-network-access'],
 			},
 		},
 		{
