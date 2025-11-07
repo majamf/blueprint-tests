@@ -30,6 +30,8 @@ const RPconfig: ReportPortalConfig = {
 	includeTestSteps: true,
 };
 
+const isRunningInCI = !!process.env.CI;
+
 function tagsToGrep(tags: string[][]): RegExp {
 	return new RegExp(
 		tags
@@ -51,6 +53,11 @@ function* generateProjects(): Generator<Project<PlaywrightTestOptions & TestOpti
 			use: {
 				...devices['Desktop Chrome'],
 				viewport: { width: 1400, height: 900 },
+				...(isRunningInCI
+					? {}
+					: {
+							permissions: ['local-network-access'],
+						}),
 			},
 		},
 		{
@@ -59,11 +66,15 @@ function* generateProjects(): Generator<Project<PlaywrightTestOptions & TestOpti
 			use: {
 				...devices['Desktop Firefox'],
 				viewport: { width: 1400, height: 900 },
-				launchOptions: {
-					firefoxUserPrefs: {
-						'network.http.fast-fallback-to-IPv4': false,
-					},
-				},
+				...(isRunningInCI
+					? {}
+					: {
+							launchOptions: {
+								firefoxUserPrefs: {
+									'network.http.fast-fallback-to-IPv4': false,
+								},
+							},
+						}),
 			},
 		},
 		{
@@ -76,7 +87,7 @@ function* generateProjects(): Generator<Project<PlaywrightTestOptions & TestOpti
 		},
 	];
 
-	const populateCustomTemplates = !process.env.CI;
+	const populateCustomTemplates = !isRunningInCI;
 	const customTemplates: {
 		name: string;
 		tags: string[];
@@ -203,15 +214,15 @@ export default defineConfig({
 	/* Run tests in files in parallel */
 	fullyParallel: true,
 	/* Fail the build on CI if you accidentally left test.only in the source code. */
-	forbidOnly: !!process.env.CI,
+	forbidOnly: isRunningInCI,
 	/* Retry on CI only */
-	retries: process.env.CI ? 2 : 0,
+	retries: isRunningInCI ? 2 : 0,
 	/* Opt out of parallel tests on CI. */
-	workers: process.env.CI ? 3 : undefined,
+	workers: isRunningInCI ? 3 : undefined,
 	/* Reporter to use. See https://playwright.dev/docs/test-reporters */
 	reporter: [
 		['html', { open: 'never' }],
-		...(process.env.CI
+		...(isRunningInCI
 			? ([
 					['dot'],
 					['@reportportal/agent-js-playwright', RPconfig],
