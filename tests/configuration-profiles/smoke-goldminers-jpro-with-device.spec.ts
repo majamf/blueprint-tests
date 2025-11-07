@@ -40,11 +40,9 @@ test(
 		await jproLoginSteps.loginToJamfProCached(baseURL!, accountCredentials!);
 		await navigationSteps.adminOpensBlueprintsViaJamfProNavigation();
 		await blueprintsSteps.blueprintsPageIsOpen();
-		await blueprintsSteps.adminOpensBlueprintBuilder();
-		await navigationSteps.newBlueprintModalIsOpen();
-		await blueprintsSteps.adminFillsNameOfBlueprint(blueprintName);
-		await blueprintsSteps.adminFillsDescriptionOfBlueprint('e2e automated test');
 		const blueprintId = await blueprintsSteps.adminClicksCreateBlueprintButton();
+		await blueprintDetailPageSteps.changeBlueprintName(blueprintName);
+		await blueprintDetailPageSteps.changeBlueprintDescription('e2e automated test');
 
 		await blueprintDetailPageSteps.blueprintWithNameIsOpened(blueprintName);
 		await blueprintDetailPageSteps.adminWaitsForToastToDisappear('Blueprint created');

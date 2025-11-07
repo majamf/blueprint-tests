@@ -97,19 +97,14 @@ test(
 		await navigationSteps.adminOpensBlueprintsViaJamfProNavigation();
 		await blueprintsSteps.blueprintsPageIsOpen();
 
-		await blueprintsSteps.adminOpensBlueprintBuilder();
-
-		await navigationSteps.newBlueprintModalIsOpen();
-
-		await blueprintsSteps.adminFillsNameOfBlueprint('Disk_' + id);
-
-		await blueprintsSteps.adminFillsDescriptionOfBlueprint('Some description');
-
 		await blueprintsSteps.adminClicksCreateBlueprintButton();
 
-		await blueprintDetailPageSteps.blueprintWithNameIsOpened('Disk_' + id);
+		await blueprintDetailPageSteps.blueprintWithNameIsOpened('Untitled blueprint');
 
 		await blueprintDetailPageSteps.adminWaitsForToastToDisappear('Blueprint created');
+
+		await blueprintDetailPageSteps.changeBlueprintName('Disk_' + id);
+		await blueprintDetailPageSteps.changeBlueprintDescription('Some description');
 
 		await blueprintDetailPageSteps.adminSearchesForComponent('Disk management');
 		await blueprintDetailPageSteps.onlyOneBlueprintComponentIsDisplayedWithTitle('Disk Management Policy');
@@ -173,12 +168,9 @@ test(
 		await navigationSteps.adminOpensBlueprintsViaJamfProNavigation();
 		await blueprintsSteps.blueprintsPageIsOpen();
 
-		await blueprintsSteps.adminOpensBlueprintBuilder();
-
-		await navigationSteps.newBlueprintModalIsOpen();
-
-		await blueprintsSteps.adminFillsNameOfBlueprint('Search_test' + id);
 		await blueprintsSteps.adminClicksCreateBlueprintButton();
+
+		await blueprintDetailPageSteps.changeBlueprintName('Search_test' + id);
 
 		await blueprintDetailPageSteps.adminOpensScopeDrawer();
 		await blueprintDetailPageSteps.scopingDrawerIsOpened();

@@ -61,52 +61,18 @@ test(
 );
 
 test(
-	'Name and description of blueprint can be updated',
-	{ tag: ['@all-browsers', '@sbox', '@standalone'] },
-	async ({ page, baseURL }) => {
-		const sboxSteps = new SboxSetupSteps(page);
-		const blueprintSteps = new BlueprintsSteps(page);
-		const blueprintDetailPageSteps = new BlueprintDetailPageSteps(page);
-		const navigationSteps = new NavigationSteps(page);
-
-		await sboxSteps.sboxIsSetUp(baseURL!, clusterUrl);
-
-		await blueprintSteps.adminOpensBlueprintBuilder();
-
-		await navigationSteps.newBlueprintModalIsOpen();
-
-		await blueprintSteps.adminFillsNameOfBlueprint('Disk_' + id);
-		await blueprintSteps.adminFillsDescriptionOfBlueprint('Some description');
-		await blueprintSteps.adminClicksCreateBlueprintButton();
-
-		await blueprintDetailPageSteps.adminEditsDetailsOfBlueprint('Name updated' + id, 'Description updated' + id);
-		await navigationSteps.adminsOpensBlueprintsRoute();
-		await blueprintSteps.thereIsBlueprintWithName('Name updated' + id);
-		await blueprintSteps.thereIsBlueprintWithDescription('Description updated' + id);
-
-		await blueprintSteps.adminOpensBlueprintWithName('Name updated' + id);
-		await blueprintDetailPageSteps.adminDeletesBlueprint();
-		await blueprintSteps.thereIsNoBlueprintWithName('Name updated' + id);
-	}
-);
-
-test(
 	'Configuration of component can be updated',
 	{ tag: ['@all-browsers', '@sbox', '@standalone'] },
 	async ({ page, baseURL }) => {
 		const sboxSteps = new SboxSetupSteps(page);
 		const blueprintSteps = new BlueprintsSteps(page);
 		const blueprintDetailPageSteps = new BlueprintDetailPageSteps(page);
-		const navigationSteps = new NavigationSteps(page);
 		await sboxSteps.sboxIsSetUp(baseURL!, clusterUrl);
 
-		await blueprintSteps.adminOpensBlueprintBuilder();
-
-		await navigationSteps.newBlueprintModalIsOpen();
-
-		await blueprintSteps.adminFillsNameOfBlueprint('Disk_' + id);
-		await blueprintSteps.adminFillsDescriptionOfBlueprint('Some description');
 		await blueprintSteps.adminClicksCreateBlueprintButton();
+
+		await blueprintDetailPageSteps.changeBlueprintName('Disk_' + id);
+		await blueprintDetailPageSteps.changeBlueprintDescription('Some description');
 
 		await blueprintDetailPageSteps.adminOpensAddModalOfComponent('Disk management');
 
@@ -140,12 +106,10 @@ test(
 		const navigationSteps = new NavigationSteps(page);
 		await sboxSteps.sboxIsSetUp(baseURL!, clusterUrl);
 
-		await blueprintSteps.adminOpensBlueprintBuilder();
-
-		await navigationSteps.newBlueprintModalIsOpen();
-		await blueprintSteps.adminFillsNameOfBlueprint('Disk_' + id);
-		await blueprintSteps.adminFillsDescriptionOfBlueprint('Some description');
 		await blueprintSteps.adminClicksCreateBlueprintButton();
+
+		await blueprintDetailPageSteps.changeBlueprintName('Disk_' + id);
+		await blueprintDetailPageSteps.changeBlueprintDescription('Some description');
 
 		await blueprintDetailPageSteps.adminSearchesForComponent('Disk management');
 		await blueprintDetailPageSteps.onlyOneBlueprintComponentIsDisplayedWithTitle('Disk Management Policy');
@@ -197,19 +161,17 @@ test('Blueprints can be filtered', { tag: ['@all-browsers', '@sbox', '@standalon
 	const sboxSteps = new SboxSetupSteps(page);
 	const blueprintSteps = new BlueprintsSteps(page);
 	const navigationSteps = new NavigationSteps(page);
+	const blueprintDetailPageSteps = new BlueprintDetailPageSteps(page);
 	await sboxSteps.sboxIsSetUp(baseURL!, clusterUrl);
 
-	await blueprintSteps.adminOpensBlueprintBuilder();
-
-	await navigationSteps.newBlueprintModalIsOpen();
-	await blueprintSteps.adminFillsNameOfBlueprint('Blueprint_' + id);
 	await blueprintSteps.adminClicksCreateBlueprintButton();
+
+	await blueprintDetailPageSteps.changeBlueprintName('Blueprint_' + id);
 
 	await navigationSteps.adminsOpensBlueprintsRoute();
-	await blueprintSteps.adminOpensBlueprintBuilder();
-	await navigationSteps.newBlueprintModalIsOpen();
-	await blueprintSteps.adminFillsNameOfBlueprint('Blueprint2_' + id);
 	await blueprintSteps.adminClicksCreateBlueprintButton();
+
+	await blueprintDetailPageSteps.changeBlueprintName('Blueprint2_' + id);
 
 	await navigationSteps.adminsOpensBlueprintsRoute();
 	await blueprintSteps.adminSearchesForBlueprint('Blueprint2_' + id);
@@ -224,14 +186,11 @@ test(
 		const sboxSteps = new SboxSetupSteps(page);
 		const blueprintSteps = new BlueprintsSteps(page);
 		const blueprintDetailPageSteps = new BlueprintDetailPageSteps(page);
-		const navigationSteps = new NavigationSteps(page);
 		await sboxSteps.sboxIsSetUp(baseURL!, clusterUrl);
 
-		await blueprintSteps.adminOpensBlueprintBuilder();
-		await navigationSteps.newBlueprintModalIsOpen();
-		await blueprintSteps.adminFillsNameOfBlueprint('Blueprint_' + id);
 		await blueprintSteps.adminClicksCreateBlueprintButton();
 
+		await blueprintDetailPageSteps.changeBlueprintName('Blueprint_' + id);
 		await blueprintDetailPageSteps.adminSearchesForComponent('Passcode');
 		await blueprintDetailPageSteps.onlyOneBlueprintComponentIsDisplayedWithTitle('Passcode Policy');
 	}

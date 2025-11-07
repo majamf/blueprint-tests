@@ -28,11 +28,9 @@ test(
 		await jproLoginSteps.loginToJamfProCached(baseURL!, accountCredentials!);
 		await navigationSteps.adminOpensBlueprintsViaJamfProNavigation();
 		await blueprintsSteps.blueprintsPageIsOpen();
-		await blueprintsSteps.adminOpensBlueprintBuilder();
-		await navigationSteps.newBlueprintModalIsOpen();
-		await blueprintsSteps.adminFillsNameOfBlueprint(blueprintName);
-		await blueprintsSteps.adminFillsDescriptionOfBlueprint('e2e automated test');
 		await blueprintsSteps.adminClicksCreateBlueprintButton();
+		await blueprintDetailPageSteps.changeBlueprintName(blueprintName);
+		await blueprintDetailPageSteps.changeBlueprintDescription('e2e automated test');
 
 		await blueprintDetailPageSteps.adminSearchesForComponent('Lock Screen Message');
 		await blueprintDetailPageSteps.onlyOneBlueprintComponentIsDisplayedWithTitle('Lock Screen Message');
@@ -72,11 +70,9 @@ test(
 		await jproLoginSteps.loginToJamfProCached(baseURL!, accountCredentials!);
 		await navigationSteps.adminOpensBlueprintsViaJamfProNavigation();
 		await blueprintsSteps.blueprintsPageIsOpen();
-		await blueprintsSteps.adminOpensBlueprintBuilder();
-		await navigationSteps.newBlueprintModalIsOpen();
-		await blueprintsSteps.adminFillsNameOfBlueprint(blueprintName);
-		await blueprintsSteps.adminFillsDescriptionOfBlueprint('e2e automated test');
 		await blueprintsSteps.adminClicksCreateBlueprintButton();
+		await blueprintDetailPageSteps.changeBlueprintName(blueprintName);
+		await blueprintDetailPageSteps.changeBlueprintDescription('e2e automated test');
 
 		await blueprintDetailPageSteps.adminOpensAddModalOfComponent('Lock Screen Message');
 		await blueprintDetailPageSteps.configProfileComponentAddModalIsOpened('Lock Screen Message');

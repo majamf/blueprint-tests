@@ -79,11 +79,53 @@ export default class BlueprintDetailPageSteps {
 		);
 	}
 
+	private waitForBlueprintDetailsRefreshResponse() {
+		return this.page.waitForResponse((response) => {
+			const url = response.url();
+			const matchesBlueprintDetails = /\/blueprints\/management\/v1\/blueprints\/[0-9a-fA-F-]{36}$/.test(url);
+
+			return matchesBlueprintDetails && response.status() === 200 && response.request().method() === 'GET';
+		});
+	}
+
 	@Step('Blueprint with name "$0" is opened')
 	async blueprintWithNameIsOpened(name: string) {
-		const blueprintHeading = this.page.getByRole('heading', { name: name });
+		const headings = this.page.getByRole('heading', { name }).filter({ hasText: name });
 
-		await expect(blueprintHeading).toBeVisible();
+		await expect(headings.first()).toBeVisible();
+	}
+
+	@Step('Change blueprint name to "$0"')
+	async changeBlueprintName(newName: string) {
+		await this.page.getByTestId('edit-blueprint-name').click();
+
+		const nameInput = this.page.locator('input[name="name"]');
+		await nameInput.fill(newName);
+
+		const waitForUpdate = this.waitForBlueprintsUpdateResponse();
+		const waitForRefresh = this.waitForBlueprintDetailsRefreshResponse();
+		await nameInput.press('Enter');
+
+		await Promise.all([waitForUpdate, waitForRefresh]);
+
+		const updatedHeading = this.page.getByRole('heading', { name: newName });
+		await expect(updatedHeading.first()).toBeVisible();
+	}
+
+	@Step('Change blueprint description to "$0"')
+	async changeBlueprintDescription(newDescription: string) {
+		const descrtiptionElement = this.page.getByTestId('edit-blueprint-description');
+		await descrtiptionElement.click();
+
+		const descriptionInput = this.page.locator('input[name=description]');
+		await descriptionInput.fill(newDescription);
+
+		const waitForUpdate = this.waitForBlueprintsUpdateResponse();
+		const waitForRefresh = this.waitForBlueprintDetailsRefreshResponse();
+		await descriptionInput.press('Enter');
+		await Promise.all([waitForUpdate, waitForRefresh]);
+
+		await expect(descrtiptionElement).toHaveText(newDescription);
 	}
 
 	@Step('Admin opens scope drawer')
@@ -440,31 +482,6 @@ export default class BlueprintDetailPageSteps {
 		await this.page.waitForURL('**/list');
 
 		await blueprintGetPromise;
-	}
-
-	@Step('Admin saves metadata')
-	async adminSavesMetadata() {
-		const saveButton = this.page.locator(blueprintDrawerLocator).getByRole('button', { name: 'Save' });
-
-		const blueprintUpdatePromise = this.waitForBlueprintsUpdateResponse();
-		await saveButton.click();
-		await blueprintUpdatePromise;
-	}
-
-	@Step('Admin edits details of blueprint with new name "$0" and description "$1"')
-	async adminEditsDetailsOfBlueprint(name: string, description: string) {
-		const dropdown = this.page.locator(blueprintDropdownLocator);
-		const editButton = dropdown.getByText('Edit details');
-
-		await dropdown.focus();
-		await dropdown.click();
-
-		await editButton.focus();
-		await editButton.click();
-
-		await this.blueprintsSteps.adminFillsNameOfBlueprint(name);
-		await this.blueprintsSteps.adminFillsDescriptionOfBlueprint(description);
-		await this.adminSavesMetadata();
 	}
 
 	@Step('Admin reloads the blueprint details page')
