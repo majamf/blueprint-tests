@@ -53,9 +53,9 @@ test(
 		await blueprintTemplatePageSteps.adminOpensTemplateWithName('Set passcode policies');
 
 		await blueprintTemplatePageSteps.generalPageIsOpen();
-		await blueprintsSteps.adminFillsNameOfBlueprint('Passcode_' + id);
+		await blueprintTemplatePageSteps.adminFillsNameOfBlueprint('Passcode_' + id);
 
-		await blueprintsSteps.adminFillsDescriptionOfBlueprint('Some description');
+		await blueprintTemplatePageSteps.adminFillsDescriptionOfBlueprint('Some description');
 		await blueprintTemplatePageSteps.adminClicksNextButton();
 
 		await blueprintTemplatePageSteps.scopingPageIsOpen();
@@ -98,6 +98,10 @@ test(
 		await blueprintsSteps.blueprintsPageIsOpen();
 
 		await blueprintsSteps.adminClicksCreateBlueprintButton();
+
+		await blueprintDetailPageSteps.blueprintWithNameIsOpened('Untitled blueprint');
+
+		await blueprintDetailPageSteps.adminWaitsForToastToDisappear('Blueprint created');
 
 		await blueprintDetailPageSteps.changeBlueprintName('Disk_' + id);
 

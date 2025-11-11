@@ -116,16 +116,6 @@ export default class BlueprintsSteps {
 		await expect(expectedTemplateLocator).toBeVisible();
 	}
 
-	@Step('Admin fills name of blueprint')
-	async adminFillsNameOfBlueprint(name: string) {
-		await this.fillNameOfBlueprint(name);
-	}
-
-	@Step('Admin fills description of blueprint')
-	async adminFillsDescriptionOfBlueprint(description: string) {
-		await this.fillDescriptionOfBlueprint(description);
-	}
-
 	@Step('Admin searches for blueprint template "$0"')
 	async adminSearchesForBlueprintTemplate(templateTitle: string) {
 		await this.filterBlueprintsAndBlueprintTemplates(templateTitle);
