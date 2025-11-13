@@ -6,13 +6,6 @@ export default class UtilsSteps {
 
 	@Step('Disable animations')
 	public async disableAnimations() {
-		await this.page.addStyleTag({
-			content: `
-    * {
-      animation: none !important;
-      transition: none !important;
-    }
-  `,
-		});
+		await this.page.emulateMedia({ reducedMotion: 'reduce' });
 	}
 }
