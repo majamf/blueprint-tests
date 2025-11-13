@@ -28,7 +28,6 @@ const RPconfig: ReportPortalConfig = {
 	launch: 'blueprint-test',
 	description: 'Playwright blueprint-tests',
 	includeTestSteps: true,
-	debug: true,
 };
 
 const isRunningInCI = !!process.env.CI;
