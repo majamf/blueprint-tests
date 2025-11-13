@@ -46,6 +46,7 @@ export default class JSchoolLoginSteps {
 		await passwordInput.fill(password);
 		await loginButton.click();
 
+		await this.page.waitForLoadState('load');
 		await this.page.waitForURL(baseUrl + '/**');
 
 		if (this.page.url().startsWith(baseUrl + 'agreement')) {
