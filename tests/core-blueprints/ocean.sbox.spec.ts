@@ -91,6 +91,7 @@ test(
 		await blueprintDetailPageSteps.adminsClicksOnCancelButton();
 
 		await blueprintDetailPageSteps.adminDeletesBlueprint();
+		await blueprintSteps.thereIsNoBlueprintWithName('Disk_' + id);
 	}
 );
 
@@ -133,6 +134,7 @@ test(
 		await blueprintDetailPageSteps.adminDeletesComponent('Disk management');
 
 		await blueprintDetailPageSteps.adminDeletesBlueprint();
+		await blueprintSteps.thereIsNoBlueprintWithName('Disk_' + id);
 	}
 );
 
@@ -177,6 +179,15 @@ test('Blueprints can be filtered', { tag: ['@all-browsers', '@sbox', '@standalon
 	await blueprintSteps.adminSearchesForBlueprint('Blueprint2_' + id);
 	await blueprintSteps.thereIsNoBlueprintWithName('Blueprint_' + id);
 	await blueprintSteps.onlyOneBlueprintIsDisplayedWithName('Blueprint2_' + id);
+
+	await navigationSteps.adminsOpensBlueprintsRoute();
+	await blueprintSteps.adminOpensBlueprintWithName('Blueprint_' + id);
+	await blueprintDetailPageSteps.adminDeletesBlueprint();
+	await blueprintSteps.thereIsNoBlueprintWithName('Blueprint_' + id);
+
+	await blueprintSteps.adminOpensBlueprintWithName('Blueprint2_' + id);
+	await blueprintDetailPageSteps.adminDeletesBlueprint();
+	await blueprintSteps.thereIsNoBlueprintWithName('Blueprint2_' + id);
 });
 
 test(
@@ -191,7 +202,10 @@ test(
 		await blueprintSteps.adminClicksCreateBlueprintButton();
 
 		await blueprintDetailPageSteps.changeBlueprintName('Blueprint_' + id);
-		await blueprintDetailPageSteps.adminSearchesForComponent('Passcode');
-		await blueprintDetailPageSteps.onlyOneBlueprintComponentIsDisplayedWithTitle('Passcode Policy');
+		await blueprintDetailPageSteps.adminSearchesForComponent('Disk');
+		await blueprintDetailPageSteps.onlyOneBlueprintComponentIsDisplayedWithTitle('Disk Management Policy');
+
+		await blueprintDetailPageSteps.adminDeletesBlueprint();
+		await blueprintSteps.thereIsNoBlueprintWithName('Blueprint_' + id);
 	}
 );
