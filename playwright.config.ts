@@ -23,7 +23,7 @@ import {
 
 const RPconfig: ReportPortalConfig = {
 	apiKey: process.env.RP_API_KEY!,
-	endpoint: process.env.RP_URL ?? 'https://jamf.reportportal.io/api/v1',
+	endpoint: process.env.RP_URL ?? 'https://jamf.reportportal.io/api/v2',
 	project: process.env.RP_PROJECT ?? 'jamf_capabilities',
 	launch: 'blueprint-test',
 	description: 'Playwright blueprint-tests',
