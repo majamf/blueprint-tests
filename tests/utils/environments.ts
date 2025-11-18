@@ -11,7 +11,7 @@ export type Environment = {
 	apiCredentials: ApiCredentials;
 };
 
-export type ProEnvironmentType = 'develop' | 'rc' | 'ga' | 'ga-1' | 'ga-2' | 'asyncDeployment';
+export type ProEnvironmentType = 'develop' | 'rc' | 'ga' | 'ga-1' | 'ga-2';
 
 export type ProEnvironments = {
 	[env in ProEnvironmentType]?: Environment;
@@ -92,7 +92,6 @@ function makeProEnvironments(standardEnv: StandardEnvironmentType): ProEnvironme
 		ga: makeEnvironment(`${proPrefix}_GA_${suffix}`),
 		'ga-1': makeEnvironment(`${proPrefix}_GA_1_${suffix}`),
 		'ga-2': makeEnvironment(`${proPrefix}_GA_2_${suffix}`),
-		asyncDeployment: makeEnvironment(`${proPrefix}_ASYNC_DEPLOYMENT_${suffix}`),
 	};
 }
 

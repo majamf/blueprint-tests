@@ -155,11 +155,6 @@ function* generateProjects(): Generator<Project<PlaywrightTestOptions & TestOpti
 			environmentSelector: (environments) => environments.pro?.develop,
 		},
 		{
-			name: 'Jamf Pro - Async deployments',
-			tags: ['@pro'],
-			environmentSelector: (environments) => environments.pro?.asyncDeployment,
-		},
-		{
 			name: 'Jamf Pro - Latest RC',
 			tags: ['@pro-legacy'],
 			environmentSelector: (environments) => environments.pro?.rc,
