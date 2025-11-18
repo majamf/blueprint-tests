@@ -1,4 +1,4 @@
-import { expect, type Locator, type Page } from '@playwright/test';
+import { expect, type Locator, type Page, type WorkerInfo } from '@playwright/test';
 import UtilsSteps from './utils-steps';
 import { type AccountCredentials, Step } from '../utils/utils';
 import fs from 'node:fs/promises';
@@ -54,11 +54,11 @@ export default class JProLoginSteps {
 	}
 
 	@Step('Login to Jamf Pro at "$0" with stored auth state')
-	public async loginToJamfProCached(baseUrl: string, accountCredentials: AccountCredentials) {
+	public async loginToJamfProCached(baseUrl: string, accountCredentials: AccountCredentials, workerInfo: WorkerInfo) {
 		await this.utilsSteps.disableAnimations();
 
 		const hostname = new URL(baseUrl).hostname;
-		const authFile = 'playwright/' + hostname + '.auth.json';
+		const authFile = `playwright/${hostname}_${workerInfo.workerIndex}.auth.json`;
 
 		const authRestored = await this.tryRestoreSession(authFile);
 

@@ -26,7 +26,7 @@ test(
 			description: 'Not executed in all browsers due to nature of the test and high flakiness caused by mimic',
 		},
 	},
-	async ({ page, baseURL, accountCredentials, apiCredentials }) => {
+	async ({ page, baseURL, accountCredentials, apiCredentials }, workerInfo) => {
 		const jproLoginSteps = new JProLoginSteps(page);
 		const blueprintsSteps = new BlueprintsSteps(page);
 		const blueprintDetailPageSteps = new BlueprintDetailPageSteps(page);
@@ -37,7 +37,7 @@ test(
 		const udid = await jproApiSteps.getMobileDeviceUdid();
 		const blueprintName = `Blueprint_with_CP_e2e_${id}`;
 
-		await jproLoginSteps.loginToJamfProCached(baseURL!, accountCredentials!);
+		await jproLoginSteps.loginToJamfProCached(baseURL!, accountCredentials!, workerInfo);
 		await navigationSteps.adminOpensBlueprintsViaJamfProNavigation();
 		await blueprintsSteps.blueprintsPageIsOpen();
 		const blueprintId = await blueprintsSteps.adminClicksCreateBlueprintButton();

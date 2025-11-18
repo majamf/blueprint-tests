@@ -19,12 +19,12 @@ test.beforeEach(async () => {
 test(
 	'Blueprints list is loaded in Jamf Pro',
 	{ tag: ['@all-browsers', '@dev', '@stage', '@pro'] },
-	async ({ page, baseURL, accountCredentials }) => {
+	async ({ page, baseURL, accountCredentials }, workerInfo) => {
 		const jproLoginSteps = new JProLoginSteps(page);
 		const blueprintsSteps = new BlueprintsSteps(page);
 		const navigationSteps = new NavigationSteps(page);
 
-		await jproLoginSteps.loginToJamfProCached(baseURL!, accountCredentials!);
+		await jproLoginSteps.loginToJamfProCached(baseURL!, accountCredentials!, workerInfo);
 
 		await navigationSteps.adminOpensBlueprintsViaJamfProNavigation();
 		await blueprintsSteps.blueprintsPageIsOpen();
@@ -36,14 +36,14 @@ test(
 test(
 	'Blueprint can be added via templates and removed in Jamf Pro',
 	{ tag: ['@all-browsers', '@dev', '@stage', '@pro'] },
-	async ({ page, baseURL, accountCredentials }) => {
+	async ({ page, baseURL, accountCredentials }, workerInfo) => {
 		const jproLoginSteps = new JProLoginSteps(page);
 		const blueprintsSteps = new BlueprintsSteps(page);
 		const blueprintTemplatePageSteps = new BlueprintTemplatePageSteps(page);
 		const blueprintDetailPageSteps = new BlueprintDetailPageSteps(page);
 		const navigationSteps = new NavigationSteps(page);
 
-		await jproLoginSteps.loginToJamfProCached(baseURL!, accountCredentials!);
+		await jproLoginSteps.loginToJamfProCached(baseURL!, accountCredentials!, workerInfo);
 
 		await navigationSteps.adminOpensBlueprintsViaJamfProNavigation();
 		await blueprintsSteps.blueprintsPageIsOpen();
@@ -84,7 +84,7 @@ test(
 	{
 		tag: ['@chrome', '@dev', '@stage', '@pro', '@pro-legacy'],
 	},
-	async ({ page, browserName, baseURL, accountCredentials }) => {
+	async ({ page, browserName, baseURL, accountCredentials }, workerInfo) => {
 		test.fixme(browserName === 'webkit' || browserName === 'firefox', 'https://jamfpdd.atlassian.net/browse/JSC-62590');
 
 		const jproLoginSteps = new JProLoginSteps(page);
@@ -92,7 +92,7 @@ test(
 		const blueprintDetailPageSteps = new BlueprintDetailPageSteps(page);
 		const navigationSteps = new NavigationSteps(page);
 
-		await jproLoginSteps.loginToJamfProCached(baseURL!, accountCredentials!);
+		await jproLoginSteps.loginToJamfProCached(baseURL!, accountCredentials!, workerInfo);
 
 		await navigationSteps.adminOpensBlueprintsViaJamfProNavigation();
 		await blueprintsSteps.blueprintsPageIsOpen();
@@ -139,12 +139,12 @@ test(
 test(
 	'Templates are properly loaded',
 	{ tag: ['@all-browsers', '@dev', '@stage', '@pro'] },
-	async ({ page, baseURL, accountCredentials }) => {
+	async ({ page, baseURL, accountCredentials }, workerInfo) => {
 		const jproLoginSteps = new JProLoginSteps(page);
 		const blueprintsSteps = new BlueprintsSteps(page);
 		const navigationSteps = new NavigationSteps(page);
 
-		await jproLoginSteps.loginToJamfProCached(baseURL!, accountCredentials!);
+		await jproLoginSteps.loginToJamfProCached(baseURL!, accountCredentials!, workerInfo);
 
 		await navigationSteps.adminOpensBlueprintsViaJamfProNavigation();
 		await blueprintsSteps.blueprintsPageIsOpen();
@@ -157,13 +157,13 @@ test(
 test(
 	'Searching in scope works',
 	{ tag: ['@all-browsers', '@dev', '@stage', '@pro', '@pro-legacy'] },
-	async ({ page, baseURL, accountCredentials }) => {
+	async ({ page, baseURL, accountCredentials }, workerInfo) => {
 		const jproLoginSteps = new JProLoginSteps(page);
 		const blueprintsSteps = new BlueprintsSteps(page);
 		const blueprintDetailPageSteps = new BlueprintDetailPageSteps(page);
 		const navigationSteps = new NavigationSteps(page);
 
-		await jproLoginSteps.loginToJamfProCached(baseURL!, accountCredentials!);
+		await jproLoginSteps.loginToJamfProCached(baseURL!, accountCredentials!, workerInfo);
 
 		await navigationSteps.adminOpensBlueprintsViaJamfProNavigation();
 		await blueprintsSteps.blueprintsPageIsOpen();

@@ -18,14 +18,14 @@ test.beforeEach(async () => {
 test(
 	'Config profile component can be filtered by component name, key name and OS type',
 	{ tag: ['@all-browsers', '@stage', '@pro'] },
-	async ({ page, baseURL, accountCredentials }) => {
+	async ({ page, baseURL, accountCredentials }, workerInfo) => {
 		const jproLoginSteps = new JProLoginSteps(page);
 		const blueprintsSteps = new BlueprintsSteps(page);
 		const blueprintDetailPageSteps = new BlueprintDetailPageSteps(page);
 		const navigationSteps = new NavigationSteps(page);
 		const blueprintName = `Blueprint_with_CP_e2e_${id}`;
 
-		await jproLoginSteps.loginToJamfProCached(baseURL!, accountCredentials!);
+		await jproLoginSteps.loginToJamfProCached(baseURL!, accountCredentials!, workerInfo);
 		await navigationSteps.adminOpensBlueprintsViaJamfProNavigation();
 		await blueprintsSteps.blueprintsPageIsOpen();
 		await blueprintsSteps.adminClicksCreateBlueprintButton();
@@ -60,14 +60,14 @@ test(
 test(
 	'Config profile component can be updated',
 	{ tag: ['@all-browsers', '@stage', '@pro'] },
-	async ({ page, baseURL, accountCredentials }) => {
+	async ({ page, baseURL, accountCredentials }, workerInfo) => {
 		const jproLoginSteps = new JProLoginSteps(page);
 		const blueprintsSteps = new BlueprintsSteps(page);
 		const blueprintDetailPageSteps = new BlueprintDetailPageSteps(page);
 		const navigationSteps = new NavigationSteps(page);
 		const blueprintName = `Blueprint_with_CP_e2e_${id}`;
 
-		await jproLoginSteps.loginToJamfProCached(baseURL!, accountCredentials!);
+		await jproLoginSteps.loginToJamfProCached(baseURL!, accountCredentials!, workerInfo);
 		await navigationSteps.adminOpensBlueprintsViaJamfProNavigation();
 		await blueprintsSteps.blueprintsPageIsOpen();
 		await blueprintsSteps.adminClicksCreateBlueprintButton();
