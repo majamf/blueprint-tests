@@ -71,6 +71,7 @@ test(
 		await navigationSteps.adminOpensBlueprintsViaJamfProNavigation();
 		await blueprintsSteps.blueprintsPageIsOpen();
 		await blueprintsSteps.adminClicksCreateBlueprintButton();
+		await blueprintDetailPageSteps.blueprintWithNameIsOpened('Untitled blueprint');
 		await blueprintDetailPageSteps.changeBlueprintName(blueprintName);
 		await blueprintDetailPageSteps.changeBlueprintDescription('e2e automated test');
 

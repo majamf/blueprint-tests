@@ -92,8 +92,8 @@ test(
 		await blueprintsSteps.blueprintsPageIsOpen();
 		const blueprintId = await blueprintsSteps.adminClicksCreateBlueprintButton();
 
-		await blueprintDetailPageSteps.blueprintWithNameIsOpened('Untitled blueprint');
 		await blueprintDetailPageSteps.adminWaitsForToastToDisappear('Blueprint created');
+		await blueprintDetailPageSteps.blueprintWithNameIsOpened('Untitled blueprint');
 		await blueprintDetailPageSteps.adminOpensAddModalOfComponent('Lock Screen Message');
 		await blueprintDetailPageSteps.configProfileComponentDrawerIsOpened('Lock Screen Message');
 		await blueprintDetailPageSteps.adminClicksOnGivenCheckbox('AssetTagInformation');
