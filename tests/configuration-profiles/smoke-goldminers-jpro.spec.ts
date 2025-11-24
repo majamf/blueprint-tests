@@ -29,6 +29,7 @@ test(
 		await navigationSteps.adminOpensBlueprintsViaJamfProNavigation();
 		await blueprintsSteps.blueprintsPageIsOpen();
 		await blueprintsSteps.adminClicksCreateBlueprintButton();
+		await blueprintDetailPageSteps.adminWaitsForToastToDisappear('Blueprint created');
 		await blueprintDetailPageSteps.changeBlueprintName(blueprintName);
 		await blueprintDetailPageSteps.changeBlueprintDescription('e2e automated test');
 
@@ -71,6 +72,8 @@ test(
 		await navigationSteps.adminOpensBlueprintsViaJamfProNavigation();
 		await blueprintsSteps.blueprintsPageIsOpen();
 		await blueprintsSteps.adminClicksCreateBlueprintButton();
+		await blueprintDetailPageSteps.adminWaitsForToastToDisappear('Blueprint created');
+		await blueprintDetailPageSteps.blueprintWithNameIsOpened('Untitled blueprint');
 		await blueprintDetailPageSteps.changeBlueprintName(blueprintName);
 		await blueprintDetailPageSteps.changeBlueprintDescription('e2e automated test');
 
