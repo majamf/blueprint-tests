@@ -27,6 +27,7 @@ export default class JProLoginSteps {
 		await emailInput.fill(email);
 		await continueButton.click();
 
+		await this.page.waitForURL('**/login/password**');
 		await this.page.waitForLoadState('load');
 
 		await passwordInput.fill(password);

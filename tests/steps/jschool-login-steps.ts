@@ -20,34 +20,23 @@ export default class JSchoolLoginSteps {
 		await this.page.goto(baseUrl);
 		await this.page.waitForLoadState('load');
 
-		const loginPasswordRequest = this.page.waitForResponse(
-			(response) =>
-				response.url().includes('/login/password') && response.status() === 200 && response.request().method() === 'GET'
-		);
-
 		await emailInput.fill(email);
 		await continueButton.click();
 
+		await this.page.waitForURL('**/login/password**');
 		await this.page.waitForLoadState('load');
-		await loginPasswordRequest;
 
-		const apiTokenRequest = this.page.waitForResponse(
-			(response) =>
-				response.url().includes('/default/apiToken') &&
-				response.status() === 200 &&
-				response.request().method() === 'GET'
-		);
+		await passwordInput.fill(password);
 
 		const dashboardRequests = this.page.waitForResponse(
 			(response) =>
 				response.url().includes('/dashboard/') && response.status() === 200 && response.request().method() === 'GET'
 		);
 
-		await passwordInput.fill(password);
 		await loginButton.click();
 
-		await this.page.waitForLoadState('load');
 		await this.page.waitForURL(baseUrl + '/**');
+		await this.page.waitForLoadState('load');
 
 		if (this.page.url().startsWith(baseUrl + 'agreement')) {
 			await this.page.getByRole('link', { name: 'Continue' }).click();
@@ -63,7 +52,7 @@ export default class JSchoolLoginSteps {
 			await this.page.getByRole('link', { name: 'Continue' }).click();
 		}
 
-		await apiTokenRequest;
+		await this.page.waitForURL('**/dashboard');
 		await dashboardRequests;
 
 		const dashboardHeadingLocator = this.page.getByRole('heading', { name: 'Dashboard' });
@@ -96,7 +85,9 @@ export default class JSchoolLoginSteps {
 		const inventoryLink = this.page.locator('.topmenu').getByRole('link', { name: 'Inventory' });
 		await inventoryLink.click();
 
+		await this.page.waitForURL('**/devices');
 		await this.page.waitForLoadState('load');
+
 		await blueprintsFFRequest;
 		await blueprintsRolloutFFRequest;
 		await devicesRequest;
