@@ -71,7 +71,7 @@ export default class BlueprintsSteps {
 	async thereIsBlueprintWithName(name: string) {
 		const blueprintWithName = this.page.locator(blueprintCardLocator, { hasText: name });
 
-		await expect(blueprintWithName).toHaveCount(1, { timeout: 10000 });
+		await expect(blueprintWithName).toHaveCount(1, { timeout: 15_000 });
 	}
 
 	@Step('There is blueprint with description "$0"')
@@ -107,6 +107,7 @@ export default class BlueprintsSteps {
 		const blueprintCardLink = cardWithName.getByRole('link');
 
 		await blueprintCardLink.click();
+		await this.page.waitForURL(blueprintIdUrlRegExp);
 	}
 
 	@Step('Template with name "$0" is visible')

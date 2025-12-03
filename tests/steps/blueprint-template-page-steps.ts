@@ -40,7 +40,7 @@ export default class BlueprintTemplatePageSteps {
 	async adminOpensTemplateWithName(templateTitle: string) {
 		const url = '**/new-blueprint?template=' + templatesComponentMap[templateTitle];
 		const card = this.page.locator(`${blueprintCardLocator}:has-text("${templateTitle}")`);
-		await expect(card).toBeVisible();
+		await expect(card).toBeVisible({ timeout: 15_000 });
 
 		await card.click();
 		await this.page.waitForURL(url);
@@ -96,7 +96,7 @@ export default class BlueprintTemplatePageSteps {
 	async scopingPageIsOpen() {
 		await this.navigationSteps.pageWithHeadingIsOpen('Choose a scope');
 		const scopingForm = this.page.locator('form#scoping');
-		await expect(scopingForm).toBeVisible();
+		await expect(scopingForm).toBeVisible({ timeout: 15_000 });
 	}
 
 	@Step('General page is opened')

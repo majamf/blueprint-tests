@@ -77,10 +77,6 @@ test(
 			'com.apple.configuration.passcode.settings'
 		);
 
-		await blueprintDetailPageSteps.adminReloadsTheBlueprintDetailsPage();
-
-		await blueprintDetailPageSteps.blueprintWithNameIsOpened('Passcode_' + id);
-
 		await blueprintDetailPageSteps.thereAreDeployedDevicesInAnalytics(1);
 
 		await blueprintDetailPageSteps.adminDeletesBlueprint();

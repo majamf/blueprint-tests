@@ -58,8 +58,6 @@ test(
 		await blueprintDetailPageSteps.adminDeploysBlueprint();
 		await mimicSteps.blueprintIsDeployedToMimicDeviceViaJamfPro(blueprintId, udid, 'com.apple.configuration.legacy');
 
-		await blueprintDetailPageSteps.adminReloadsTheBlueprintDetailsPage();
-		await blueprintDetailPageSteps.blueprintWithNameIsOpened(blueprintName);
 		await blueprintDetailPageSteps.thereAreDeployedDevicesInAnalytics(1);
 
 		await blueprintDetailPageSteps.adminDeletesBlueprint();
@@ -105,8 +103,6 @@ test(
 		await blueprintDetailPageSteps.adminDeploysBlueprint();
 		await mimicSteps.blueprintIsDeployedToMimicDeviceViaJamfPro(blueprintId, udid, 'com.apple.configuration.legacy');
 
-		await blueprintDetailPageSteps.adminReloadsTheBlueprintDetailsPage();
-		await blueprintDetailPageSteps.blueprintWithNameIsOpened('Untitled blueprint');
 		await blueprintDetailPageSteps.thereAreDeployedDevicesInAnalytics(1);
 
 		await blueprintDetailPageSteps.adminDeletesBlueprint();

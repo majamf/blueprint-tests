@@ -85,10 +85,8 @@ export default class NavigationSteps {
 			.getByRole('navigation', { name: 'primary-navigation' })
 			.getByRole('link', { name: 'Blueprints' });
 
-		const blueprintGetPromise = this.waitForBlueprintsResponse();
 		await blueprintsNavigation.click();
-
-		await blueprintGetPromise;
+		await this.page.waitForURL(`**/blueprints/list`);
 	}
 
 	@Step('Admin navigates to blueprints')

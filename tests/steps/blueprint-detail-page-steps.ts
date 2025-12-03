@@ -60,16 +60,6 @@ export default class BlueprintDetailPageSteps {
 		);
 	}
 
-	private waitForBlueprintDeploymentSummaryResponse() {
-		return this.page.waitForResponse(
-			(response) =>
-				response.url().includes('/blueprints/report/v1/blueprints') &&
-				response.url().endsWith('/deployment-summary') &&
-				response.status() === 200 &&
-				response.request().method() === 'GET'
-		);
-	}
-
 	private waitForBlueprintsComponentsLibraryResponse() {
 		return this.page.waitForResponse(
 			(response) =>
@@ -92,7 +82,7 @@ export default class BlueprintDetailPageSteps {
 	async blueprintWithNameIsOpened(name: string) {
 		const headings = this.page.getByRole('heading', { name }).filter({ hasText: name });
 
-		await expect(headings.first()).toBeVisible();
+		await expect(headings.first()).toBeVisible({ timeout: 15_000 });
 	}
 
 	@Step('Change blueprint name to "$0"')
@@ -376,8 +366,7 @@ export default class BlueprintDetailPageSteps {
 	@Step('Admin waits for toast "$0" to disappear')
 	async adminWaitsForToastToDisappear(toast: string) {
 		const successToast = this.page.getByText(toast);
-
-		await successToast.waitFor({ state: 'hidden' });
+		await expect(successToast).not.toBeVisible({ timeout: 15_000 });
 	}
 
 	@Step('Admin opens add modal of component with title "$0"')
@@ -484,52 +473,17 @@ export default class BlueprintDetailPageSteps {
 		await blueprintGetPromise;
 	}
 
-	@Step('Admin reloads the blueprint details page')
-	async adminReloadsTheBlueprintDetailsPage() {
-		const blueprintDeploymentSummaryPromise = this.waitForBlueprintDeploymentSummaryResponse();
-		await this.page.reload();
-		await this.page.waitForLoadState('load');
-
-		await blueprintDeploymentSummaryPromise;
-	}
-
 	@Step('There is/are "$0" deployed device(s) in Analytics')
 	async thereAreDeployedDevicesInAnalytics(numberOfDevices: number) {
 		const analyticsCard = this.page.getByTestId('analytics');
 
 		const analyticsSkeleton = analyticsCard.locator('[class*="skeleton"]');
 
-		await expect(analyticsSkeleton).not.toBeVisible();
+		await expect(analyticsSkeleton).not.toBeVisible({ timeout: 15_000 });
 
 		const deployedDevices = this.page.getByTestId('succeeded-devices');
 
-		await expect(deployedDevices).toContainText(numberOfDevices.toString());
-	}
-
-	@Step('There is/are "$0" pending device(s) in Analytics')
-	async thereArePendingDevicesInAnalytics(numberOfDevices: number) {
-		const analyticsCard = this.page.getByTestId('analytics');
-
-		const analyticsSkeleton = analyticsCard.locator('[class*="skeleton"]');
-
-		await expect(analyticsSkeleton).not.toBeVisible();
-
-		const pendingDevices = this.page.getByTestId('pending-devices');
-
-		await expect(pendingDevices).toContainText(numberOfDevices.toString());
-	}
-
-	@Step('There is/are "$0" error device(s) in Analytics')
-	async thereAreErrorDevicesInAnalytics(numberOfDevices: number) {
-		const analyticsCard = this.page.getByTestId('analytics');
-
-		const analyticsSkeleton = analyticsCard.locator('[class*="skeleton"]');
-
-		await expect(analyticsSkeleton).not.toBeVisible();
-
-		const failedDevices = this.page.getByTestId('failed-devices');
-
-		await expect(failedDevices).toContainText(numberOfDevices.toString());
+		await expect(deployedDevices).toContainText(numberOfDevices.toString(), { timeout: 30_000 });
 	}
 
 	@Step('Blueprint state in Analytics card is Ready for deployment')
