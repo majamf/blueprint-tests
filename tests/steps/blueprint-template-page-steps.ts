@@ -95,7 +95,7 @@ export default class BlueprintTemplatePageSteps {
 	@Step('Scoping page is opened')
 	async scopingPageIsOpen() {
 		await this.navigationSteps.pageWithHeadingIsOpen('Choose a scope');
-		const scopingForm = this.page.locator('form#scoping');
+		const scopingForm = this.page.locator('[name=groupsInScope]');
 		await expect(scopingForm).toBeVisible({ timeout: 15_000 });
 	}
 
