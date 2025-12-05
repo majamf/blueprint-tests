@@ -82,6 +82,7 @@ test(
 		const jproApiSteps = new JProApiSteps(baseURL!, apiCredentials!);
 		const mimicSteps = new MimicSteps();
 		const udid = await jproApiSteps.getMobileDeviceUdid();
+		const blueprintName = `Blueprint_with_CP_e2e_${id}`;
 
 		await jproLoginSteps.loginToJamfProCached(baseURL!, accountCredentials!, workerInfo);
 		await navigationSteps.adminOpensBlueprintsViaJamfProNavigation();
@@ -104,8 +105,9 @@ test(
 		await mimicSteps.blueprintIsDeployedToMimicDeviceViaJamfPro(blueprintId, udid, 'com.apple.configuration.legacy');
 
 		await blueprintDetailPageSteps.thereAreDeployedDevicesInAnalytics(1);
+		await blueprintDetailPageSteps.changeBlueprintName(blueprintName);
 
 		await blueprintDetailPageSteps.adminDeletesBlueprint();
-		await blueprintsSteps.thereIsNoBlueprintWithName('Untitled blueprint');
+		await blueprintsSteps.thereIsNoBlueprintWithName(blueprintName);
 	}
 );
