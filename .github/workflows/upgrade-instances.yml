@@ -41,7 +41,7 @@ jobs:
 
     steps:
     - name: Checkout Repository
-      uses: actions/checkout@v5
+      uses: actions/checkout@v6
 
     - name: Upgrade the ${{ matrix.release_track }} instance
       uses: ./.github/actions/upgrade-instance
