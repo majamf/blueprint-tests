@@ -8,7 +8,7 @@ import {
 	type Project,
 } from '@playwright/test';
 import 'dotenv/config';
-import type { ReportPortalConfig } from '@reportportal/agent-js-playwright/build/models';
+import type { Attribute, ReportPortalConfig } from '@reportportal/agent-js-playwright/build/models';
 import { type TestOptions } from './tests/utils/utils';
 import {
 	type Environment,
@@ -28,6 +28,14 @@ const RPconfig: ReportPortalConfig = {
 	launch: 'blueprint-test',
 	description: 'Playwright blueprint-tests',
 	includeTestSteps: true,
+	attributes: (process.env.RP_ATTRIBUTES || '')
+		.split(',')
+		.map((part) => part.trim())
+		.filter((part) => part.length > 0)
+		.map((attr) => {
+			const [key, value] = attr.split(':', 2);
+			return { key, value: value! } satisfies Attribute;
+		}),
 };
 
 const isRunningInCI = !!process.env.CI;

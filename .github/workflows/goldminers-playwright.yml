@@ -33,18 +33,58 @@ on:
         description: 'Select which folder to run tests from'
         default: 'configuration-profiles'
         type: string
+      rp_project:
+        description: 'Report Portal project to send results to'
+        default: 'jamf_shared'
+        type: string
 
 jobs:
-  setup-playwright-workflow:
+  setup:
+    runs-on: [self-hosted, jamf-ubuntu-latest]
+    outputs:
+      jobs: ${{ steps.define-matrix.outputs.jobs }}
+    steps:
+    - id: define-matrix
+      env:
+        EVENT_NAME: ${{ github.event_name }}
+        FILTER_INPUT: ${{ github.event.inputs.filter || '' }}
+        TEST_FOLDER_INPUT: ${{ github.event.inputs.test_folder || 'configuration-profiles' }}
+        RP_PROJECT_INPUT: ${{ github.event.inputs.rp_project || 'jamf_shared' }}
+      run: |
+        case "$EVENT_NAME" in
+          push|schedule)
+            jobs='[{"name":"Stage","filter":"@stage","test_folder":"configuration-profiles","rp_project":"jamf_capabilities","rp_attributes":"team:goldminers,env:stage"}]'
+            ;;
+          pull_request)
+            jobs='[{"name":"Stage","filter":"@stage","filter":"","test_folder":"configuration-profiles","rp_project":"jamf_shared","rp_attributes":"team:goldminers"}]'
+            ;;
+          workflow_dispatch)
+            jobs=$(cat <<JSON
+        [{"name":"All tests","filter":"${FILTER_INPUT}","test_folder":"${TEST_FOLDER_INPUT}","rp_project":"${RP_PROJECT_INPUT}","rp_attributes":""}]
+        JSON
+            )
+            ;;
+        esac
+        echo "jobs=$jobs" >> "$GITHUB_OUTPUT"
+
+  run-playwright:
+    name: ${{ matrix.jobs.name }}
     uses: ./.github/workflows/reusable-playwright-setup.yml
+    needs: setup
+    strategy:
+      fail-fast: false
+      matrix:
+        jobs: ${{ fromJSON(needs.setup.outputs.jobs) }}
     with:
-      filter: ${{ github.event.inputs.filter || '' }}
+      filter: ${{ matrix.jobs.filter || '' }}
       jamfProBaseUrl: ${{ github.event.inputs.jamfProBaseUrl || '' }}
       sboxBaseUrl: ${{ github.event.inputs.sboxBaseUrl || '' }}
       slack_channel: ${{ github.event.inputs.slack_channel || 'gm-tests' }}
       notify_success: ${{ github.event.inputs.notify_success || 'false' }}
       notify_failure: ${{ github.event.inputs.notify_failure || 'true' }}
-      test_folder: ${{ github.event.inputs.test_folder || 'configuration-profiles' }}
+      test_folder: ${{ matrix.jobs.test_folder }}
+      rp_project: ${{ matrix.jobs.rp_project }}
+      rp_attributes: ${{ matrix.jobs.rp_attributes }}
     secrets:
       JAMF_ACCOUNT_STAGE_USER_MAIL: ${{ secrets.JAMF_ACCOUNT_STAGE_USER_MAIL }}
       JAMF_ACCOUNT_STAGE_USER_PASSWORD: ${{ secrets.JAMF_ACCOUNT_STAGE_USER_PASSWORD }}
