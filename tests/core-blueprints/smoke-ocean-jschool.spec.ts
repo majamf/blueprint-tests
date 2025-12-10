@@ -18,7 +18,18 @@ test.beforeEach(async () => {
 
 test(
 	'Blueprints list is loaded in Jamf School',
-	{ tag: ['@all-browsers', '@stage', '@school'] },
+	{
+		tag: [
+			'@all-browsers',
+			'@stage',
+			'@school',
+			'@component=blueprint-components-registry-service',
+			'@component=blueprint-management-service',
+			'@component=blueprints',
+			'@component=jamf-school-core',
+			'@scenario_owner=ocean',
+		],
+	},
 	async ({ page, baseURL, accountCredentials }) => {
 		const jSchoolLoginSteps = new JSchoolLoginSteps(page);
 		const blueprintsSteps = new BlueprintsSteps(page);
@@ -35,7 +46,22 @@ test(
 
 test(
 	'Blueprint can be added via templates and removed in Jamf School',
-	{ tag: ['@all-browsers', '@stage', '@school'] },
+	{
+		tag: [
+			'@all-browsers',
+			'@stage',
+			'@school',
+			'@component=blueprint-component-declarations-service',
+			'@component=blueprint-component-passcode-settings',
+			'@component=blueprint-components-registry-service',
+			'@component=blueprint-management-service',
+			'@component=blueprints',
+			'@component=jamf-school-core',
+			'@component=scoping',
+			'@component=scoping-engine',
+			'@scenario_owner=ocean',
+		],
+	},
 	async ({ page, baseURL, accountCredentials }) => {
 		const jSchoolLoginSteps = new JSchoolLoginSteps(page);
 		const blueprintsSteps = new BlueprintsSteps(page);
@@ -82,7 +108,20 @@ test(
 test(
 	'Blueprint can be added via builder and removed in Jamf School',
 	{
-		tag: ['@chrome', '@stage', '@school'],
+		tag: [
+			'@chrome',
+			'@stage',
+			'@school',
+			'@component=blueprint-component-declarations-service',
+			'@component=blueprint-component-disk-management',
+			'@component=blueprint-components-registry-service',
+			'@component=blueprint-management-service',
+			'@component=blueprints',
+			'@component=jamf-school-core',
+			'@component=scoping',
+			'@component=scoping-engine',
+			'@scenario_owner=ocean',
+		],
 	},
 	async ({ page, browserName, baseURL, accountCredentials }) => {
 		test.fixme(browserName === 'webkit' || browserName === 'firefox', 'https://jamfpdd.atlassian.net/browse/JSC-62590');
@@ -140,7 +179,17 @@ test(
 
 test(
 	'Templates are properly loaded in Jamf School',
-	{ tag: ['@all-browsers', '@stage', '@school'] },
+	{
+		tag: [
+			'@all-browsers',
+			'@stage',
+			'@school',
+			'@component=blueprint-management-service',
+			'@component=blueprints',
+			'@component=jamf-school-core',
+			'@scenario_owner=ocean',
+		],
+	},
 	async ({ page, baseURL, accountCredentials }) => {
 		const jSchoolLoginSteps = new JSchoolLoginSteps(page);
 		const blueprintsSteps = new BlueprintsSteps(page);
@@ -158,7 +207,20 @@ test(
 
 test(
 	'Searching in scope works in Jamf School',
-	{ tag: ['@all-browsers', '@stage', '@school'] },
+	{
+		tag: [
+			'@all-browsers',
+			'@stage',
+			'@school',
+			'@component=blueprint-components-registry-service',
+			'@component=blueprint-management-service',
+			'@component=blueprints',
+			'@component=jamf-school-core',
+			'@component=scoping',
+			'@component=scoping-engine',
+			'@scenario_owner=ocean',
+		],
+	},
 	async ({ page, baseURL, accountCredentials }) => {
 		const jSchoolLoginSteps = new JSchoolLoginSteps(page);
 		const blueprintsSteps = new BlueprintsSteps(page);

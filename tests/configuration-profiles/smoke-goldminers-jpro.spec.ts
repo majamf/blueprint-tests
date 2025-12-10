@@ -17,7 +17,20 @@ test.beforeEach(async () => {
 
 test(
 	'Config profile component can be filtered by component name, key name and OS type',
-	{ tag: ['@all-browsers', '@stage', '@pro'] },
+	{
+		tag: [
+			'@all-browsers',
+			'@stage',
+			'@pro',
+			'@component=blueprint-component-configuration-profiles',
+			'@component=blueprint-components-registry-service',
+			'@component=blueprint-management-service',
+			'@component=blueprints',
+			'@component=configuration-profile-service',
+			'@component=jamf-pro-server',
+			'@scenario_owner=goldminers',
+		],
+	},
 	async ({ page, baseURL, accountCredentials }, workerInfo) => {
 		const jproLoginSteps = new JProLoginSteps(page);
 		const blueprintsSteps = new BlueprintsSteps(page);
@@ -60,7 +73,20 @@ test(
 
 test(
 	'Config profile component can be updated',
-	{ tag: ['@all-browsers', '@stage', '@pro'] },
+	{
+		tag: [
+			'@all-browsers',
+			'@stage',
+			'@pro',
+			'@component=blueprint-component-configuration-profiles',
+			'@component=blueprint-components-registry-service',
+			'@component=blueprint-management-service',
+			'@component=blueprints',
+			'@component=configuration-profile-service',
+			'@component=jamf-pro-server',
+			'@scenario_owner=goldminers',
+		],
+	},
 	async ({ page, baseURL, accountCredentials }, workerInfo) => {
 		const jproLoginSteps = new JProLoginSteps(page);
 		const blueprintsSteps = new BlueprintsSteps(page);
