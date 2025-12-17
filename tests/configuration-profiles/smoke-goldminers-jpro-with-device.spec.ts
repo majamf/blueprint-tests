@@ -20,7 +20,25 @@ test.beforeEach(async () => {
 test(
 	'Deploy blueprint containing config profile component to mimic device in Jamf Pro',
 	{
-		tag: ['@chrome', '@stage', '@pro', '@pro-legacy', '@mimic'],
+		tag: [
+			'@chrome',
+			'@stage',
+			'@pro',
+			'@pro-legacy',
+			'@mimic',
+			'@component=blueprint-component-configuration-profiles',
+			'@component=blueprint-components-registry-service',
+			'@component=blueprint-deployment-service',
+			'@component=blueprint-management-service',
+			'@component=blueprint-report-aggregation-service',
+			'@component=blueprint-reporting-service',
+			'@component=blueprints',
+			'@component=configuration-profile-service',
+			'@component=jamf-pro-server',
+			'@component=scoping',
+			'@component=scoping-engine',
+			'@scenario_owner=goldminers',
+		],
 		annotation: {
 			type: 'note',
 			description: 'Not executed in all browsers due to nature of the test and high flakiness caused by mimic',
@@ -68,7 +86,24 @@ test(
 test(
 	'Deploy untitled blueprint containing config profile component to mimic device in Jamf Pro',
 	{
-		tag: ['@chrome', '@stage', '@pro', '@mimic'],
+		tag: [
+			'@chrome',
+			'@stage',
+			'@pro',
+			'@mimic',
+			'@component=blueprint-component-configuration-profiles',
+			'@component=blueprint-components-registry-service',
+			'@component=blueprint-deployment-service',
+			'@component=blueprint-management-service',
+			'@component=blueprint-report-aggregation-service',
+			'@component=blueprint-reporting-service',
+			'@component=blueprints',
+			'@component=configuration-profile-service',
+			'@component=jamf-pro-server',
+			'@component=scoping',
+			'@component=scoping-engine',
+			'@scenario_owner=goldminers',
+		],
 		annotation: {
 			type: 'note',
 			description: 'Not executed in all browsers due to nature of the test and high flakiness caused by mimic',

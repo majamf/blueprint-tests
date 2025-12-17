@@ -6,21 +6,23 @@ Repository for E2E test of blueprint features
 
 You can tag tests with various tags to run specific tests. The tags are:
 
-| Tag             | Description                                                 |
-| --------------- | ----------------------------------------------------------- |
-| `@stanalone`    | Run against stanadalone Blueprints mFE                      |
-| `@school`       | Run against Jamf School                                     |
-| `@pro`          | Run against Jamf Pro - latest develop                       |
-| `@pro-legacy`   | Run against older versions of Jamf Pro (RC, GA, GA-1, GA-2) |
-| `@sbox`         | Run in SBOX environment                                     |
-| `@dev`          | Run in DEV environment                                      |
-| `@stage`        | Run in STAGE environment                                    |
-| `@prod`         | Run in PROD environment                                     |
-| `@all-browsers` | Run in all available browsers (Chrome, Firefox, Safari)     |
-| `@chrome`       | Run in Chrome (chromium)                                    |
-| `@firefox`      | Run in Firefox                                              |
-| `@safari`       | Run in Safari (webkit)                                      |
-| `@mimic`        | Marks tests using Mimic devices, no effect on execution     |
+| Tag                           | Description                                                                                                                      |
+| ----------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| `@stanalone`                  | Run against stanadalone Blueprints mFE                                                                                           |
+| `@school`                     | Run against Jamf School                                                                                                          |
+| `@pro`                        | Run against Jamf Pro - latest develop                                                                                            |
+| `@pro-legacy`                 | Run against older versions of Jamf Pro (RC, GA, GA-1, GA-2)                                                                      |
+| `@sbox`                       | Run in SBOX environment                                                                                                          |
+| `@dev`                        | Run in DEV environment                                                                                                           |
+| `@stage`                      | Run in STAGE environment                                                                                                         |
+| `@prod`                       | Run in PROD environment                                                                                                          |
+| `@all-browsers`               | Run in all available browsers (Chrome, Firefox, Safari)                                                                          |
+| `@chrome`                     | Run in Chrome (chromium)                                                                                                         |
+| `@firefox`                    | Run in Firefox                                                                                                                   |
+| `@safari`                     | Run in Safari (webkit)                                                                                                           |
+| `@mimic`                      | Marks tests using Mimic devices, no effect on execution                                                                          |
+| `@component=<component-name>` | Marks tested component(s) using Backstage component names. Repeatable. No effect on execution, used for Report Portal reporting. |
+| `@scenario_owner=<team>`      | Marks test owner using Backstage team name. No effect on execution, used for Report Portal reporting.                            |
 
 For test to be run, it must have at least one of the host tags, one of the environment tags and one of the browser tags.
 

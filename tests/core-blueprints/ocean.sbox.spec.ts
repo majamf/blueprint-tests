@@ -1,4 +1,4 @@
-import { test } from '@playwright/test';
+import { test } from '../utils/utils';
 import { v4 as uuidv4 } from 'uuid';
 
 import SboxSetupSteps from '../steps/sbox-setup-steps';
@@ -21,7 +21,19 @@ test.beforeEach(async () => {
 
 test(
 	'Blueprint can be added via templates and removed',
-	{ tag: ['@all-browsers', '@sbox', '@standalone'] },
+	{
+		tag: [
+			'@all-browsers',
+			'@sbox',
+			'@standalone',
+			'@component=blueprint-component-declarations-service',
+			'@component=blueprint-component-passcode-settings',
+			'@component=blueprint-components-registry-service',
+			'@component=blueprint-management-service',
+			'@component=blueprints',
+			'@scenario_owner=ocean',
+		],
+	},
 	async ({ page, baseURL }) => {
 		const sboxSteps = new SboxSetupSteps(page);
 		const blueprintSteps = new BlueprintsSteps(page);
@@ -62,7 +74,19 @@ test(
 
 test(
 	'Configuration of component can be updated',
-	{ tag: ['@all-browsers', '@sbox', '@standalone'] },
+	{
+		tag: [
+			'@all-browsers',
+			'@sbox',
+			'@standalone',
+			'@component=blueprint-component-declarations-service',
+			'@component=blueprint-component-disk-management',
+			'@component=blueprint-components-registry-service',
+			'@component=blueprint-management-service',
+			'@component=blueprints',
+			'@scenario_owner=ocean',
+		],
+	},
 	async ({ page, baseURL }) => {
 		const sboxSteps = new SboxSetupSteps(page);
 		const blueprintSteps = new BlueprintsSteps(page);
@@ -97,7 +121,20 @@ test(
 
 test(
 	'Components of blueprint can be updated',
-	{ tag: ['@all-browsers', '@sbox', '@standalone'] },
+	{
+		tag: [
+			'@all-browsers',
+			'@sbox',
+			'@standalone',
+			'@component=blueprint-component-declarations-service',
+			'@component=blueprint-component-disk-management',
+			'@component=blueprint-component-passcode-settings',
+			'@component=blueprint-components-registry-service',
+			'@component=blueprint-management-service',
+			'@component=blueprints',
+			'@scenario_owner=ocean',
+		],
+	},
 	async ({ page, browserName, baseURL }) => {
 		test.fixme(browserName === 'webkit', 'To unblock releases for now');
 
@@ -140,7 +177,19 @@ test(
 
 test(
 	'Blueprint templates can be filtered',
-	{ tag: ['@all-browsers', '@sbox', '@standalone'] },
+	{
+		tag: [
+			'@all-browsers',
+			'@sbox',
+			'@standalone',
+			'@component=blueprint-component-declarations-service',
+			'@component=blueprint-component-passcode-settings',
+			'@component=blueprint-components-registry-service',
+			'@component=blueprint-management-service',
+			'@component=blueprints',
+			'@scenario_owner=ocean',
+		],
+	},
 	async ({ page, baseURL }) => {
 		const sboxSteps = new SboxSetupSteps(page);
 		const blueprintSteps = new BlueprintsSteps(page);
@@ -159,40 +208,66 @@ test(
 	}
 );
 
-test('Blueprints can be filtered', { tag: ['@all-browsers', '@sbox', '@standalone'] }, async ({ page, baseURL }) => {
-	const sboxSteps = new SboxSetupSteps(page);
-	const blueprintSteps = new BlueprintsSteps(page);
-	const navigationSteps = new NavigationSteps(page);
-	const blueprintDetailPageSteps = new BlueprintDetailPageSteps(page);
-	await sboxSteps.sboxIsSetUp(baseURL!, clusterUrl);
+test(
+	'Blueprints can be filtered',
+	{
+		tag: [
+			'@all-browsers',
+			'@sbox',
+			'@standalone',
+			'@component=blueprint-components-registry-service',
+			'@component=blueprint-management-service',
+			'@component=blueprints',
+			'@scenario_owner=ocean',
+		],
+	},
+	async ({ page, baseURL }) => {
+		const sboxSteps = new SboxSetupSteps(page);
+		const blueprintSteps = new BlueprintsSteps(page);
+		const navigationSteps = new NavigationSteps(page);
+		const blueprintDetailPageSteps = new BlueprintDetailPageSteps(page);
+		await sboxSteps.sboxIsSetUp(baseURL!, clusterUrl);
 
-	await blueprintSteps.adminClicksCreateBlueprintButton();
+		await blueprintSteps.adminClicksCreateBlueprintButton();
 
-	await blueprintDetailPageSteps.changeBlueprintName('Blueprint_' + id);
+		await blueprintDetailPageSteps.changeBlueprintName('Blueprint_' + id);
 
-	await navigationSteps.adminsOpensBlueprintsRoute();
-	await blueprintSteps.adminClicksCreateBlueprintButton();
+		await navigationSteps.adminsOpensBlueprintsRoute();
+		await blueprintSteps.adminClicksCreateBlueprintButton();
 
-	await blueprintDetailPageSteps.changeBlueprintName('Blueprint2_' + id);
+		await blueprintDetailPageSteps.changeBlueprintName('Blueprint2_' + id);
 
-	await navigationSteps.adminsOpensBlueprintsRoute();
-	await blueprintSteps.adminSearchesForBlueprint('Blueprint2_' + id);
-	await blueprintSteps.thereIsNoBlueprintWithName('Blueprint_' + id);
-	await blueprintSteps.onlyOneBlueprintIsDisplayedWithName('Blueprint2_' + id);
+		await navigationSteps.adminsOpensBlueprintsRoute();
+		await blueprintSteps.adminSearchesForBlueprint('Blueprint2_' + id);
+		await blueprintSteps.thereIsNoBlueprintWithName('Blueprint_' + id);
+		await blueprintSteps.onlyOneBlueprintIsDisplayedWithName('Blueprint2_' + id);
 
-	await navigationSteps.adminsOpensBlueprintsRoute();
-	await blueprintSteps.adminOpensBlueprintWithName('Blueprint_' + id);
-	await blueprintDetailPageSteps.adminDeletesBlueprint();
-	await blueprintSteps.thereIsNoBlueprintWithName('Blueprint_' + id);
+		await navigationSteps.adminsOpensBlueprintsRoute();
+		await blueprintSteps.adminOpensBlueprintWithName('Blueprint_' + id);
+		await blueprintDetailPageSteps.adminDeletesBlueprint();
+		await blueprintSteps.thereIsNoBlueprintWithName('Blueprint_' + id);
 
-	await blueprintSteps.adminOpensBlueprintWithName('Blueprint2_' + id);
-	await blueprintDetailPageSteps.adminDeletesBlueprint();
-	await blueprintSteps.thereIsNoBlueprintWithName('Blueprint2_' + id);
-});
+		await blueprintSteps.adminOpensBlueprintWithName('Blueprint2_' + id);
+		await blueprintDetailPageSteps.adminDeletesBlueprint();
+		await blueprintSteps.thereIsNoBlueprintWithName('Blueprint2_' + id);
+	}
+);
 
 test(
 	'Available components of blueprint can be filtered',
-	{ tag: ['@all-browsers', '@sbox', '@standalone'] },
+	{
+		tag: [
+			'@all-browsers',
+			'@sbox',
+			'@standalone',
+			'@component=blueprint-component-declarations-service',
+			'@component=blueprint-component-disk-management',
+			'@component=blueprint-components-registry-service',
+			'@component=blueprint-management-service',
+			'@component=blueprints',
+			'@scenario_owner=ocean',
+		],
+	},
 	async ({ page, baseURL }) => {
 		const sboxSteps = new SboxSetupSteps(page);
 		const blueprintSteps = new BlueprintsSteps(page);

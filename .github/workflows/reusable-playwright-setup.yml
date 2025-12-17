@@ -31,6 +31,14 @@ on:
         description: 'Select which folder to run tests from'
         required: false
         type: string
+      rp_project:
+        description: 'ReportPortal project name'
+        required: false
+        type: string
+      rp_attributes:
+        description: 'ReportPortal launch attributes'
+        required: false
+        type: string
 
     secrets:
       JAMF_ACCOUNT_STAGE_USER_MAIL:
@@ -96,6 +104,8 @@ env:
   JAMF_PRO_GA_2_STAGE_API_PASSWORD: ${{ secrets.JAMF_PRO_STAGE_API_PASSWORD }}
 
   RP_API_KEY: ${{ secrets.RP_API_KEY }}
+  RP_PROJECT: ${{ inputs.rp_project }}
+  RP_ATTRIBUTES: ${{ inputs.rp_attributes }}
 
 jobs:
   playwright-version:
@@ -112,6 +122,7 @@ jobs:
           PLAYWRIGHT_VERSION=$(jq -r '.devDependencies."@playwright/test"' package.json)
           echo "PLAYWRIGHT_VERSION=$PLAYWRIGHT_VERSION" >> $GITHUB_OUTPUT
         shell: bash
+
   test:
     timeout-minutes: 60
     runs-on: [ self-hosted, jamf-ubuntu-latest ]

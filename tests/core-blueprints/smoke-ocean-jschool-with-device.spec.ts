@@ -21,7 +21,24 @@ test.beforeEach(async () => {
 test(
 	'Deploy blueprint to mimic device in Jamf School',
 	{
-		tag: ['@chrome', '@stage', '@school', '@mimic'],
+		tag: [
+			'@chrome',
+			'@stage',
+			'@school',
+			'@mimic',
+			'@component=blueprint-component-declarations-service',
+			'@component=blueprint-component-passcode-settings',
+			'@component=blueprint-components-registry-service',
+			'@component=blueprint-deployment-service',
+			'@component=blueprint-management-service',
+			'@component=blueprint-report-aggregation-service',
+			'@component=blueprint-reporting-service',
+			'@component=blueprints',
+			'@component=jamf-school-core',
+			'@component=scoping',
+			'@component=scoping-engine',
+			'@scenario_owner=ocean',
+		],
 		annotation: {
 			type: 'note',
 			description: 'Not executed in all browsers due to nature of the test and high flakiness caused by mimic',

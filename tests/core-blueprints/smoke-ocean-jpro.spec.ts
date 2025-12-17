@@ -18,7 +18,19 @@ test.beforeEach(async () => {
 
 test(
 	'Blueprints list is loaded in Jamf Pro',
-	{ tag: ['@all-browsers', '@dev', '@stage', '@pro'] },
+	{
+		tag: [
+			'@all-browsers',
+			'@dev',
+			'@stage',
+			'@pro',
+			'@component=blueprint-components-registry-service',
+			'@component=blueprint-management-service',
+			'@component=blueprints',
+			'@component=jamf-pro-server',
+			'@scenario_owner=ocean',
+		],
+	},
 	async ({ page, baseURL, accountCredentials }, workerInfo) => {
 		const jproLoginSteps = new JProLoginSteps(page);
 		const blueprintsSteps = new BlueprintsSteps(page);
@@ -35,7 +47,23 @@ test(
 
 test(
 	'Blueprint can be added via templates and removed in Jamf Pro',
-	{ tag: ['@all-browsers', '@dev', '@stage', '@pro'] },
+	{
+		tag: [
+			'@all-browsers',
+			'@dev',
+			'@stage',
+			'@pro',
+			'@component=blueprint-component-declarations-service',
+			'@component=blueprint-component-passcode-settings',
+			'@component=blueprint-components-registry-service',
+			'@component=blueprint-management-service',
+			'@component=blueprints',
+			'@component=jamf-pro-server',
+			'@component=scoping',
+			'@component=scoping-engine',
+			'@scenario_owner=ocean',
+		],
+	},
 	async ({ page, baseURL, accountCredentials }, workerInfo) => {
 		const jproLoginSteps = new JProLoginSteps(page);
 		const blueprintsSteps = new BlueprintsSteps(page);
@@ -82,7 +110,22 @@ test(
 test(
 	'Blueprint can be added via builder and removed in Jamf Pro',
 	{
-		tag: ['@chrome', '@dev', '@stage', '@pro', '@pro-legacy'],
+		tag: [
+			'@chrome',
+			'@dev',
+			'@stage',
+			'@pro',
+			'@pro-legacy',
+			'@component=blueprint-component-declarations-service',
+			'@component=blueprint-component-disk-management',
+			'@component=blueprint-components-registry-service',
+			'@component=blueprint-management-service',
+			'@component=blueprints',
+			'@component=jamf-pro-server',
+			'@component=scoping',
+			'@component=scoping-engine',
+			'@scenario_owner=ocean',
+		],
 	},
 	async ({ page, browserName, baseURL, accountCredentials }, workerInfo) => {
 		test.fixme(browserName === 'webkit' || browserName === 'firefox', 'https://jamfpdd.atlassian.net/browse/JSC-62590');
@@ -138,7 +181,18 @@ test(
 
 test(
 	'Templates are properly loaded',
-	{ tag: ['@all-browsers', '@dev', '@stage', '@pro'] },
+	{
+		tag: [
+			'@all-browsers',
+			'@dev',
+			'@stage',
+			'@pro',
+			'@component=blueprint-management-service',
+			'@component=blueprints',
+			'@component=jamf-pro-server',
+			'@scenario_owner=ocean',
+		],
+	},
 	async ({ page, baseURL, accountCredentials }, workerInfo) => {
 		const jproLoginSteps = new JProLoginSteps(page);
 		const blueprintsSteps = new BlueprintsSteps(page);
@@ -156,7 +210,21 @@ test(
 
 test(
 	'Searching in scope works',
-	{ tag: ['@all-browsers', '@dev', '@stage', '@pro', '@pro-legacy'] },
+	{
+		tag: [
+			'@all-browsers',
+			'@dev',
+			'@stage',
+			'@pro',
+			'@pro-legacy',
+			'@component=blueprint-management-service',
+			'@component=blueprints',
+			'@component=jamf-pro-server',
+			'@component=scoping',
+			'@component=scoping-engine',
+			'@scenario_owner=ocean',
+		],
+	},
 	async ({ page, baseURL, accountCredentials }, workerInfo) => {
 		const jproLoginSteps = new JProLoginSteps(page);
 		const blueprintsSteps = new BlueprintsSteps(page);
