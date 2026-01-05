@@ -11,6 +11,7 @@ const builderComponentMap: componentsMap = {
 	'Apply custom configuration': 'com.jamf.ddm.free-form',
 	'Passcode Policy': 'com.jamf.ddm.passcode-settings',
 	'Disk management': 'com.jamf.ddm.disk-management',
+	'Amazon AWS VPN Client': 'com.jamf.alme.managed.2E6',
 	'Math settings': 'com.jamf.ddm.math-settings',
 	'Safari Extensions': 'com.jamf.ddm.safari-extensions',
 	'Service configuration': 'com.jamf.ddm.service-configuration-files',
