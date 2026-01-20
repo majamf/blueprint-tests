@@ -164,6 +164,7 @@ class BlueprintManager {
 	}
 
 	private static getJamfProEnvironments() {
+		console.log('Retrieving Jamf Pro environments from configuration...');
 		return Object.entries(environments.stage.pro)
 			.map(([key, value]) => [key, value] as const)
 			.filter(([, env]) => !!env?.url);
@@ -203,14 +204,25 @@ class BlueprintManager {
 
 	async cleanupOldBlueprintsInJamfPro(daysOld = 7): Promise<void> {
 		console.log('Starting Jamf Pro blueprint cleanup...');
+		const errors: Error[] = [];
 		for (const [key, env] of BlueprintManager.getJamfProEnvironments()) {
-			console.log(`Processing Jamf Pro instance: ${key} (${env.url})`);
-			const jproToken = await this.api.getJProAuthToken(env);
-			const tenantId = await this.api.getJProTenantId(env, jproToken);
-			const tykToken = await this.api.getTykAuthToken(tenantId);
-
-			await this.cleanupOldBlueprints(tykToken, daysOld);
+			await this.processJamfProInstance(key, env, daysOld).catch((error: Error) => {
+				console.error(`Error processing Jamf Pro instance ${key}:`, error.message);
+				errors.push(new Error(`Instance ${key}: ${error.message}`));
+			});
 		}
+		if (errors.length > 0) {
+			throw new AggregateError(errors, `Jamf Pro cleanup completed with ${errors.length} error(s)`);
+		}
+	}
+
+	private async processJamfProInstance(key: string, env: Environment, daysOld = 7): Promise<void> {
+		console.log(`Processing Jamf Pro instance: ${key} (${env.url})`);
+		const jproToken = await this.api.getJProAuthToken(env);
+		const tenantId = await this.api.getJProTenantId(env, jproToken);
+		const tykToken = await this.api.getTykAuthToken(tenantId);
+
+		await this.cleanupOldBlueprints(tykToken, daysOld);
 	}
 
 	async cleanupOldBlueprintsInJamfSchool(daysOld = 7): Promise<void> {
@@ -226,9 +238,12 @@ if (import.meta.main) {
 	const manager = new BlueprintManager(new APIClient());
 	const errors: Error[] = [];
 
-	await manager.cleanupOldBlueprintsInJamfPro().catch((error: Error) => {
-		console.error('Jamf Pro Cleanup Error:', error.message);
-		errors.push(error);
+	await manager.cleanupOldBlueprintsInJamfPro().catch((aggregateErrors: AggregateError) => {
+		console.log(aggregateErrors.message);
+		for (const error of aggregateErrors.errors) {
+			console.error('Jamf Pro Cleanup Error:', error.message);
+			errors.push(error);
+		}
 	});
 
 	await manager.cleanupOldBlueprintsInJamfSchool().catch((error: Error) => {
