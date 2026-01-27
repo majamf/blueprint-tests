@@ -254,6 +254,7 @@ jobs:
           failed: ${{ needs.extract-results.outputs.failed }}
           skipped: ${{ needs.extract-results.outputs.skipped }}
           durationMs: ${{ needs.extract-results.outputs.durationMs }}
+          run_name: ${{ inputs.run-name }}
           result: 'PASSED'
           rp_link: ${{ needs.test.outputs.reportportal_url }}
           bg_color: '#36a64f'
@@ -275,6 +276,7 @@ jobs:
           failed: ${{ needs.extract-results.outputs.failed }}
           skipped: ${{ needs.extract-results.outputs.skipped }}
           durationMs: ${{ needs.extract-results.outputs.durationMs }}
+          run_name: ${{ inputs.run-name }}
           result: 'FAILED'
           rp_link: ${{ needs.test.outputs.reportportal_url }}
           bg_color: '#FF0000'
