@@ -23,17 +23,17 @@ test.skip(
 			'@stage',
 			'@school',
 			'@component=blueprint-component-configuration-profiles',
-            '@component=configuration-profile-service',
+			'@component=configuration-profile-service',
 			'@component=blueprint-components-registry-service',
 			'@component=blueprint-management-service',
 			'@component=blueprints',
-            '@component=jamf-school-core',
+			'@component=jamf-school-core',
 			'@scenario_owner=goldminers',
 		],
 	},
 	async ({ page, baseURL, accountCredentials }) => {
-        const jSchoolLoginSteps = new JSchoolLoginSteps(page);
-        const blueprintsSteps = new BlueprintsSteps(page);
+		const jSchoolLoginSteps = new JSchoolLoginSteps(page);
+		const blueprintsSteps = new BlueprintsSteps(page);
 		const blueprintDetailPageSteps = new BlueprintDetailPageSteps(page);
 		const navigationSteps = new NavigationSteps(page);
 		const blueprintName = `Blueprint_with_CP_e2e_${id}`;
@@ -79,17 +79,17 @@ test.skip(
 			'@stage',
 			'@school',
 			'@component=blueprint-component-configuration-profiles',
-            '@component=configuration-profile-service',
+			'@component=configuration-profile-service',
 			'@component=blueprint-components-registry-service',
 			'@component=blueprint-management-service',
 			'@component=blueprints',
-            '@component=jamf-school-core',
+			'@component=jamf-school-core',
 			'@scenario_owner=goldminers',
 		],
 	},
 	async ({ page, baseURL, accountCredentials }) => {
 		const jSchoolLoginSteps = new JSchoolLoginSteps(page);
-        const blueprintsSteps = new BlueprintsSteps(page);
+		const blueprintsSteps = new BlueprintsSteps(page);
 		const blueprintDetailPageSteps = new BlueprintDetailPageSteps(page);
 		const navigationSteps = new NavigationSteps(page);
 		const blueprintName = `Blueprint_with_CP_e2e_${id}`;
@@ -103,6 +103,7 @@ test.skip(
 		await blueprintDetailPageSteps.changeBlueprintName(blueprintName);
 		await blueprintDetailPageSteps.changeBlueprintDescription('e2e automated test');
 
+		await blueprintDetailPageSteps.adminSearchesForComponent('Lock Screen Message');
 		await blueprintDetailPageSteps.adminOpensAddModalOfComponent('Lock Screen Message');
 		await blueprintDetailPageSteps.configProfileComponentAddModalIsOpened('Lock Screen Message');
 		await blueprintDetailPageSteps.adminClicksOnGivenCheckbox('AssetTagInformation');
