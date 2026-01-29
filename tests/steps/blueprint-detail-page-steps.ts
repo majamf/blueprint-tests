@@ -210,7 +210,7 @@ export default class BlueprintDetailPageSteps {
 	async onlyOneKeyIsDisplayedInsideComponent(componentTitle: string) {
 		const appleKeysWrapper = this.page
 			.getByTestId('payload-settings-wrapper')
-			.locator('div[class="w-full"]')
+			.locator('div[class*="w-full"]')
 			.locator('h5');
 		await expect(appleKeysWrapper).toHaveCount(1);
 		await expect(appleKeysWrapper).toHaveText(componentTitle);
@@ -219,7 +219,7 @@ export default class BlueprintDetailPageSteps {
 	@Step('Given number of keys "$0" are displayed inside a component')
 	async givenNumberOfKeysAreDisplayedInsideComponent(numberOfKeys: number) {
 		await expect(
-			this.page.getByTestId('payload-settings-wrapper').locator('div[class="w-full"]').locator('h5')
+			this.page.getByTestId('payload-settings-wrapper').locator('div[class*="w-full"]').locator('h5')
 		).toHaveCount(numberOfKeys);
 	}
 
