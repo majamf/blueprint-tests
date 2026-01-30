@@ -15,7 +15,7 @@ test.beforeEach(async () => {
 	id = uuidv4();
 });
 
-test.skip(
+test(
 	'Config profile component can be filtered by component name, key name and OS type in Jamf School',
 	{
 		tag: [
@@ -71,7 +71,7 @@ test.skip(
 	}
 );
 
-test.skip(
+test(
 	'Config profile component can be updated in Jamf School',
 	{
 		tag: [
