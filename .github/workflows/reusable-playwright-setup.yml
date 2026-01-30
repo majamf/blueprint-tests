@@ -254,6 +254,7 @@ jobs:
           failed: ${{ needs.extract-results.outputs.failed }}
           skipped: ${{ needs.extract-results.outputs.skipped }}
           durationMs: ${{ needs.extract-results.outputs.durationMs }}
+          run_name: ${{ inputs.run-name }}
           result: 'PASSED'
           rp_link: ${{ needs.test.outputs.reportportal_url }}
           bg_color: '#36a64f'
@@ -275,9 +276,23 @@ jobs:
           failed: ${{ needs.extract-results.outputs.failed }}
           skipped: ${{ needs.extract-results.outputs.skipped }}
           durationMs: ${{ needs.extract-results.outputs.durationMs }}
+          run_name: ${{ inputs.run-name }}
           result: 'FAILED'
           rp_link: ${{ needs.test.outputs.reportportal_url }}
           bg_color: '#FF0000'
           slack_channel: ${{ inputs.slack_channel }}
           slack_token: ${{ secrets.GH_SLACK_TOKEN }}
           environment: ${{ needs.extract-environment.outputs.environment }}
+
+  generate-slack-message-links-artifact:
+    name: Generate Slack Message Blocks from Links
+    runs-on: [ self-hosted, jamf-ubuntu-latest ]
+    needs: [ test, transform-inputs ]
+    if: ${{ !cancelled() }}
+    steps:
+    - name: Generate Slack Message Blocks from Links
+      uses: jamf/github-actions-system-tests/create-slack-links-artifact@v1
+      with:
+        links: |
+          ReportPortal|${{ needs.test.outputs.reportportal_url }}
+          Workflow|${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
