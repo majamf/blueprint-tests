@@ -372,6 +372,11 @@ export default class BlueprintDetailPageSteps {
 	@Step('Admin opens add modal of component with title "$0"')
 	async adminOpensAddModalOfComponent(componentTitle: string) {
 		const componentList = this.page.getByTestId('component-list');
+
+		// filter for component first to make sure it is visible
+		await this.page.getByTestId('component-search').getByRole('textbox').clear();
+		await this.page.getByTestId('component-search').getByRole('textbox').fill(componentTitle);
+
 		const componentInComponentList = componentList.locator(blueprintCardLocator, { hasText: componentTitle });
 
 		await componentInComponentList.focus();
