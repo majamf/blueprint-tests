@@ -178,13 +178,13 @@ jobs:
           echo "Reportportal launch: ${REPORTPORTAL_URL}" >> $GITHUB_STEP_SUMMARY
           echo "REPORTPORTAL_URL=$REPORTPORTAL_URL" >> $GITHUB_OUTPUT
         shell: bash
-      - uses: actions/upload-artifact@v6
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: ${{ needs.transform-inputs.outputs.run_name }}-playwright-report
           path: playwright-report/
           retention-days: 30
-      - uses: actions/upload-artifact@v6
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: ${{ needs.transform-inputs.outputs.run_name }}-results.json
