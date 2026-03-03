@@ -223,7 +223,7 @@ jobs:
     steps:
       - id: download
         name: Download Playwright Test Results Artifact
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: ${{ needs.transform-inputs.outputs.run_name }}-results.json
       - id: extract
