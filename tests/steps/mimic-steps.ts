@@ -111,7 +111,7 @@ export default class MimicSteps {
 	@Step('Blueprint with id "$0" is deployed to mimic device "$1" with type "$2" via Jamf Pro')
 	public async blueprintIsDeployedToMimicDeviceViaJamfPro(blueprintId: UUID, udid: string, type: string) {
 		const configurationIdentifier = `Blueprint_${blueprintId}_s1_c1_sys_cfg1`;
-		const activationIdentifier = `Blueprint_${blueprintId}_s1_sys_act1`;
+		const activationIdentifier = `Blueprint_${blueprintId}_s1_c1_sys_act1`;
 
 		await this.pollMimicConfigurations(udid, configurationIdentifier);
 
@@ -125,7 +125,7 @@ export default class MimicSteps {
 	@Step('Blueprint with id "$0" is deployed to mimic device "$1" with type "$2" via Jamf School')
 	public async blueprintIsDeployedToMimicDeviceViaJamfSchool(blueprintId: UUID, udid: string, type: string) {
 		const configurationIdentifier = `Blueprint_${blueprintId}_s1_c1_sys_cfg1`;
-		const activationIdentifier = `Blueprint_${blueprintId}_s1_sys_act1`;
+		const activationIdentifier = `Blueprint_${blueprintId}_s1_c1_sys_act1`;
 
 		await this.pollMimicConfigurationsWithCheckIn(udid, configurationIdentifier);
 
