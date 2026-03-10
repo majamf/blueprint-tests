@@ -354,7 +354,7 @@ export default class BlueprintDetailPageSteps {
 
 		const blueprintUpdatePromise = this.waitForBlueprintsUpdateResponse();
 
-		await this.dragAndDropElement(subjectElement, targetElement);
+		await this.dragAndDropElement(subjectElement, targetElement, 20);
 
 		const componentInDeclarationGroup = targetElement.locator(blueprintCardLocator, { hasText: componentTitle });
 
@@ -513,7 +513,7 @@ export default class BlueprintDetailPageSteps {
 		await expect(analyticsCard).toContainText('Define scope');
 	}
 
-	private async dragAndDropElement(subjectLocator: Locator, targetLocator: Locator) {
+	private async dragAndDropElement(subjectLocator: Locator, targetLocator: Locator, yAxisOffset = 0) {
 		await targetLocator.scrollIntoViewIfNeeded();
 		await subjectLocator.scrollIntoViewIfNeeded();
 
@@ -528,7 +528,7 @@ export default class BlueprintDetailPageSteps {
 
 		await this.page.mouse.move(
 			targetElementBound.x + targetElementBound.width / 2,
-			targetElementBound.y + targetElementBound.height / 2,
+			targetElementBound.y + targetElementBound.height / 2 + yAxisOffset,
 			{ steps: 10 }
 		);
 
