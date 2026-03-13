@@ -1,0 +1,74 @@
+name: Blueprints System Tests
+run-name: ${{ github.event_name == 'workflow_dispatch' && format('Receiving Workflow [{0}]', inputs.UUID || 'Unknown') || format('{0} ran Blueprints System Tests', github.actor) }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Select the environment to run tests against'
+        required: true
+        default: 'sbox'
+        type: choice
+        options:
+          - sbox
+          - dev
+          - stage
+      team:
+        description: 'Select the team to run tests for'
+        required: true
+        default: 'ocean'
+      slack_channel:
+        description: 'Slack channel for notifications'
+        required: true
+        default: 'ocean-tests'
+      caller_service:
+        description: 'Caller service initiating the tests'
+        required: true
+      UUID:
+        description: 'Unique identifier for this run (will appear in run name)'
+        required: false
+
+jobs:
+  transform-environment-to-filter:
+    runs-on: [self-hosted, jamf-ubuntu-latest]
+    outputs:
+      filter: ${{ steps.set-filter.outputs.filter }}
+    steps:
+      - id: set-filter
+        run: |
+          case "${{ github.event.inputs.environment }}" in
+            sbox)
+              echo "filter=@sbox" >> "$GITHUB_OUTPUT"
+              ;;
+            dev)
+              echo "filter=@dev" >> "$GITHUB_OUTPUT"
+              ;;
+            stage)
+              echo "filter=@stage" >> "$GITHUB_OUTPUT"
+              ;;
+            *)
+              echo "Invalid environment: '${{ github.event.inputs.environment }}'. Expected one of: sbox, dev, stage." 1>&2
+              exit 1
+              ;;
+          esac
+  run-playwright:
+    name: System Tests - ${{ github.event.inputs.caller_service }} - ${{ github.event.inputs.environment }}
+    uses: ./.github/workflows/reusable-playwright-setup.yml
+    needs: transform-environment-to-filter
+    with:
+      run-name: System Tests - ${{ github.event.inputs.caller_service }} - ${{ github.event.inputs.environment }}
+      filter: ${{ needs.transform-environment-to-filter.outputs.filter }}
+      slack_channel: ${{ github.event.inputs.slack_channel }}
+      notify_success: 'true'
+      notify_failure: 'true'
+      rp_project: 'jamf_capabilities'
+      rp_attributes: 'team:${{ github.event.inputs.team }},env:${{ github.event.inputs.environment }}'
+    secrets:
+      JAMF_ACCOUNT_STAGE_USER_MAIL: ${{ secrets.JAMF_ACCOUNT_STAGE_USER_MAIL }}
+      JAMF_ACCOUNT_STAGE_USER_PASSWORD: ${{ secrets.JAMF_ACCOUNT_STAGE_USER_PASSWORD }}
+      JAMF_PRO_STAGE_API_USERNAME: ${{ secrets.JAMF_PRO_STAGE_API_USERNAME }}
+      JAMF_PRO_STAGE_API_PASSWORD: ${{ secrets.JAMF_PRO_STAGE_API_PASSWORD }}
+      JAMF_SCHOOL_STAGE_API_USERNAME: ${{ secrets.JAMF_SCHOOL_STAGE_API_USERNAME }}
+      JAMF_SCHOOL_STAGE_API_PASSWORD: ${{ secrets.JAMF_SCHOOL_STAGE_API_PASSWORD }}
+      RP_API_KEY: ${{ secrets.RP_API_KEY }}
+      GH_SLACK_TOKEN: ${{ secrets.GH_SLACK_TOKEN }}

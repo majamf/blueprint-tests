@@ -3,6 +3,10 @@ name: Reusable Playwright setup
 on:
   workflow_call:
     inputs:
+      run-name:
+        description: 'Name of the workflow run'
+        required: true
+        type: string
       filter:
         description: 'Filter selecting which tests to run'
         required: false
@@ -122,11 +126,22 @@ jobs:
           PLAYWRIGHT_VERSION=$(jq -r '.devDependencies."@playwright/test"' package.json)
           echo "PLAYWRIGHT_VERSION=$PLAYWRIGHT_VERSION" >> $GITHUB_OUTPUT
         shell: bash
-
+  transform-inputs:
+    name: Transform Inputs
+    runs-on: [ self-hosted, jamf-ubuntu-latest ]
+    outputs:
+      run_name: ${{ steps.transform.outputs.RUN_NAME }}
+    steps:
+      - id: transform
+        name: Transform Inputs
+        run: |
+          raw="${{ inputs.run-name }}"
+          echo "RUN_NAME=${raw//[[:space:]]/_}" >> $GITHUB_OUTPUT
+        shell: bash
   test:
     timeout-minutes: 60
     runs-on: [ self-hosted, jamf-ubuntu-latest ]
-    needs: [ playwright-version ]
+    needs: [ playwright-version, transform-inputs ]
     container:
       image: mcr.microsoft.com/playwright:v${{ needs.playwright-version.outputs.playwright_version }}
     outputs:
@@ -163,16 +178,16 @@ jobs:
           echo "Reportportal launch: ${REPORTPORTAL_URL}" >> $GITHUB_STEP_SUMMARY
           echo "REPORTPORTAL_URL=$REPORTPORTAL_URL" >> $GITHUB_OUTPUT
         shell: bash
-      - uses: actions/upload-artifact@v6
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
-          name: playwright-report
+          name: ${{ needs.transform-inputs.outputs.run_name }}-playwright-report
           path: playwright-report/
           retention-days: 30
-      - uses: actions/upload-artifact@v6
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
-          name: results.json
+          name: ${{ needs.transform-inputs.outputs.run_name }}-results.json
           path: results.json
           retention-days: 30
 
@@ -197,7 +212,7 @@ jobs:
   extract-results:
     name: Extract test result numbers
     runs-on: [ self-hosted, jamf-ubuntu-latest ]
-    needs: [ test ]
+    needs: [ test, transform-inputs ]
     if: ${{ !cancelled() }}
     outputs:
       passed: ${{ steps.extract.outputs.PASSED }}
@@ -206,9 +221,11 @@ jobs:
       skipped: ${{ steps.extract.outputs.SKIPPED }}
       durationMs: ${{ steps.extract.outputs.DURATION_MS }}
     steps:
-      - uses: actions/download-artifact@v6
+      - id: download
+        name: Download Playwright Test Results Artifact
+        uses: actions/download-artifact@v8
         with:
-          name: results.json
+          name: ${{ needs.transform-inputs.outputs.run_name }}-results.json
       - id: extract
         name: Extract Playwright Test Results
         run: |
@@ -237,6 +254,7 @@ jobs:
           failed: ${{ needs.extract-results.outputs.failed }}
           skipped: ${{ needs.extract-results.outputs.skipped }}
           durationMs: ${{ needs.extract-results.outputs.durationMs }}
+          run_name: ${{ inputs.run-name }}
           result: 'PASSED'
           rp_link: ${{ needs.test.outputs.reportportal_url }}
           bg_color: '#36a64f'
@@ -258,9 +276,23 @@ jobs:
           failed: ${{ needs.extract-results.outputs.failed }}
           skipped: ${{ needs.extract-results.outputs.skipped }}
           durationMs: ${{ needs.extract-results.outputs.durationMs }}
+          run_name: ${{ inputs.run-name }}
           result: 'FAILED'
           rp_link: ${{ needs.test.outputs.reportportal_url }}
           bg_color: '#FF0000'
           slack_channel: ${{ inputs.slack_channel }}
           slack_token: ${{ secrets.GH_SLACK_TOKEN }}
           environment: ${{ needs.extract-environment.outputs.environment }}
+
+  generate-slack-message-links-artifact:
+    name: Generate Slack Message Blocks from Links
+    runs-on: [ self-hosted, jamf-ubuntu-latest ]
+    needs: [ test, transform-inputs ]
+    if: ${{ !cancelled() }}
+    steps:
+    - name: Generate Slack Message Blocks from Links
+      uses: jamf/github-actions-system-tests/create-slack-links-artifact@v1
+      with:
+        links: |
+          ReportPortal|${{ needs.test.outputs.reportportal_url }}
+          Workflow|${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}

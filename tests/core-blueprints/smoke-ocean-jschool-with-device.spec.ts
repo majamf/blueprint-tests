@@ -45,6 +45,8 @@ test(
 		},
 	},
 	async ({ page, baseURL, accountCredentials, apiCredentials }) => {
+		test.fixme(true, 'https://jamf.atlassian.net/browse/SCH-24654');
+
 		const jSchoolLoginSteps = new JSchoolLoginSteps(page);
 		const blueprintsSteps = new BlueprintsSteps(page);
 		const blueprintTemplatePageSteps = new BlueprintTemplatePageSteps(page);

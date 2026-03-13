@@ -49,8 +49,11 @@ export default class BlueprintTemplatePageSteps {
 
 	@Step('Admin selects first group in scope')
 	async adminSelectsFirstGroupInScope() {
-		const firstGroup = this.page.locator('[name="groupsInScope"]').locator(blueprintCheckboxLocator).nth(0);
-
+		const firstGroup = this.page
+			.locator('[name="groupsInScope"]')
+			.locator(blueprintCheckboxLocator)
+			.locator('.checkbox > .indicator')
+			.first();
 		await firstGroup.click();
 	}
 

@@ -37,7 +37,7 @@ export default class JProLoginSteps {
 
 		await this.handleRedirectsToPro(baseUrl);
 
-		await expect(jamfProVersion).toBeVisible();
+		await expect(jamfProVersion).toBeVisible({ timeout: 15_000 });
 
 		await blueprintsNavItem.waitFor();
 

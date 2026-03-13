@@ -211,7 +211,7 @@ export default class BlueprintDetailPageSteps {
 	async onlyOneKeyIsDisplayedInsideComponent(componentTitle: string) {
 		const appleKeysWrapper = this.page
 			.getByTestId('payload-settings-wrapper')
-			.locator('div[class="w-full"]')
+			.locator('div[class*="w-full"]')
 			.locator('h5');
 		await expect(appleKeysWrapper).toHaveCount(1);
 		await expect(appleKeysWrapper).toHaveText(componentTitle);
@@ -220,7 +220,7 @@ export default class BlueprintDetailPageSteps {
 	@Step('Given number of keys "$0" are displayed inside a component')
 	async givenNumberOfKeysAreDisplayedInsideComponent(numberOfKeys: number) {
 		await expect(
-			this.page.getByTestId('payload-settings-wrapper').locator('div[class="w-full"]').locator('h5')
+			this.page.getByTestId('payload-settings-wrapper').locator('div[class*="w-full"]').locator('h5')
 		).toHaveCount(numberOfKeys);
 	}
 
@@ -355,7 +355,7 @@ export default class BlueprintDetailPageSteps {
 
 		const blueprintUpdatePromise = this.waitForBlueprintsUpdateResponse();
 
-		await this.dragAndDropElement(subjectElement, targetElement);
+		await this.dragAndDropElement(subjectElement, targetElement, 20);
 
 		const componentInDeclarationGroup = targetElement.locator(blueprintCardLocator, { hasText: componentTitle });
 
@@ -373,6 +373,11 @@ export default class BlueprintDetailPageSteps {
 	@Step('Admin opens add modal of component with title "$0"')
 	async adminOpensAddModalOfComponent(componentTitle: string) {
 		const componentList = this.page.getByTestId('component-list');
+
+		// filter for component first to make sure it is visible
+		await this.page.getByTestId('component-search').getByRole('textbox').clear();
+		await this.page.getByTestId('component-search').getByRole('textbox').fill(componentTitle);
+
 		const componentInComponentList = componentList.locator(blueprintCardLocator, { hasText: componentTitle });
 
 		await componentInComponentList.focus();
@@ -509,7 +514,7 @@ export default class BlueprintDetailPageSteps {
 		await expect(analyticsCard).toContainText('Define scope');
 	}
 
-	private async dragAndDropElement(subjectLocator: Locator, targetLocator: Locator) {
+	private async dragAndDropElement(subjectLocator: Locator, targetLocator: Locator, yAxisOffset = 0) {
 		await targetLocator.scrollIntoViewIfNeeded();
 		await subjectLocator.scrollIntoViewIfNeeded();
 
@@ -524,7 +529,7 @@ export default class BlueprintDetailPageSteps {
 
 		await this.page.mouse.move(
 			targetElementBound.x + targetElementBound.width / 2,
-			targetElementBound.y + targetElementBound.height / 2,
+			targetElementBound.y + targetElementBound.height / 2 + yAxisOffset,
 			{ steps: 10 }
 		);
 

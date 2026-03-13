@@ -17,6 +17,9 @@ inputs:
   durationMs:
     description: Duration of the tests in milliseconds
     required: true
+  run_name:
+    description: The name of the test run
+    required: true
   result:
     description: The result of tests
     required: true
@@ -69,7 +72,7 @@ runs:
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "*Blueprint Tests* has finished"
+                    "text": "*Blueprint Tests - ${{ inputs.run_name }}* has finished"
                   }
                 },
                 {

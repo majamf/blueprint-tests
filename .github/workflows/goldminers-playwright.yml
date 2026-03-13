@@ -76,6 +76,7 @@ jobs:
       matrix:
         jobs: ${{ fromJSON(needs.setup.outputs.jobs) }}
     with:
+      run-name: ${{ matrix.jobs.name }}
       filter: ${{ matrix.jobs.filter || '' }}
       jamfProBaseUrl: ${{ github.event.inputs.jamfProBaseUrl || '' }}
       sboxBaseUrl: ${{ github.event.inputs.sboxBaseUrl || '' }}
@@ -93,4 +94,4 @@ jobs:
       JAMF_SCHOOL_STAGE_API_USERNAME: ${{ secrets.JAMF_SCHOOL_STAGE_API_USERNAME }}
       JAMF_SCHOOL_STAGE_API_PASSWORD: ${{ secrets.JAMF_SCHOOL_STAGE_API_PASSWORD }}
       RP_API_KEY: ${{ secrets.RP_API_KEY }}
-      GH_SLACK_TOKEN: ${{ secrets.GH_GM_SLACK_TOKEN }}
+      GH_SLACK_TOKEN: ${{ secrets.GH_SLACK_TOKEN }}
