@@ -42,27 +42,25 @@ export default class JProApiSteps {
 			try {
 				const declarationStatusItems = await this.jproClient.getDeclarationStatusItems(computerManagementId, key);
 
-				const valueString: string = declarationStatusItems.value;
+				const valueString: string = declarationStatusItems.valueOf() as string;
 				const declarations: string[] = valueString
 					.split('},{')
 					.map((item: string): string => item.replace(/[{}]/g, ''));
 
-				const declaration = declarations.find((declStr: string): boolean =>
-					declStr.includes(`identifier=${blueprintId}`) &&
-					declStr.includes('valid=valid')
+				const declaration = declarations.find(
+					(declStr: string): boolean => declStr.includes(`identifier=${blueprintId}`) && declStr.includes('valid=valid')
 				);
 
 				if (declaration) {
 					console.log(`Found declaration on attempt ${attempt}: ${declaration}`);
 					return { declaration };
 				}
-
 			} catch (error) {
 				console.log(`Attempt ${attempt} failed:`, error);
 			}
 
 			if (attempt < maxAttempts) {
-				await new Promise<void>(resolve => setTimeout(resolve, delayMs));
+				await new Promise<void>((resolve) => setTimeout(resolve, delayMs));
 			}
 		}
 

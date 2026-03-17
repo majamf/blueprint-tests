@@ -6,14 +6,12 @@ import { test } from '../utils/utils';
 import JProApiSteps from '../steps/jpro-api-steps.ts';
 import { expect } from '@playwright/test';
 
-
 test.beforeEach(async () => {
 	console.log(`Running "${test.info().title}" in ${test.info().project.name}`);
 	if (test.info().retry != 0) {
 		console.log(`Running ${test.info().retry}. retry of "${test.info().title}" in ${test.info().project.name}`);
 	}
 });
-
 
 test(
 	'ALME Application can be added via blueprint in Jamf Pro and deployed to a computer device',
@@ -33,7 +31,7 @@ test(
 			'@scenario_owner=mercury',
 		],
 	},
-	async ({ page, baseURL, accountCredentials, apiCredentials }, workerInfo) => {
+	async ({ page, baseURL, accountCredentials, apiCredentials }) => {
 		const jproLoginSteps = new JProLoginSteps(page);
 		const blueprintsSteps = new BlueprintsSteps(page);
 		const navigationSteps = new NavigationSteps(page);
@@ -59,7 +57,6 @@ test(
 
 		await blueprintDetailPageSteps.adminDeploysBlueprint();
 
-
 		const deployedDeclarations = await jproApiSteps.getDeclarationItemDetails(
 			computerManagementId,
 			'management.declarations.activations',
@@ -69,8 +66,5 @@ test(
 		expect(deployedDeclarations).not.toEqual({});
 
 		await blueprintDetailPageSteps.thereAreDeployedDevicesInAnalytics(1);
-
 	}
 );
-
-

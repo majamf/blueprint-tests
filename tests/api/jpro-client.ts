@@ -13,7 +13,7 @@ type MobileDeviceDetails = {
 type ComputerDetails = {
 	general: {
 		managementId: string;
-	}
+	};
 };
 
 type Section = Uppercase<keyof MobileDeviceDetails>;
@@ -69,10 +69,8 @@ export default class JproClient {
 		return await this.fetchData(apiUrl);
 	}
 
-	public async getDeclarationStatusItems(deviceUUID: string, key: string): Promise<any> {
+	public async getDeclarationStatusItems(deviceUUID: string, key: string): Promise<string> {
 		const apiUrl = encodeURI(`${this.baseUrl}/api/v1/ddm/${deviceUUID}/status-items/${key}`);
 		return await this.fetchData(apiUrl);
 	}
-
-
 }
