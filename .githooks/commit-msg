@@ -1,0 +1,11 @@
+#!/bin/sh
+set -e
+
+commit_msg=$(cat "$1")
+
+if ! echo "$commit_msg" | grep -qE '^\[[A-Z]+-[0-9]+\] .+'; then
+  echo "ERROR: Commit message does not match the required format."
+  echo "  Expected: [ABC-123] this is commit message"
+  echo "  Got:      $commit_msg"
+  exit 1
+fi
