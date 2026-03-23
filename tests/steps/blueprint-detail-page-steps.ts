@@ -12,6 +12,7 @@ const builderComponentMap: componentsMap = {
 	'Passcode Policy': 'com.jamf.ddm.passcode-settings',
 	'Disk management': 'com.jamf.ddm.disk-management',
 	'Amazon AWS VPN Client': 'com.jamf.alme.managed.2E6',
+	'Google Chrome': 'com.jamf.alme.managed.0BC',
 	'Math settings': 'com.jamf.ddm.math-settings',
 	'Safari Extensions': 'com.jamf.ddm.safari-extensions',
 	'Service configuration': 'com.jamf.ddm.service-configuration-files',
@@ -64,7 +65,16 @@ export default class BlueprintDetailPageSteps {
 	private waitForBlueprintsComponentsLibraryResponse() {
 		return this.page.waitForResponse(
 			(response) =>
-				/blueprints\/components-registry\/v1\/fragments\?search=[^&]+&page/.test(response.url()) &&
+				/blueprints\/components-registry\/v1\/fragments.*[?&]search=[^&]+/.test(response.url()) &&
+				response.status() === 200 &&
+				response.request().method() === 'GET'
+		);
+	}
+
+	private waitForBlueprintsFragmentsResponse() {
+		return this.page.waitForResponse(
+			(response) =>
+				response.url().includes('/blueprints/components-registry/v1/fragments') &&
 				response.status() === 200 &&
 				response.request().method() === 'GET'
 		);
@@ -173,6 +183,17 @@ export default class BlueprintDetailPageSteps {
 			.locator(`${blueprintCheckboxLocator}:has-text("${group}")`);
 		await expect(groupLocator).toBeVisible();
 		await expect(groupLocator).toHaveText(group);
+	}
+
+	@Step('Admin selects "$0" from Components library filter')
+	async adminSelectsComponentLibraryFilter(filterValue: string) {
+		const combobox = this.page.getByRole('combobox', { name: 'Select value' });
+		const fragmentsResponsePromise = this.waitForBlueprintsFragmentsResponse();
+
+		await combobox.click();
+		await this.page.getByRole('option', { name: filterValue }).click();
+
+		await fragmentsResponsePromise;
 	}
 
 	@Step('Admin searches for component with name "$0"')

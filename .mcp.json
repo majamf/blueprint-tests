@@ -1,0 +1,26 @@
+{
+	"mcpServers": {
+		"playwright": {
+			"command": "npx",
+			"args": ["@playwright/mcp@latest"]
+		},
+		"jira-server": {
+			"type": "sse",
+			"url": "https://mcp.atlassian.com/v1/sse"
+		},
+		"confluence-server": {
+			"type": "sse",
+			"url": "https://mcp.atlassian.com/v1/sse"
+		},
+		"nebula-server": {
+			"type": "http",
+			"url": "https://mcp-docs.jads.jamf.build"
+		},
+		"github": {
+			"type": "stdio",
+			"command": "docker",
+			"args": ["run", "-i", "--rm", "-e", "GITHUB_PERSONAL_ACCESS_TOKEN", "ghcr.io/github/github-mcp-server"],
+			"env": {}
+		}
+	}
+}

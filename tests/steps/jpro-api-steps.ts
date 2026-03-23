@@ -29,6 +29,40 @@ export default class JProApiSteps {
 		return details.results[0]!.general.managementId;
 	}
 
+	@Step('Get computer Jamf Pro id')
+	public async getComputerJproId() {
+		const details = await this.jproClient.getComputerDetails();
+
+		expect(details.results.length).toEqual(1);
+		expect(details.results[0]).not.toBeUndefined();
+
+		return details.results[0]!.id;
+	}
+
+	@Step('Create static computer group')
+	public async createStaticComputerGroup(groupName: string, computerId: string): Promise<void> {
+		await this.jproClient.createStaticComputerGroup(groupName, [computerId]);
+	}
+
+	@Step('Delete static computer group')
+	public async deleteStaticComputerGroup(groupName: string): Promise<void> {
+		const groups = await this.jproClient.getStaticComputerGroupsByName(groupName);
+
+		expect(groups.results[0]).not.toBeUndefined();
+
+		await this.jproClient.deleteStaticComputerGroup(groups.results[0]!.id);
+	}
+
+	@Step('Add computer to static group')
+	public async addComputerToStaticGroup(groupName: string, computerId: string): Promise<void> {
+		const groups = await this.jproClient.getStaticComputerGroupsByName(groupName);
+
+		// expect(groups.results.length).toEqual(1);
+		expect(groups.results[0]).not.toBeUndefined();
+
+		await this.jproClient.updateStaticComputerGroup(groups.results[0]!.id, groupName, [computerId]);
+	}
+
 	@Step('Get real device declaration details')
 	public async getDeclarationItemDetails(
 		computerManagementId: string,

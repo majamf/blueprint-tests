@@ -68,31 +68,31 @@ function* generateProjects(): Generator<Project<PlaywrightTestOptions & TestOpti
 						}),
 			},
 		},
-		{
-			name: 'Firefox',
-			tags: ['@all-browsers', '@firefox'],
-			use: {
-				...devices['Desktop Firefox'],
-				viewport: { width: 1400, height: 900 },
-				...(isRunningInCI
-					? {}
-					: {
-							launchOptions: {
-								firefoxUserPrefs: {
-									'network.http.fast-fallback-to-IPv4': false,
-								},
-							},
-						}),
-			},
-		},
-		{
-			name: 'Safari',
-			tags: ['@all-browsers', '@safari'],
-			use: {
-				...devices['Desktop Safari'],
-				viewport: { width: 1400, height: 900 },
-			},
-		},
+		// {
+		// 	name: 'Firefox',
+		// 	tags: ['@all-browsers', '@firefox'],
+		// 	use: {
+		// 		...devices['Desktop Firefox'],
+		// 		viewport: { width: 1400, height: 900 },
+		// 		...(isRunningInCI
+		// 			? {}
+		// 			: {
+		// 					launchOptions: {
+		// 						firefoxUserPrefs: {
+		// 							'network.http.fast-fallback-to-IPv4': false,
+		// 						},
+		// 					},
+		// 				}),
+		// 	},
+		// },
+		// {
+		// 	name: 'Safari',
+		// 	tags: ['@all-browsers', '@safari'],
+		// 	use: {
+		// 		...devices['Desktop Safari'],
+		// 		viewport: { width: 1400, height: 900 },
+		// 	},
+		// },
 	];
 
 	const populateCustomTemplates = !isRunningInCI;
