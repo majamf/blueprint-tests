@@ -31,6 +31,12 @@ type StaticComputerGroupHref = {
 	href: string;
 };
 
+type StatusItem = {
+	key: string;
+	value: string;
+	lastUpdateTime: string;
+};
+
 type Section = Uppercase<keyof MobileDeviceDetails>;
 
 export default class JproClient {
@@ -135,7 +141,7 @@ export default class JproClient {
 		return await this.putData(apiUrl, { name: groupName, assignments });
 	}
 
-	public async getDeclarationStatusItems(deviceUUID: string, key: string): Promise<string> {
+	public async getDeclarationStatusItems(deviceUUID: string, key: string): Promise<StatusItem> {
 		const apiUrl = encodeURI(`${this.baseUrl}/api/v1/ddm/${deviceUUID}/status-items/${key}`);
 		return await this.fetchData(apiUrl);
 	}

@@ -12,10 +12,10 @@ test.beforeAll(async ({ baseURL, apiCredentials }) => {
 	await jproApiSteps.createStaticComputerGroup('almeTestGroup', computerId);
 });
 
-// test.afterAll(async ({ baseURL, apiCredentials }) => {
-// 	const jproApiSteps = new JProApiSteps(baseURL!, apiCredentials!);
-// 	await jproApiSteps.deleteStaticComputerGroup('almeTestGroup');
-// });
+test.afterAll(async ({ baseURL, apiCredentials }) => {
+	const jproApiSteps = new JProApiSteps(baseURL!, apiCredentials!);
+	await jproApiSteps.deleteStaticComputerGroup('almeTestGroup');
+});
 
 test.beforeEach(async () => {
 	console.log(`Running "${test.info().title}" in ${test.info().project.name}`);
@@ -55,30 +55,38 @@ test(
 		await blueprintsSteps.blueprintsPageIsOpen();
 
 		const blueprintId = await blueprintsSteps.adminClicksCreateBlueprintButton();
-		await blueprintDetailPageSteps.changeBlueprintName('ALME Blueprint');
-		await blueprintDetailPageSteps.changeBlueprintDescription('e2e automated test');
 
-		const computerManagementId = await jproApiSteps.getComputerManagementId();
+		try {
+			await blueprintDetailPageSteps.changeBlueprintName('ALME Blueprint');
+			await blueprintDetailPageSteps.changeBlueprintDescription('e2e automated test');
 
-		await blueprintDetailPageSteps.adminSelectsComponentLibraryFilter('App Catalog');
-		await blueprintDetailPageSteps.adminSearchesForComponent('Chrome');
-		await blueprintDetailPageSteps.adminDragsAndDropsComponent('Google Chrome');
+			const computerManagementId = await jproApiSteps.getComputerManagementId();
 
-		await blueprintDetailPageSteps.adminOpensScopeDrawer();
-		await blueprintDetailPageSteps.scopingDrawerIsOpened();
-		await blueprintDetailPageSteps.adminSelectsGroupWithNameInScope('almeTestGroup');
-		await blueprintDetailPageSteps.adminSavesScope();
+			await blueprintDetailPageSteps.adminSelectsComponentLibraryFilter('App Catalog');
+			await blueprintDetailPageSteps.adminSearchesForComponent('Chrome');
+			await blueprintDetailPageSteps.adminDragsAndDropsComponent('Google Chrome');
 
-		await blueprintDetailPageSteps.blueprintIsReadyForDeploymentInAnalyticsCard();
+			await blueprintDetailPageSteps.adminOpensScopeDrawer();
+			await blueprintDetailPageSteps.scopingDrawerIsOpened();
+			await blueprintDetailPageSteps.adminSelectsGroupWithNameInScope('almeTestGroup');
+			await blueprintDetailPageSteps.adminSavesScope();
 
-		await blueprintDetailPageSteps.adminDeploysBlueprint();
+			await blueprintDetailPageSteps.blueprintIsReadyForDeploymentInAnalyticsCard();
 
-		const deployedDeclarations = await jproApiSteps.getDeclarationItemDetails(
-			computerManagementId,
-			'management.declarations.activations',
-			`Blueprint_${blueprintId}_s1_sys_act1`
-		);
+			await blueprintDetailPageSteps.adminDeploysBlueprint();
 
-		// expect(deployedDeclarations).not.toEqual({});
+			const deployedDeclarations = await jproApiSteps.getDeclarationItemDetails(
+				computerManagementId,
+				'management.declarations.activations',
+				`Blueprint_${blueprintId}_s1_c1_sys_act1`
+			);
+
+			expect(deployedDeclarations).not.toEqual({});
+		} finally {
+			if (!page.url().includes(blueprintId)) {
+				await navigationSteps.navigateToRoute(`blueprints/${blueprintId}`);
+			}
+			await blueprintDetailPageSteps.adminDeletesBlueprint();
+		}
 	}
 );

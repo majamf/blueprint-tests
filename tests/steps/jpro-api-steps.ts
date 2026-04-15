@@ -75,8 +75,7 @@ export default class JProApiSteps {
 		for (let attempt = 1; attempt <= maxAttempts; attempt++) {
 			try {
 				const declarationStatusItems = await this.jproClient.getDeclarationStatusItems(computerManagementId, key);
-
-				const valueString: string = declarationStatusItems.valueOf() as string;
+				const valueString: string = declarationStatusItems.value;
 				const declarations: string[] = valueString
 					.split('},{')
 					.map((item: string): string => item.replace(/[{}]/g, ''));

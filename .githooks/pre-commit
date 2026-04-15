@@ -3,8 +3,19 @@ set -e
 
 echo "Running pre-commit checks..."
 
-echo "→ pnpm format:check"
-pnpm format:check
+staged_files=$(git diff --cached --name-only --diff-filter=ACM || true)
+
+staged_ts=$(echo "$staged_files" | grep '\.ts$' || true)
+if [ -n "$staged_ts" ]; then
+  echo "→ eslint (staged .ts files)"
+  echo "$staged_ts" | xargs pnpm eslint --max-warnings=0
+fi
+
+staged_prettier=$(echo "$staged_files" | grep -E '\.(ts|js|json|yaml|yml|md)$' || true)
+if [ -n "$staged_prettier" ]; then
+  echo "→ prettier --check (staged files)"
+  echo "$staged_prettier" | xargs pnpm prettier --check
+fi
 
 echo "→ pnpm tsc:check"
 pnpm tsc:check
