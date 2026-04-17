@@ -63,6 +63,16 @@ export default class JProApiSteps {
 		await this.jproClient.updateStaticComputerGroup(groups.results[0]!.id, groupName, [computerId]);
 	}
 
+	@Step('Assert blueprint "$2" deployed to computer')
+	public async assertDeclarationDeployedToComputer(
+		computerManagementId: string,
+		key: string,
+		blueprintId: string
+	): Promise<void> {
+		const result = await this.getDeclarationItemDetails(computerManagementId, key, blueprintId);
+		expect(result).not.toEqual({});
+	}
+
 	@Step('Get real device declaration details')
 	public async getDeclarationItemDetails(
 		computerManagementId: string,

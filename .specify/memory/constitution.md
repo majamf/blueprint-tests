@@ -1,11 +1,11 @@
 <!--
 SYNC IMPACT REPORT
 ==================
-Version change: 1.1.0 → 1.1.1
+Version change: 1.1.1 → 1.1.2
 Modified principles: N/A
 Added sections:
-  - CI & Reporting Standards: macOS runner requirement for ALME and other
-    platform-sensitive flows
+  - CI & Reporting Standards › ALME Test Prerequisites:
+    enrolled, managed, and supervised computer requirement
 Removed sections: N/A
 Templates requiring updates:
   - .specify/templates/plan-template.md ✅ aligned
@@ -129,6 +129,17 @@ ticket creates accountability for fixing root causes.
 - Verification steps that execute remote commands MUST be encapsulated in a step class under
   `tests/steps/` and decorated with `@Step`, like all other interactions.
 
+### ALME Test Prerequisites
+
+- ALME tests require at least one macOS computer that is **enrolled in, managed by, and supervised
+  by the target Jamf Pro instance**. This is a shared read-only environmental assumption per
+  Principle I and MUST be documented when setting up a new test environment.
+- The enrolled computer's supervision and management status MUST be verified before running ALME
+  tests against a new environment. If no such computer is available, ALME tests MUST be skipped
+  or annotated with `test.fixme` referencing the environment setup gap.
+- Device identifiers (serial number, management ID, etc.) needed by test steps MUST be supplied
+  via `.env` variables or CI secrets — never hard-coded in test files.
+
 ## Governance
 
 This constitution is the authoritative standard for all test-authoring decisions in the
@@ -151,4 +162,4 @@ preferences.
 Principles I–V before approval. Reviewers MUST check that mandatory tags, step decorators, and
 cleanup steps are present.
 
-**Version**: 1.1.1 | **Ratified**: 2026-04-15 | **Last Amended**: 2026-04-15
+**Version**: 1.1.2 | **Ratified**: 2026-04-15 | **Last Amended**: 2026-04-17

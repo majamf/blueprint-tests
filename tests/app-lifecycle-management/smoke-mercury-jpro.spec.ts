@@ -1,20 +1,24 @@
+import { v4 as uuidv4 } from 'uuid';
 import JProLoginSteps from '../steps/jpro-login-steps';
 import BlueprintsSteps from '../steps/blueprints-steps';
 import BlueprintDetailPageSteps from '../steps/blueprint-detail-page-steps.ts';
 import NavigationSteps from '../steps/navigation-steps';
 import { test } from '../utils/utils';
 import JProApiSteps from '../steps/jpro-api-steps.ts';
-import { expect } from '@playwright/test';
+
+let id = uuidv4();
+// groupId is stable for the whole worker run; id is reset per-test in beforeEach
+const groupId = uuidv4();
 
 test.beforeAll(async ({ baseURL, apiCredentials }) => {
 	const jproApiSteps = new JProApiSteps(baseURL!, apiCredentials!);
 	const computerId = await jproApiSteps.getComputerJproId();
-	await jproApiSteps.createStaticComputerGroup('almeTestGroup', computerId);
+	await jproApiSteps.createStaticComputerGroup('almeTestGroup_' + groupId, computerId);
 });
 
 test.afterAll(async ({ baseURL, apiCredentials }) => {
 	const jproApiSteps = new JProApiSteps(baseURL!, apiCredentials!);
-	await jproApiSteps.deleteStaticComputerGroup('almeTestGroup');
+	await jproApiSteps.deleteStaticComputerGroup('almeTestGroup_' + groupId);
 });
 
 test.beforeEach(async () => {
@@ -22,6 +26,7 @@ test.beforeEach(async () => {
 	if (test.info().retry != 0) {
 		console.log(`Running ${test.info().retry}. retry of "${test.info().title}" in ${test.info().project.name}`);
 	}
+	id = uuidv4();
 });
 
 test(
@@ -57,7 +62,7 @@ test(
 		const blueprintId = await blueprintsSteps.adminClicksCreateBlueprintButton();
 
 		try {
-			await blueprintDetailPageSteps.changeBlueprintName('ALME Blueprint');
+			await blueprintDetailPageSteps.changeBlueprintName('ALME_' + id);
 			await blueprintDetailPageSteps.changeBlueprintDescription('e2e automated test');
 
 			const computerManagementId = await jproApiSteps.getComputerManagementId();
@@ -68,20 +73,20 @@ test(
 
 			await blueprintDetailPageSteps.adminOpensScopeDrawer();
 			await blueprintDetailPageSteps.scopingDrawerIsOpened();
-			await blueprintDetailPageSteps.adminSelectsGroupWithNameInScope('almeTestGroup');
+			await blueprintDetailPageSteps.adminSelectsGroupWithNameInScope('almeTestGroup_' + groupId);
 			await blueprintDetailPageSteps.adminSavesScope();
 
 			await blueprintDetailPageSteps.blueprintIsReadyForDeploymentInAnalyticsCard();
 
 			await blueprintDetailPageSteps.adminDeploysBlueprint();
 
-			const deployedDeclarations = await jproApiSteps.getDeclarationItemDetails(
+			await blueprintDetailPageSteps.thereAreDeployedDevicesInAnalytics(1);
+
+			await jproApiSteps.assertDeclarationDeployedToComputer(
 				computerManagementId,
 				'management.declarations.activations',
 				`Blueprint_${blueprintId}_s1_c1_sys_act1`
 			);
-
-			expect(deployedDeclarations).not.toEqual({});
 		} finally {
 			if (!page.url().includes(blueprintId)) {
 				await navigationSteps.navigateToRoute(`blueprints/${blueprintId}`);
