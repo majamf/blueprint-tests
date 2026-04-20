@@ -54,8 +54,8 @@ and confirming the cron expression is set to a daily cadence.
 ### Edge Cases
 
 - What happens when no Jamf Pro base URL is provided via `workflow_dispatch`? The workflow
-  MUST fail fast with a clear error — there is no fallback URL, as the instance is always
-  required.
+  falls back to the Jamf Pro URL defined in the repository environment variable; if that
+  variable is also absent the reusable workflow will have no URL and tests will fail.
 - What happens when the enrolled Mac device is unavailable? Tests fail and a Slack failure
   notification is sent.
 
@@ -63,11 +63,12 @@ and confirming the cron expression is set to a daily cadence.
 
 ### Functional Requirements
 
-- **FR-001**: The workflow MUST run only `tests/app-lifecycle-management/smoke-mercury-jpro.spec.ts`.
+- **FR-001**: The workflow MUST run only tests from the `tests/app-lifecycle-management/` folder. Currently this folder contains a single spec (`smoke-mercury-jpro.spec.ts`); folder-scoped targeting is intentional and consistent with all other workflows in the repo.
 - **FR-002**: The workflow MUST reuse the existing `reusable-playwright-setup.yml` workflow,
   following the same pattern as `playwright.yml` and `goldminers-playwright.yml`.
-- **FR-003**: The workflow MUST support `workflow_dispatch` with `jamfProBaseUrl` as a
-  **required** input — the workflow MUST NOT run without it being explicitly provided.
+- **FR-003**: The workflow MUST support `workflow_dispatch` with `jamfProBaseUrl` as an input.
+  For manual runs the URL is passed explicitly as a run parameter; for `push` and `schedule`
+  triggers the URL is read from a repository environment variable. Both paths MUST be supported.
 - **FR-003a**: Additional `workflow_dispatch` inputs (filter, slack_channel, notify_success,
   notify_failure, rp_project) MUST be supported, consistent with existing workflows.
 - **FR-004**: The workflow MUST run on a nightly schedule (daily cron).
@@ -103,17 +104,24 @@ and confirming the cron expression is set to a daily cadence.
 - **SC-005**: The workflow completes within 60 minutes (matching the existing timeout used in
   the reusable setup).
 
+## Clarifications
+
+### Session 2026-04-17
+
+- Q: Does the ALME workflow need additional secrets beyond the standard set? → A: No — the enrolled computer is identified dynamically via the Jamf Pro API using existing API credentials; no extra secrets required.
+- Q: Should the workflow retry automatically on failure? → A: No workflow-level retry — rely on Playwright's 2 built-in test retries, consistent with all other workflows in the repo.
+- Correction: `jamfProBaseUrl` is not strictly required for manual dispatch — it is passed as a run parameter for manual runs and read from an environment variable for push/schedule runs. Slack channel is `mercury-alerts`.
+
 ## Assumptions
 
-- The Jamf Pro instance URL is always provided as a mandatory run parameter; there is no
-  default or fallback URL baked into the workflow.
-- The target environment for scheduled and push runs is `stage`, but the Jamf Pro URL for
-  those runs is supplied via the required parameter at dispatch time.
-- The Slack channel for ALME/Mercury notifications follows the naming convention of existing
-  channels (e.g., `mercury-tests`); the exact name can be adjusted at implementation time.
+- For manual (`workflow_dispatch`) runs the Jamf Pro URL is passed explicitly as a run
+  parameter. For `push` and `schedule` runs it is read from a repository environment variable
+  (e.g., `JAMF_PRO_CUSTOM_BASE_URL` or the stage env var set in the reusable workflow).
+- The target environment for scheduled and push runs is `stage`.
+- The Slack channel for ALME/Mercury notifications is `mercury-alerts` (canonical name, consistent with the `<team>-tests` convention used by `ocean-tests` and `gm-tests`).
 - The `rp_project` for scheduled runs is `jamf_capabilities`, consistent with other workflows.
 - `notify_success` defaults to `false` and `notify_failure` defaults to `true`, following the
   same conservative pattern as `goldminers-playwright.yml`.
-- No new secrets are required; all required credentials already exist as repository secrets.
+- No new secrets are required; the enrolled computer is found dynamically via the Jamf Pro API using the existing API credentials (`JAMF_PRO_STAGE_API_USERNAME` / `JAMF_PRO_STAGE_API_PASSWORD`).
 - The enrolled, managed, and supervised Mac device prerequisite is an environmental concern and
   is outside the scope of this workflow definition.

@@ -25,7 +25,7 @@ on:
       slack_channel:
         description: 'Slack channel for notifications'
         required: true
-        default: 'mercury-tests'
+        default: 'mercury-alerts'
         type: string
       notify_success:
         description: 'Set to true to notify test channel on success'
@@ -83,7 +83,7 @@ jobs:
       filter: ${{ matrix.jobs.filter || '' }}
       jamfProBaseUrl: ${{ github.event.inputs.jamfProBaseUrl || '' }}
       sboxBaseUrl: ''
-      slack_channel: ${{ github.event.inputs.slack_channel || 'mercury-tests' }}
+      slack_channel: ${{ github.event.inputs.slack_channel || 'mercury-alerts' }}
       notify_success: ${{ github.event.inputs.notify_success || 'false' }}
       notify_failure: ${{ github.event.inputs.notify_failure || 'true' }}
       test_folder: ${{ matrix.jobs.test_folder }}
@@ -108,5 +108,5 @@ jobs:
    submission if empty.
 4. Trigger with a valid Jamf Pro stage URL. Confirm only tests from
    `tests/app-lifecycle-management/` run.
-5. Confirm Slack notification arrives in `mercury-tests` (or the overridden channel).
+5. Confirm Slack notification arrives in `mercury-alerts` (or the overridden channel).
 6. Confirm Report Portal launch appears with `team:mercury` attribute.
