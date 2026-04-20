@@ -69,15 +69,16 @@ and confirming the cron expression is set to a daily cadence.
 - **FR-003**: The workflow MUST support `workflow_dispatch` with `jamfProBaseUrl` as an input.
   For manual runs the URL is passed explicitly as a run parameter; for `push` and `schedule`
   triggers the URL is read from a repository environment variable. Both paths MUST be supported.
-- **FR-003a**: Additional `workflow_dispatch` inputs (filter, slack_channel, notify_success,
-  notify_failure, rp_project) MUST be supported, consistent with existing workflows.
+- **FR-003a**: Additional `workflow_dispatch` inputs (filter, test_folder, rp_project) MUST be
+  supported. `slack_channel`, `notify_success`, and `notify_failure` are hardcoded and not
+  exposed as parameters.
 - **FR-004**: The workflow MUST run on a nightly schedule (daily cron).
 - **FR-005**: The workflow MUST pass the correct secrets and environment-specific variables to
   the reusable workflow.
 - **FR-006**: The default `test_folder` input MUST be `app-lifecycle-management`.
 - **FR-007**: The default `slack_channel` MUST be specific to the ALME/Mercury team.
-- **FR-008**: The workflow MUST report results to Report Portal using an appropriate project
-  and attributes identifying the Mercury team and environment.
+- **FR-008**: The workflow MUST support optional Report Portal reporting — `rp_project` can be
+  provided at dispatch time; by default no results are sent to Report Portal.
 - **FR-009**: On `push` to `main` and on `schedule`, the workflow MUST run with the `@stage`
   filter against the `app-lifecycle-management` folder.
 
@@ -97,10 +98,10 @@ and confirming the cron expression is set to a daily cadence.
   errors.
 - **SC-002**: On manual dispatch, only tests from `tests/app-lifecycle-management/` run —
   no tests from other folders are executed.
-- **SC-003**: Slack notifications are delivered within 2 minutes of workflow completion for both
-  pass and fail outcomes.
-- **SC-004**: Report Portal receives results tagged with the Mercury team and the correct
-  environment within every workflow run.
+- **SC-003**: On failure, a Slack notification is delivered to `mercury-alerts` within 2 minutes
+  of workflow completion.
+- **SC-004**: When `rp_project` is provided at dispatch time, Report Portal receives results
+  for that run.
 - **SC-005**: The workflow completes within 60 minutes (matching the existing timeout used in
   the reusable setup).
 
@@ -120,8 +121,8 @@ and confirming the cron expression is set to a daily cadence.
 - The target environment for scheduled and push runs is `stage`.
 - The Slack channel for ALME/Mercury notifications is `mercury-alerts` (canonical name, consistent with the `<team>-tests` convention used by `ocean-tests` and `gm-tests`).
 - The `rp_project` for scheduled runs is `jamf_capabilities`, consistent with other workflows.
-- `notify_success` defaults to `false` and `notify_failure` defaults to `true`, following the
-  same conservative pattern as `goldminers-playwright.yml`.
+- `notify_success` is hardcoded to `false` and `notify_failure` to `true`; neither is exposed
+  as a run parameter.
 - No new secrets are required; the enrolled computer is found dynamically via the Jamf Pro API using the existing API credentials (`JAMF_PRO_STAGE_API_USERNAME` / `JAMF_PRO_STAGE_API_PASSWORD`).
 - The enrolled, managed, and supervised Mac device prerequisite is an environmental concern and
   is outside the scope of this workflow definition.

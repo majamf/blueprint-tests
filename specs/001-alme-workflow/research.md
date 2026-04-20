@@ -6,20 +6,18 @@
 
 ## Decision Log
 
-### 1. Required input enforcement for `jamfProBaseUrl`
+### 1. `jamfProBaseUrl` input
 
-**Decision**: Use `required: true` on the `workflow_dispatch` input definition.
+**Decision**: Optional `workflow_dispatch` input; no `required: true`.
 
-**Rationale**: GitHub Actions natively supports `required: true` for `workflow_dispatch` inputs
-since 2022. The GitHub Actions UI will prevent form submission if the field is empty. No
-additional scripting needed.
+**Rationale**: For manual runs the user passes the URL explicitly. For `push` and `schedule`
+triggers the field is empty and the reusable workflow falls back to the stage env vars
+(`JAMF_PRO_DEVELOP_STAGE_BASE_URL`, etc.). Both paths are correct and supported.
 
 **Alternatives considered**:
-- Shell guard at job start (`if [ -z "$URL" ]; then exit 1; fi`) — adds complexity, fires later
-- Default to a known URL — rejected per spec FR-003 (no fallback)
-
-**Note**: `required` only applies to `workflow_dispatch`. For `push` and `schedule` triggers
-the field is always empty — the reusable workflow falls back to stage env vars, which is correct.
+- `required: true` — rejected; would prevent push/schedule triggers from working without extra
+  workarounds
+- Shell guard at job start — adds complexity for no benefit given the env-var fallback
 
 ---
 
@@ -52,20 +50,20 @@ infrastructure constraint applies regardless of which files changed.
 
 ### 4. Slack channel
 
-**Decision**: Default `mercury-tests`
+**Decision**: Hardcoded `mercury-alerts`; not exposed as a dispatch parameter.
 
-**Rationale**: Follows the `<team>-tests` naming convention established by `ocean-tests` and
-`gm-tests`. The Mercury team owns this workflow. The exact channel name can be overridden at
-dispatch time via `workflow_dispatch` input.
+**Rationale**: The Mercury team always wants alerts in `mercury-alerts`. Removing it as a
+parameter simplifies the dispatch UI and prevents accidental misdirection of alerts.
 
 ---
 
-### 5. Report Portal attributes
+### 5. Report Portal reporting
 
-**Decision**: `team:mercury,env:stage`
+**Decision**: Disabled by default (`rp_project` and `rp_attributes` empty). Opt-in by
+providing `rp_project` at dispatch time.
 
-**Rationale**: Consistent with `team:goldminers,env:stage` used in `goldminers-playwright.yml`.
-Enables filtering by team and environment in Report Portal dashboards.
+**Rationale**: ALME tests are not yet on a continuous reporting cadence. Enabling RP by default
+would create noise. Teams can opt-in when needed by passing `rp_project` at dispatch.
 
 ---
 

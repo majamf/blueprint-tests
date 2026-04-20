@@ -19,9 +19,8 @@ on:
         description: 'Filter selecting which tests to run'
         type: string
       jamfProBaseUrl:
-        description: 'URL of the Jamf Pro server (required)'
+        description: 'URL of the Jamf Pro server'
         type: string
-        required: true
       slack_channel:
         description: 'Slack channel for notifications'
         required: true
@@ -104,8 +103,7 @@ jobs:
 
 1. Push the file to the branch and open the Actions tab in GitHub.
 2. Confirm the workflow appears as "Playwright Tests - ALME".
-3. Click "Run workflow" — verify the `jamfProBaseUrl` field is marked required and blocks
-   submission if empty.
+3. Click "Run workflow" — provide a Jamf Pro stage URL in the `jamfProBaseUrl` field (optional; falls back to env var if omitted).
 4. Trigger with a valid Jamf Pro stage URL. Confirm only tests from
    `tests/app-lifecycle-management/` run.
 5. Confirm Slack notification arrives in `mercury-alerts` (or the overridden channel).

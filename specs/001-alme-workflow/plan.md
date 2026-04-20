@@ -6,9 +6,10 @@
 ## Summary
 
 Create `.github/workflows/alme-playwright.yml` — a dedicated GitHub Actions workflow that runs
-`tests/app-lifecycle-management/smoke-mercury-jpro.spec.ts` via the existing
-`reusable-playwright-setup.yml`, with `jamfProBaseUrl` as a required `workflow_dispatch` input,
-a nightly schedule, and Slack/Report Portal reporting matching the Mercury team's setup.
+`tests/app-lifecycle-management/` via the existing `reusable-playwright-setup.yml`. Supports
+`workflow_dispatch` (with optional `jamfProBaseUrl`, `filter`, `test_folder`, `rp_project`),
+nightly schedule, and push to main. Slack channel (`mercury-alerts`), notify flags, and
+matrix are hardcoded — no RP reporting by default.
 
 ## Technical Context
 
@@ -66,24 +67,20 @@ See [research.md](./research.md) for full findings. Summary:
 
 | Decision | Choice | Rationale |
 |----------|--------|-----------|
-| Required input enforcement | `required: true` on `jamfProBaseUrl` input | GitHub Actions natively supports this; workflow fails fast if omitted |
-| Fallback URL | None | Per spec FR-003: no fallback; URL is always explicit |
+| `jamfProBaseUrl` | Optional dispatch input; falls back to stage env var | Manual runs pass URL explicitly; push/schedule use env var |
 | Schedule cron | `0 8 * * *` (08:00 UTC) | Offset from `0 6` (playwright.yml) and `0 7` (goldminers) to avoid runner contention |
-| Slack channel default | `mercury-alerts` | Follows team channel naming convention; matches assumption in spec |
-| RP project (scheduled) | `jamf_capabilities` | Consistent with other scheduled runs |
-| RP attributes | `team:mercury,env:stage` | Identifies Mercury team and stage environment in RP |
-| push-to-main trigger | Included | Consistent with existing workflows |
+| Slack channel | Hardcoded `mercury-alerts` | Not a dispatch parameter; always notifies Mercury team channel |
+| notify_success / notify_failure | Hardcoded `false` / `true` | Not dispatch parameters; conservative defaults |
+| RP reporting | Disabled by default; opt-in via `rp_project` dispatch input | No RP noise on routine runs; enabled explicitly when needed |
+| Matrix | None — single direct call to reusable workflow | Simpler than goldminers pattern; only one target environment |
+| push-to-main trigger | Included with `@stage` filter | Consistent with existing workflows |
 | pull_request trigger | Excluded | ALME tests require enrolled Mac; not safe to run on every PR |
 
-### Key finding: `jamfProBaseUrl` required on `workflow_dispatch` only
+### Key finding: `jamfProBaseUrl` is optional
 
-GitHub Actions `required: true` on a `workflow_dispatch` input enforces that the user must
-provide the value in the UI. However, `required` does not apply to `push` or `schedule` triggers.
-For those triggers, `jamfProBaseUrl` is empty and `JAMF_PRO_CUSTOM_BASE_URL` will be blank —
-the reusable workflow will then fall back to the stage environment variables set in
-`reusable-playwright-setup.yml` (`JAMF_PRO_DEVELOP_STAGE_BASE_URL`, `JAMF_PRO_GA_STAGE_BASE_URL`,
-etc.). This is the correct and intended behaviour: scheduled runs use the known stage instance;
-manual runs always require an explicit URL.
+`jamfProBaseUrl` is an optional `workflow_dispatch` input. For manual runs the user provides it
+explicitly; for `push` and `schedule` triggers it is empty and the reusable workflow falls back
+to the stage environment variables (`JAMF_PRO_DEVELOP_STAGE_BASE_URL`, etc.).
 
 ## Phase 1: Design
 
@@ -97,24 +94,19 @@ The new workflow mirrors `goldminers-playwright.yml` exactly, with these substit
 | `schedule cron` | `0 7 * * *` | `0 8 * * *` |
 | `pull_request` trigger | present | **absent** (enrolled Mac requirement) |
 | `test_folder` default | `configuration-profiles` | `app-lifecycle-management` |
-| `slack_channel` default | `gm-tests` | `mercury-alerts` |
-| `notify_success` default | `false` | `false` |
-| `notify_failure` default | `true` | `true` |
-| `rp_project` default | `jamf_shared` | `jamf_shared` |
-| push/schedule matrix | `@stage` / `configuration-profiles` | `@stage` / `app-lifecycle-management` |
-| RP attributes | `team:goldminers,env:stage` | `team:mercury,env:stage` |
-| `jamfProBaseUrl` | optional | **required** |
+| `slack_channel` | dispatch input, default `gm-tests` | hardcoded `mercury-alerts` |
+| `notify_success` | dispatch input, default `false` | hardcoded `false` |
+| `notify_failure` | dispatch input, default `true` | hardcoded `true` |
+| `rp_project` | dispatch input, default `jamf_shared` | dispatch input, default empty (no RP) |
+| RP attributes | `team:goldminers,env:stage` | empty by default |
+| Matrix | yes (setup job + matrix) | **no matrix** — single direct call |
+| `jamfProBaseUrl` | optional | optional (env-var fallback for push/schedule) |
 
-### `jamfProBaseUrl` required input
+### `jamfProBaseUrl` optional input
 
-```yaml
-jamfProBaseUrl:
-  description: 'URL of the Jamf Pro server (required)'
-  type: string
-  required: true
-```
-
-GitHub Actions will block the workflow dispatch UI submission if this field is left empty.
+`jamfProBaseUrl` is an optional dispatch input. When provided it is passed through to the
+reusable workflow as `JAMF_PRO_CUSTOM_BASE_URL`; when omitted the reusable workflow uses the
+stage env var configured in the runner environment.
 
 ### No `pull_request` trigger
 
