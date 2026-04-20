@@ -54,7 +54,7 @@ jobs:
 
     - name: Send Slack notification on failure
       if: ${{ failure() && (github.event_name == 'workflow_dispatch' || github.event_name == 'schedule') }}
-      uses: slackapi/slack-github-action@v2
+      uses: slackapi/slack-github-action@v3
       with:
         token: ${{ secrets.GH_SLACK_TOKEN }}
         method: chat.postMessage
