@@ -58,7 +58,7 @@ jobs:
     if: ${{ failure() }}
     steps:
     - name: Send Slack notification on failure
-      uses: slackapi/slack-github-action@v2
+      uses: slackapi/slack-github-action@v3
       with:
         token: ${{ secrets.GH_SLACK_TOKEN }}
         method: chat.postMessage
