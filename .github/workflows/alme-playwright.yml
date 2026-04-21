@@ -1,9 +1,5 @@
 name: Playwright Tests - ALME
 on:
-  push:
-    branches: [ main ]
-  schedule:
-    - cron: "0 8 * * *"
   workflow_dispatch:
     inputs:
       filter:
@@ -16,31 +12,99 @@ on:
         description: 'Select which folder to run tests from'
         default: 'app-lifecycle-management'
         type: string
-      rp_project:
-        description: 'Report Portal project to send results to'
-        type: string
+
+env:
+  JAMF_PRO_CUSTOM_BASE_URL: ${{ github.event.inputs.jamfProBaseUrl || '' }}
+  JAMF_PRO_CUSTOM_ACCOUNT_EMAIL: ${{ secrets.JAMF_ACCOUNT_STAGE_USER_MAIL }}
+  JAMF_PRO_CUSTOM_ACCOUNT_PASSWORD: ${{ secrets.JAMF_ACCOUNT_STAGE_USER_PASSWORD }}
+  JAMF_PRO_CUSTOM_API_USERNAME: ${{ secrets.JAMF_PRO_STAGE_API_USERNAME }}
+  JAMF_PRO_CUSTOM_API_PASSWORD: ${{ secrets.JAMF_PRO_STAGE_API_PASSWORD }}
+
+  STANDALONE_SBOX_BASE_URL: 'https://blueprints.sbox-mfe.jamf.io'
+
+  JAMF_SCHOOL_STAGE_BASE_URL: ${{ vars.JAMF_SCHOOL_STAGE_BASE_URL }}
+  JAMF_SCHOOL_STAGE_ACCOUNT_EMAIL: ${{ secrets.JAMF_ACCOUNT_STAGE_USER_MAIL }}
+  JAMF_SCHOOL_STAGE_ACCOUNT_PASSWORD: ${{ secrets.JAMF_ACCOUNT_STAGE_USER_PASSWORD }}
+  JAMF_SCHOOL_STAGE_API_USERNAME: ${{ secrets.JAMF_SCHOOL_STAGE_API_USERNAME }}
+  JAMF_SCHOOL_STAGE_API_PASSWORD: ${{ secrets.JAMF_SCHOOL_STAGE_API_PASSWORD }}
+
+  JAMF_PRO_DEVELOP_STAGE_BASE_URL: ${{ vars.JAMF_PRO_DEVELOP_STAGE_BASE_URL }}
+  JAMF_PRO_DEVELOP_STAGE_ACCOUNT_EMAIL: ${{ secrets.JAMF_ACCOUNT_STAGE_USER_MAIL }}
+  JAMF_PRO_DEVELOP_STAGE_ACCOUNT_PASSWORD: ${{ secrets.JAMF_ACCOUNT_STAGE_USER_PASSWORD }}
+  JAMF_PRO_DEVELOP_STAGE_API_USERNAME: ${{ secrets.JAMF_PRO_STAGE_API_USERNAME }}
+  JAMF_PRO_DEVELOP_STAGE_API_PASSWORD: ${{ secrets.JAMF_PRO_STAGE_API_PASSWORD }}
+
+  JAMF_PRO_RC_STAGE_BASE_URL: ${{ vars.JAMF_PRO_RC_STAGE_BASE_URL }}
+  JAMF_PRO_RC_STAGE_ACCOUNT_EMAIL: ${{ secrets.JAMF_ACCOUNT_STAGE_USER_MAIL }}
+  JAMF_PRO_RC_STAGE_ACCOUNT_PASSWORD: ${{ secrets.JAMF_ACCOUNT_STAGE_USER_PASSWORD }}
+  JAMF_PRO_RC_STAGE_API_USERNAME: ${{ secrets.JAMF_PRO_STAGE_API_USERNAME }}
+  JAMF_PRO_RC_STAGE_API_PASSWORD: ${{ secrets.JAMF_PRO_STAGE_API_PASSWORD }}
+
+  JAMF_PRO_GA_STAGE_BASE_URL: ${{ vars.JAMF_PRO_GA_STAGE_BASE_URL }}
+  JAMF_PRO_GA_STAGE_ACCOUNT_EMAIL: ${{ secrets.JAMF_ACCOUNT_STAGE_USER_MAIL }}
+  JAMF_PRO_GA_STAGE_ACCOUNT_PASSWORD: ${{ secrets.JAMF_ACCOUNT_STAGE_USER_PASSWORD }}
+  JAMF_PRO_GA_STAGE_API_USERNAME: ${{ secrets.JAMF_PRO_STAGE_API_USERNAME }}
+  JAMF_PRO_GA_STAGE_API_PASSWORD: ${{ secrets.JAMF_PRO_STAGE_API_PASSWORD }}
+
+  JAMF_PRO_GA_1_STAGE_BASE_URL: ${{ vars.JAMF_PRO_GA_1_STAGE_BASE_URL }}
+  JAMF_PRO_GA_1_STAGE_ACCOUNT_EMAIL: ${{ secrets.JAMF_ACCOUNT_STAGE_USER_MAIL }}
+  JAMF_PRO_GA_1_STAGE_ACCOUNT_PASSWORD: ${{ secrets.JAMF_ACCOUNT_STAGE_USER_PASSWORD }}
+  JAMF_PRO_GA_1_STAGE_API_USERNAME: ${{ secrets.JAMF_PRO_STAGE_API_USERNAME }}
+  JAMF_PRO_GA_1_STAGE_API_PASSWORD: ${{ secrets.JAMF_PRO_STAGE_API_PASSWORD }}
+
+  JAMF_PRO_GA_2_STAGE_BASE_URL: ${{ vars.JAMF_PRO_GA_2_STAGE_BASE_URL }}
+  JAMF_PRO_GA_2_STAGE_ACCOUNT_EMAIL: ${{ secrets.JAMF_ACCOUNT_STAGE_USER_MAIL }}
+  JAMF_PRO_GA_2_STAGE_ACCOUNT_PASSWORD: ${{ secrets.JAMF_ACCOUNT_STAGE_USER_PASSWORD }}
+  JAMF_PRO_GA_2_STAGE_API_USERNAME: ${{ secrets.JAMF_PRO_STAGE_API_USERNAME }}
+  JAMF_PRO_GA_2_STAGE_API_PASSWORD: ${{ secrets.JAMF_PRO_STAGE_API_PASSWORD }}
 
 jobs:
-  run-playwright:
-    name: ALME Stage
-    uses: ./.github/workflows/reusable-playwright-setup.yml
-    with:
-      run-name: ALME Stage
-      filter: ${{ github.event.inputs.filter || '@stage' }}
-      jamfProBaseUrl: ${{ github.event.inputs.jamfProBaseUrl || '' }}
-      sboxBaseUrl: ''
-      slack_channel: 'mercury-alerts'
-      notify_success: 'false'
-      notify_failure: 'true'
-      test_folder: ${{ github.event.inputs.test_folder || 'app-lifecycle-management' }}
-      rp_project: ${{ github.event.inputs.rp_project || '' }}
-      rp_attributes: ''
-    secrets:
-      JAMF_ACCOUNT_STAGE_USER_MAIL: ${{ secrets.JAMF_ACCOUNT_STAGE_USER_MAIL }}
-      JAMF_ACCOUNT_STAGE_USER_PASSWORD: ${{ secrets.JAMF_ACCOUNT_STAGE_USER_PASSWORD }}
-      JAMF_PRO_STAGE_API_USERNAME: ${{ secrets.JAMF_PRO_STAGE_API_USERNAME }}
-      JAMF_PRO_STAGE_API_PASSWORD: ${{ secrets.JAMF_PRO_STAGE_API_PASSWORD }}
-      JAMF_SCHOOL_STAGE_API_USERNAME: ${{ secrets.JAMF_SCHOOL_STAGE_API_USERNAME }}
-      JAMF_SCHOOL_STAGE_API_PASSWORD: ${{ secrets.JAMF_SCHOOL_STAGE_API_PASSWORD }}
-      RP_API_KEY: ${{ secrets.RP_API_KEY }}
-      GH_SLACK_TOKEN: ${{ secrets.GH_SLACK_TOKEN }}
+  playwright-version:
+    name: Get Playwright version from devDependencies of package.json
+    runs-on: [self-hosted, naruto3]
+    outputs:
+      playwright_version: ${{ steps.playwright-version.outputs.PLAYWRIGHT_VERSION }}
+    steps:
+      - name: Git clone the repository
+        uses: actions/checkout@v6
+      - name: Check Playwright version
+        id: playwright-version
+        run: |
+          PLAYWRIGHT_VERSION=$(jq -r '.devDependencies."@playwright/test"' package.json)
+          echo "PLAYWRIGHT_VERSION=$PLAYWRIGHT_VERSION" >> $GITHUB_OUTPUT
+        shell: bash
+
+  test:
+    timeout-minutes: 60
+    runs-on: [self-hosted, naruto3]
+    needs: [playwright-version]
+    container:
+      image: mcr.microsoft.com/playwright:v${{ needs.playwright-version.outputs.playwright_version }}
+    steps:
+      - name: Git clone the repository
+        uses: actions/checkout@v6
+      - name: Set Directory as Safe
+        run: |
+          git config --system --add safe.directory "$GITHUB_WORKSPACE"
+        shell: bash
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+      - name: Setup node
+        uses: actions/setup-node@v6
+        with:
+          cache: 'pnpm'
+          node-version-file: '.nvmrc'
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+        shell: bash
+      - name: Run Playwright tests
+        run: |
+          HOME=/root pnpm exec playwright test \
+          ${{ github.event.inputs.test_folder || 'app-lifecycle-management' }} ${{ github.event.inputs.filter && format('-g {0}', github.event.inputs.filter) || '-g @stage' }}
+        shell: bash
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: alme-playwright-report
+          path: playwright-report/
+          retention-days: 30
