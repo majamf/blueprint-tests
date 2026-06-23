@@ -9,7 +9,7 @@ jobs:
     name: Lint files
     steps:
     - name: Checkout
-      uses: actions/checkout@v6
+      uses: actions/checkout@v7
 
     - name: Setup pnpm
       uses: pnpm/action-setup@v4
@@ -35,7 +35,7 @@ jobs:
     name: Check formatting
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
@@ -60,7 +60,7 @@ jobs:
     name: Type check
     steps:
     - name: Checkout
-      uses: actions/checkout@v6
+      uses: actions/checkout@v7
 
     - name: Setup pnpm
       uses: pnpm/action-setup@v4
